@@ -3,11 +3,13 @@ import { Route, Routes } from 'react-router-dom'
 
 import './App.css'
 import Home from './home'
-import { LoginForm } from './components/login-form'
-import { SignUpForm } from './components/sign-up-form'
+import { LoginForm } from './components/auth/login-form'
+import { SignUpForm } from './components/auth/sign-up-form'
 
 function App() {
 
+
+  //defune las rutas de la app
   return (
     <Routes>
       <Route path="/" element={<Home />} />
