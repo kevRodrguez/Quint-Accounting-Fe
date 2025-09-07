@@ -39,57 +39,59 @@ export function ForgotPasswordForm({ className, ...props }: React.ComponentProps
   }
 
   return (
-    <div className={cn('flex flex-col gap-6', className)} {...props}>
-      {success ? (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Check Your Email</CardTitle>
-            <CardDescription>Password reset instructions sent</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              If you registered using your email and password, you will receive a password reset
-              email.
-            </p>
-          </CardContent>
-        </Card>
-      ) : (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Reset Your Password</CardTitle>
-            <CardDescription>
-              Type in your email and we&apos;ll send you a link to reset your password
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleForgotPassword}>
-              <div className="flex flex-col gap-6">
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="m@example.com"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
+    <div className='justify-center grid grid-cols-1 md:grid-cols-4 items-center  '>
+
+      <div className={cn('flex flex-col gap-6 col-span-1 md:col-span-2 md:col-start-2', className)} {...props}>
+        {success ? (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl">Revisa tu correo electrónico</CardTitle>
+              <CardDescription>Instrucciones para restablecer la contraseña enviadas</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Si te registraste usando tu correo electrónico y contraseña, recibirás un correo electrónico para restablecer la contraseña.
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl">Restablecer tu contraseña</CardTitle>
+              <CardDescription>
+                Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleForgotPassword}>
+                <div className="flex flex-col gap-6">
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="m@example.com"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+                  {error && <p className="text-sm text-red-500">{error}</p>}
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? 'Sending...' : 'Send reset email'}
+                  </Button>
                 </div>
-                {error && <p className="text-sm text-red-500">{error}</p>}
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? 'Sending...' : 'Send reset email'}
-                </Button>
-              </div>
-              <div className="mt-4 text-center text-sm">
-                Already have an account?{' '}
-                <a href="/login" className="underline underline-offset-4">
-                  Login
-                </a>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      )}
+                <div className="mt-4 text-center text-sm">
+                  Ya tienes una cuenta?{' '}
+                  <a href="/login" className="underline underline-offset-4">
+                    Iniciar sesión
+                  </a>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   )
 }
