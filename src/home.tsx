@@ -2,21 +2,15 @@ import { Badge } from './components/ui/badge';
 import { Button } from './components/ui/button'
 import { useNavigate } from 'react-router-dom'
 
-//caroussel
-import {
-    Carousel,
-    CarouselContent,
-    CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
-} from "@/components/ui/carousel"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './components/ui/card';
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
+import { ChartAreaInteractive } from './components/ui/areachart';
 
 export default function home() {
 
     const navigate = useNavigate();
     return (
-        <div style={{ backgroundColor: 'rgb(10 10 10)', padding: 0 }} className='grid grid-cols-4 gap-4'>
+        <div style={{ backgroundColor: 'rgb(10 10 10)', padding: 0, paddingTop: '4%' }} className='grid grid-cols-4 gap-4'>
             <div className='col-span-4 justify-center'>
                 <Badge style={{ backgroundColor: '#262626' }}>Ahora Disponible en la versión 1.1</Badge>
             </div>
@@ -36,17 +30,8 @@ export default function home() {
             </div>
 
             <div className='col-span-4 mt-5 mr-15 ml-15'>
-                <Carousel >
-                    <CarouselContent >
-                        <CarouselItem >
-                            <img style={{ borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }} src="src\assets\caroussel1.jpg" alt="" />
-                        </CarouselItem>
-                        <CarouselItem><img style={{ borderRadius: '10px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }} src="src\assets\caroussel2.jpg" alt="" /></CarouselItem>
-                        <CarouselItem>...</CarouselItem>
-                    </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
-                </Carousel>
+
+                <ChartAreaInteractive></ChartAreaInteractive>
             </div>
 
             <div className='col-span-4 mt-5 mr-15 ml-15 grid grid-cols-3'>
