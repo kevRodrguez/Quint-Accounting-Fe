@@ -1,13 +1,13 @@
 import { Badge } from './components/ui/badge';
 import { Button } from './components/ui/button'
-import { useNavigate } from 'react-router-dom'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
 import { ChartAreaInteractive } from './components/ui/areachart';
-import { useContext } from 'react';
-import { AuthContext } from './context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Home() {
+    const navigate = useNavigate();
 
     return (
         <div style={{ backgroundColor: 'rgb(10 10 10)', padding: 0, paddingTop: '4%' }} className='grid grid-cols-4 gap-4'>
@@ -25,8 +25,8 @@ export default function Home() {
             </p>
 
             <div className='col-span-2 col-start-2 grid grid-cols-4 gap-4 mt-5'>
-                <Button className='col-span-4 md:col-start-2  md:col-span-1' onClick={() => navigate('/login')}>Comenzar ahora!</Button>
-                <Button className='col-span-4 md:col-start-3 md:col-span-1' onClick={() => navigate('/login')}>Ver Servicios</Button>
+                <Button className='col-span-4 md:col-start-2  md:col-span-1' onClick={() => navigate('/sign-up')}>Crea tu cuenta!</Button>
+                <Button className='col-span-4 md:col-start-3 md:col-span-1' onClick={() => navigate('/login')}>Inicia Sesión</Button>
             </div>
 
             <div className='col-span-4 mt-5 mr-15 ml-15'>
