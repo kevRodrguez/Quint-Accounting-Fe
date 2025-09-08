@@ -1,27 +1,20 @@
-import { Badge } from './components/ui/badge';
-import { Button } from './components/ui/button'
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
-import { ChartAreaInteractive } from './components/ui/areachart';
+import { Badge } from '../../components/ui/badge';
+import { Button } from '../../components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { useNavigate } from 'react-router-dom';
-
-
-
-
-
-// Importaciones para el menú de navegación
 import {
     NavigationMenu,
     NavigationMenuItem,
     NavigationMenuLink,
     NavigationMenuList,
 } from "@/components/ui/navigation-menu"
-import { AuthContext } from './context/AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 import React from 'react';
 
-export default function Home() {
+export default function LibrosMayores() {
     const navigate = useNavigate();
     const { isLoggedIn } = React.useContext(AuthContext);
+
     return (
         <div style={{ backgroundColor: 'rgb(10 10 10)', padding: 0 }} className='grid grid-cols-4 gap-4'>
             <div className='col-span-4  justify-center '>
@@ -75,65 +68,83 @@ export default function Home() {
                     </NavigationMenuList>
                 </NavigationMenu>
             </div>
+
             <div className='col-span-4 justify-center'>
-                <Badge style={{ backgroundColor: '#262626' }}>Ahora Disponible en la versión 1.1</Badge>
+                <Badge style={{ backgroundColor: '#262626' }}>Sistema de Libros Mayores</Badge>
             </div>
 
-            {/* Cambiado el header principal */}
             <h1 style={{ color: 'white', fontSize: 'xxx-large' }} className='font-bold col-span-4'>
-                Bienvenido a Quint Accounting!!
+                Libros Mayores
             </h1>
-            {/* Cambiado el subheader */}
+
             <p style={{ color: 'white' }} className='col-span-2 col-start-2'>
-                Gestiona tus libros contables, genera reportes financieros detallados y mantén el control total de tu contabilidad con Quint Accounting. Solución integral, fácil de usar y diseñada para tu negocio.
+                Consolida y organiza todas las transacciones por cuenta contable. Los libros mayores te permiten visualizar el historial completo de movimientos, saldos acumulados y el estado actual de cada cuenta.
             </p>
 
-            <div className='col-span-2 col-start-2 grid grid-cols-4 gap-4 mt-5'>
-                <Button className='col-span-4 md:col-start-2  md:col-span-1' onClick={() => navigate('/sign-up')}>Crea tu cuenta!</Button>
-                <Button className='col-span-4 md:col-start-3 md:col-span-1' onClick={() => navigate('/login')}>Inicia Sesión</Button>
+
+
+            <div className='col-span-4 mt-10 mr-15 ml-15 grid grid-cols-2 gap-6'>
+                <div className='col-span-2 md:col-span-1 p-5'>
+                    <Card style={{ justifyContent: 'center', backgroundColor: '#1a1a1a' }}>
+                        <CardHeader>
+                            <CardTitle style={{ color: 'white' }}>Mayor General</CardTitle>
+                            <CardDescription>Vista consolidada de todas las cuentas</CardDescription>
+                        </CardHeader>
+                        <CardContent style={{ color: 'white' }}>
+                            <p>Accede al mayor general completo con todas las cuentas contables, sus saldos actuales y el histórico de movimientos organizados cronológicamente.</p>
+
+                        </CardContent>
+                    </Card>
+                </div>
+                <div className='col-span-2 md:col-span-1 p-5'>
+                    <Card style={{ justifyContent: 'center', backgroundColor: '#1a1a1a' }}>
+                        <CardHeader>
+                            <CardTitle style={{ color: 'white' }}>Mayor por Cuenta</CardTitle>
+                            <CardDescription>Detalle específico de cada cuenta</CardDescription>
+                        </CardHeader>
+                        <CardContent style={{ color: 'white' }}>
+                            <p>Consulta el mayor individual de cualquier cuenta contable con todos sus movimientos, débitos, créditos y saldo actualizado en tiempo real.</p>
+
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
 
-            <div className='col-span-4 mt-5 mr-15 ml-15'>
-
-                <ChartAreaInteractive></ChartAreaInteractive>
-            </div>
-
-            <div className='col-span-4 mt-5 mr-15 ml-15 grid grid-cols-3' id='servicios'>
+            <div className='col-span-4 mt-5 mr-15 ml-15 grid grid-cols-3 gap-4'>
                 <div className='col-span-3 md:col-span-1 p-5'>
                     <Card style={{ justifyContent: 'center', backgroundColor: '#1a1a1a' }}>
                         <CardHeader>
-                            <CardTitle style={{ color: 'white' }}>Libros Diarios y Mayores</CardTitle>
-                            <CardDescription>Gestión completa de registros contables</CardDescription>
+                            <CardTitle style={{ color: 'white' }}>Balance de Comprobación</CardTitle>
+                            <CardDescription>Verificación de saldos</CardDescription>
                         </CardHeader>
                         <CardContent style={{ color: 'white' }}>
-                            <p>Automatiza tus registros contables con nuestro sistema de libros diarios y mayores. Genera asientos automáticos, consulta balances en tiempo real y mantén tu contabilidad siempre actualizada y organizada.</p>
+                            <p>Genera automáticamente el balance de comprobación con todos los saldos deudores y acreedores para verificar la exactitud contable.</p>
                         </CardContent>
                     </Card>
                 </div>
                 <div className='col-span-3 md:col-span-1 p-5'>
                     <Card style={{ justifyContent: 'center', backgroundColor: '#1a1a1a' }}>
                         <CardHeader>
-                            <CardTitle style={{ color: 'white' }}>Creación de Libros Contables</CardTitle>
-                            <CardDescription>Organiza y gestiona tus libros contables fácilmente</CardDescription>
+                            <CardTitle style={{ color: 'white' }}>Filtros Avanzados</CardTitle>
+                            <CardDescription>Búsqueda personalizada</CardDescription>
                         </CardHeader>
                         <CardContent style={{ color: 'white' }}>
-                            <p>Crea y administra tus libros contables de manera intuitiva. Personaliza tus registros, agrega nuevas cuentas y mantén toda tu información financiera centralizada y segura.</p>
+                            <p>Utiliza filtros por fecha, tipo de cuenta, rango de saldos o categorías para encontrar exactamente la información que necesitas.</p>
                         </CardContent>
                     </Card>
                 </div>
                 <div className='col-span-3 md:col-span-1 p-5'>
                     <Card style={{ justifyContent: 'center', backgroundColor: '#1a1a1a' }}>
                         <CardHeader>
-                            <CardTitle style={{ color: 'white' }}>Generación de Reportes</CardTitle>
-                            <CardDescription>Obtén reportes financieros detallados al instante</CardDescription>
+                            <CardTitle style={{ color: 'white' }}>Conciliación Bancaria</CardTitle>
+                            <CardDescription>Verificación con extractos</CardDescription>
                         </CardHeader>
                         <CardContent style={{ color: 'white' }}>
-                            <p>Genera reportes financieros precisos y personalizados en segundos. Visualiza balances, estados de resultados y otros informes clave para tomar mejores decisiones.</p>
+                            <p>Herramientas integradas para facilitar la conciliación bancaria comparando los mayores con los extractos bancarios.</p>
                         </CardContent>
                     </Card>
                 </div>
             </div>
         </div>
-    )
+    );
 }
-
