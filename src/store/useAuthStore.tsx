@@ -28,7 +28,7 @@ export interface AuthState {
     setError: (error: string | null) => void;
 }
 
-// creacion de un store de Zustand para manejar el estado de autenticación
+// Creation of a Zustand store to manage authentication state
 export const useAuthStore = create<AuthState>((set) => ({
     session: null,
     setSession: (session) => set({ session }),
