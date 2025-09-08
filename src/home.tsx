@@ -6,11 +6,75 @@ import { ChartAreaInteractive } from './components/ui/areachart';
 import { useNavigate } from 'react-router-dom';
 
 
+
+
+
+// Importaciones para el menú de navegación
+import {
+    NavigationMenu,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+} from "@/components/ui/navigation-menu"
+import { AuthContext } from './context/AuthContext';
+import React from 'react';
+
 export default function Home() {
     const navigate = useNavigate();
-
+    const { isLoggedIn } = React.useContext(AuthContext);
     return (
-        <div style={{ backgroundColor: 'rgb(10 10 10)', padding: 0, paddingTop: '4%' }} className='grid grid-cols-4 gap-4'>
+        <div style={{ backgroundColor: 'rgb(10 10 10)', padding: 0 }} className='grid grid-cols-4 gap-4'>
+            <div className='col-span-4  justify-center '>
+                <NavigationMenu className='w-full max-w-none'>
+                    <NavigationMenuList className='grid grid-cols-10' style={{ color: 'white', border: '1px solid gray', borderRadius: '8px', backgroundColor: '#1a1a1a', gap: '20px' }}>
+
+                        <NavigationMenuItem className='col-span-1' >
+
+                            <NavigationMenuLink style={{ fontSize: 'xx-large', fontWeight: 'bold' }}>Quint</NavigationMenuLink>
+
+                        </NavigationMenuItem>
+
+                        <NavigationMenuItem className='col-span-1' >
+
+                            <NavigationMenuLink href="#servicios">Servicios</NavigationMenuLink>
+
+                        </NavigationMenuItem>
+                        <NavigationMenuItem className='col-span-1' >
+
+                            <NavigationMenuLink href='https://www.asamblea.gob.sv/sites/default/files/documents/decretos/171117_072920482_archivo_documento_legislativo.pdf'>Código de comercio</NavigationMenuLink>
+
+                        </NavigationMenuItem>
+
+                        <NavigationMenuItem className='col-span-1' >
+
+                            <NavigationMenuLink onClick={() => navigate('/libros-diarios')}>Libros diarios</NavigationMenuLink>
+
+                        </NavigationMenuItem>
+                        <NavigationMenuItem className='col-span-1' >
+
+                            <NavigationMenuLink onClick={() => navigate('/libros-mayores')}>Libros mayores</NavigationMenuLink>
+
+                        </NavigationMenuItem>
+                        <NavigationMenuItem className='col-span-1' >
+
+                            <NavigationMenuLink onClick={() => navigate('/reportes')}>Reportes</NavigationMenuLink>
+
+                        </NavigationMenuItem>
+
+                        <NavigationMenuItem className='col-span-4 col-start-10' >
+                            {isLoggedIn ? (
+                                <Button variant="outline">Dashboard</Button>
+                            ) : (
+                                <Button style={{ color: 'black' }} variant="outline" onClick={() => navigate('/login')}>Login</Button>
+                            )}
+
+                        </NavigationMenuItem>
+
+
+
+                    </NavigationMenuList>
+                </NavigationMenu>
+            </div>
             <div className='col-span-4 justify-center'>
                 <Badge style={{ backgroundColor: '#262626' }}>Ahora Disponible en la versión 1.1</Badge>
             </div>
@@ -34,7 +98,7 @@ export default function Home() {
                 <ChartAreaInteractive></ChartAreaInteractive>
             </div>
 
-            <div className='col-span-4 mt-5 mr-15 ml-15 grid grid-cols-3'>
+            <div className='col-span-4 mt-5 mr-15 ml-15 grid grid-cols-3' id='servicios'>
                 <div className='col-span-3 md:col-span-1 p-5'>
                     <Card style={{ justifyContent: 'center', backgroundColor: '#1a1a1a' }}>
                         <CardHeader>
@@ -72,3 +136,4 @@ export default function Home() {
         </div>
     )
 }
+

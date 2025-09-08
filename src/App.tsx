@@ -9,6 +9,9 @@ import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
 import Dashboard from './pages/dashboard/dashboard'
 import Home from './home'
+import LibrosMayores from './pages/home/libros-mayores'
+import LibrosDiarios from './pages/home/libros-diarios'
+import Reportes from './pages/home/reportes'
 
 
 function App() {
@@ -21,6 +24,9 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPasswordForm />} />
         <Route path="/update-password" element={<SignUpForm />} />
         <Route path="/home" element={<Home />} />
+        <Route path="/libros-mayores" element={<LibrosMayores />} />
+        <Route path="/libros-diarios" element={<LibrosDiarios />} />
+        <Route path="/reportes" element={<Reportes />} />
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
