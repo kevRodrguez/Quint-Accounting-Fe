@@ -1,7 +1,7 @@
 import type { Session } from '@supabase/supabase-js';
 import { create } from 'zustand';
 
-// Interfaz unificada para el usuario
+// Unified interface for the user
 export interface User {
     id?: string;
     id_usuario?: number;
