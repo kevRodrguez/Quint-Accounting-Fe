@@ -8,6 +8,7 @@ import { ForgotPasswordForm } from './components/auth/forgot-password-form'
 import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'
 import Dashboard from './pages/dashboard/dashboard'
+import Home from './home'
 
 
 function App() {
@@ -19,13 +20,15 @@ function App() {
         <Route path="/sign-up" element={<SignUpForm />} />
         <Route path="/forgot-password" element={<ForgotPasswordForm />} />
         <Route path="/update-password" element={<SignUpForm />} />
+        <Route path="/home" element={<Home />} />
+
+        <Route path="/" element={<Navigate to="/home" replace />} />
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
           {/* Redirect to dashboard for any other route */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>
 
       </Routes>

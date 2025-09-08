@@ -4,10 +4,11 @@ import { useNavigate } from 'react-router-dom'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
 import { ChartAreaInteractive } from './components/ui/areachart';
+import { useContext } from 'react';
+import { AuthContext } from './context/AuthContext';
 
-export default function home() {
+export default function Home() {
 
-    const navigate = useNavigate();
     return (
         <div style={{ backgroundColor: 'rgb(10 10 10)', padding: 0, paddingTop: '4%' }} className='grid grid-cols-4 gap-4'>
             <div className='col-span-4 justify-center'>
