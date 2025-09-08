@@ -51,7 +51,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
         // Carga inicial de sesión
         supabase.auth.getSession()
-            .then(({ data }: any) => {
+            .then(({ data }: { data: { session: Session | null } }) => {
                 console.log("[AuthContext] Session loaded:", data.session);
                 setSession(data.session);
                 setIsLoggedIn(!!data.session);
