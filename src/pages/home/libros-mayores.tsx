@@ -19,32 +19,52 @@ export default function LibrosMayores() {
         <div style={{ backgroundColor: 'rgb(10 10 10)', padding: 0 }} className='grid grid-cols-4 gap-4'>
             <div className='col-span-4  justify-center '>
                 <NavigationMenu className='w-full max-w-none'>
-                    <NavigationMenuList className='grid grid-cols-10' style={{ color: 'white', border: '1px solid gray', borderRadius: '8px', backgroundColor: '#1a1a1a', gap: '20px' }}>
-                        <NavigationMenuItem className='col-span-1' >
-                            <NavigationMenuLink style={{ fontSize: 'xx-large', fontWeight: 'bold' }} onClick={() => navigate('/')}>Quint</NavigationMenuLink>
+                    <NavigationMenuList className='grid grid-cols-10' style={{ color: 'white', borderBottom: '1px solid gray', borderTop: 'none', borderRadius: '8px', backgroundColor: '#1a1a1a' }}>
+
+                        <NavigationMenuItem className='md:col-span-2 col-span-3' >
+
+                            <NavigationMenuLink style={{ fontSize: 'xx-large', fontWeight: 'bold' }} href='/home'>Quint</NavigationMenuLink>
+
                         </NavigationMenuItem>
-                        <NavigationMenuItem className='col-span-1' >
-                            <NavigationMenuLink onClick={() => navigate('/#servicios')}>Servicios</NavigationMenuLink>
+
+                        <NavigationMenuItem className='md:col-span-1 col-span-3' >
+
+                            <NavigationMenuLink href="#servicios">Servicios</NavigationMenuLink>
+
                         </NavigationMenuItem>
-                        <NavigationMenuItem className='col-span-1' >
-                            <NavigationMenuLink>Código de comercio</NavigationMenuLink>
+                        <NavigationMenuItem className='md:col-span-1 col-span-3' >
+
+                            <NavigationMenuLink href='https://www.asamblea.gob.sv/sites/default/files/documents/decretos/171117_072920482_archivo_documento_legislativo.pdf'>Código de comercio</NavigationMenuLink>
+
                         </NavigationMenuItem>
-                        <NavigationMenuItem className='col-span-1' >
+
+                        <NavigationMenuItem className='md:col-span-1 col-span-3' >
+
                             <NavigationMenuLink onClick={() => navigate('/libros-diarios')}>Libros diarios</NavigationMenuLink>
+
                         </NavigationMenuItem>
-                        <NavigationMenuItem className='col-span-1' >
+                        <NavigationMenuItem className='md:col-span-1 col-span-3' >
+
                             <NavigationMenuLink onClick={() => navigate('/libros-mayores')}>Libros mayores</NavigationMenuLink>
+
                         </NavigationMenuItem>
-                        <NavigationMenuItem className='col-span-1' >
+                        <NavigationMenuItem className='md:col-span-1 col-span-3' >
+
                             <NavigationMenuLink onClick={() => navigate('/reportes')}>Reportes</NavigationMenuLink>
+
                         </NavigationMenuItem>
-                        <NavigationMenuItem className='col-span-4 col-start-10' >
+
+                        <NavigationMenuItem className='md:col-span-3 md:col-start-10 col-span-4 col-start-4' >
                             {isLoggedIn ? (
-                                <Button variant="outline">Dashboard</Button>
+                                <Button style={{ color: 'black' }} variant="outline" onClick={() => navigate('/dashboard')}>Dashboard</Button>
                             ) : (
-                                <Button variant="outline" onClick={() => navigate('/login')}>Login</Button>
+                                <Button style={{ color: 'black' }} variant="outline" onClick={() => navigate('/login')}>Login</Button>
                             )}
+
                         </NavigationMenuItem>
+
+
+
                     </NavigationMenuList>
                 </NavigationMenu>
             </div>
