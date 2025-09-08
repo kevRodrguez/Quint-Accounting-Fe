@@ -70,7 +70,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
             <CardHeader>
               <CardTitle className="text-2xl">Gracias por registrarte!!</CardTitle>
               <CardDescription>Revisa tu correo para confirmación</CardDescription>
-              <Button onClick={() => navigate('/')}>Volver a inicio</Button>
+              <Button onClick={() => navigate('/login')}>Volver a inicio</Button>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
