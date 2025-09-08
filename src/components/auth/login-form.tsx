@@ -1,5 +1,4 @@
 import { cn } from '@/lib/utils'
-import { createClient } from '@/lib/client'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -10,30 +9,39 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { AuthContext } from '@/context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
+  
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const supabase = createClient()
+
+  const { logIn, error, clearError, session } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  // Si ya hay una sesión activa, redirigir al dashboard
+  if (session) {
+    navigate('/dashboard');
+  }
+
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    setError(null)
+    clearError()
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
-      if (error) throw error
-      // Update this route to redirect to an authenticated route. The user already has an active session.
-      location.href = '/protected'
+      await logIn({ email, password });
+      // Si llegamos aquí, el login fue exitoso
+      // La navegación se maneja automáticamente en el AuthContext
+      console.log('Login successful');
+
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : 'An error occurred')
+      // El error ya está manejado en el contexto, no necesitamos hacer nada aquí
+      console.error('Login failed:', error);
     } finally {
       setIsLoading(false)
     }
