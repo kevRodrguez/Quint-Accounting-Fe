@@ -23,7 +23,7 @@ function App() {
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          {/* Reenvío a la página de inicio en cualquier otra ruta */}
+          {/* Redirect to dashboard for any other route */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
         </Route>
