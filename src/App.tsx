@@ -1,25 +1,36 @@
 "use client"
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 
 import './App.css'
-import Home from './home'
 import { LoginForm } from './components/auth/login-form'
 import { SignUpForm } from './components/auth/sign-up-form'
 import { ForgotPasswordForm } from './components/auth/forgot-password-form'
+import { AuthProvider } from './context/AuthContext'
+import { ProtectedRoute } from './components/auth/ProtectedRoute'
+import Dashboard from './pages/dashboard/dashboard'
+
 
 function App() {
 
-
-  //defune las rutas de la app
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<LoginForm />} />
-      <Route path="/sign-up" element={<SignUpForm />} />
-      <Route path="/forgot-password" element={<ForgotPasswordForm />} />
-      <Route path="/update-password" element={<SignUpForm />} />
-    </Routes>
-  )
+    <AuthProvider>
+      <Routes>
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/sign-up" element={<SignUpForm />} />
+        <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+        <Route path="/update-password" element={<SignUpForm />} />
+
+        {/* Protected routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          {/* Reenvío a la página de inicio en cualquier otra ruta */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+        </Route>
+
+      </Routes>
+    </AuthProvider>
+  );
 }
 
 export default App

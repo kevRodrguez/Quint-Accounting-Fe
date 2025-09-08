@@ -1,5 +1,4 @@
 import { cn } from '@/lib/utils'
-import { createClient } from '@/lib/client'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -10,7 +9,10 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { supabase } from '@/lib/client'
+import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '@/context/AuthContext'
 
 export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
   const [email, setEmail] = useState('')
@@ -19,9 +21,15 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  
+  const navigate = useNavigate()
+  const { session } = useContext(AuthContext);
+  // Si ya hay una sesión activa, redirigir al dashboard
+  if (session) {
+    navigate('/dashboard');
+  }
 
   const handleSignUp = async (e: React.FormEvent) => {
-    const supabase = createClient()
     e.preventDefault()
     setError(null)
 
@@ -62,6 +70,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
             <CardHeader>
               <CardTitle className="text-2xl">Gracias por registrarte!!</CardTitle>
               <CardDescription>Revisa tu correo para confirmación</CardDescription>
+              <Button onClick={() => navigate('/')}>Volver a inicio</Button>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
