@@ -13,7 +13,7 @@ export function ProtectedRoute() {
 
     // Si no hay sesión válida, redirigir al login
     if (!session || !isLoggedIn) {
-        return <Navigate to="/login" replace />;
+        return <Navigate to="/home" replace />;
     }
 
     // Si está autenticado, mostrar el contenido protegido

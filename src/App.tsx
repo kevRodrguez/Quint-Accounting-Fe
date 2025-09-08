@@ -22,7 +22,7 @@ function App() {
         <Route path="/update-password" element={<SignUpForm />} />
         <Route path="/home" element={<Home />} />
 
-        <Route path="/" element={<Navigate to="/home" replace />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
         {/* Protected routes */}
         <Route element={<ProtectedRoute />}>
