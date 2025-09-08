@@ -14,7 +14,7 @@ import { AuthContext } from '@/context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -50,12 +50,12 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
   return (
 
     <div className='justify-center grid grid-cols-1 md:grid-cols-4 items-center '>
-      <div className='col-span-4 text-center mb-6 '>
+      <div className='col-span-4 text-center mb-6 ' style={{ color: '#fafafa' }}>
         <h1 style={{ fontWeight: 'bold', fontSize: 'xxx-large' }}>Quint Accounting</h1>
         <p style={{ color: "D9D9D9" }}>Tu mejor elección contable</p>
       </div>
       <div className={cn('flex flex-col gap-6 col-span-1 md:col-span-2 md:col-start-2', className)} {...props}>
-        <Card>
+        <Card style={{ color: '#fafafa', backgroundColor: '#171717' }}>
           <CardHeader>
             <CardTitle className="text-2xl">Iniciar Sesión</CardTitle>
             <CardDescription>Ingresa tu correo electrónico a continuación para iniciar sesión en tu cuenta</CardDescription>
@@ -93,7 +93,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                   />
                 </div>
                 {error && <p className="text-sm text-red-500">{error}</p>}
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button type="submit" className="w-full" disabled={isLoading} style={{ backgroundColor: '#e5e5e5', color: 'black' }}>
                   {isLoading ? 'Logging in...' : 'Login'}
                 </Button>
               </div>

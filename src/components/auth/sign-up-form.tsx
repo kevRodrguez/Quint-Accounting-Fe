@@ -21,7 +21,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [success, setSuccess] = useState(false)
-  
+
   const navigate = useNavigate()
   const { session } = useContext(AuthContext);
   // Si ya hay una sesión activa, redirigir al dashboard
@@ -56,7 +56,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
   return (
 
     //grid activa el grid, grid-cols-x indica el numero de columnas
-    <div className='justify-center grid grid-cols-1 md:grid-cols-4 items-center '>
+    <div className='justify-center grid grid-cols-1 md:grid-cols-4 items-center ' style={{ color: 'white' }}>
 
       <div className='col-span-4 text-center mb-6 '>
         <h1 style={{ fontWeight: 'bold', fontSize: 'xxx-large' }}>Quint Accounting</h1>
@@ -66,7 +66,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
       {/* col-span-x indica el numero de columnas que ocupará el elemento */}
       <div className={cn('flex flex-col gap-6 col-span-1 md:col-span-2 md:col-start-2', className)} {...props}>
         {success ? (
-          <Card>
+          <Card >
             <CardHeader>
               <CardTitle className="text-2xl">Gracias por registrarte!!</CardTitle>
               <CardDescription>Revisa tu correo para confirmación</CardDescription>
@@ -80,7 +80,7 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
             </CardContent>
           </Card>
         ) : (
-          <Card>
+          <Card style={{ backgroundColor: '#171717', color: '#fafafa' }}>
             <CardHeader>
               <CardTitle className="text-2xl">Registrarse</CardTitle>
               <CardDescription>Crear una nueva cuenta</CardDescription>
@@ -124,13 +124,13 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
                     />
                   </div>
                   {error && <p className="text-sm text-red-500">{error}</p>}
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button type="submit" className="w-full" disabled={isLoading} style={{ backgroundColor: '#e5e5e5', color: 'black' }}>
                     {isLoading ? 'Creando cuenta...' : 'Registrarse'}
                   </Button>
                 </div>
                 <div className="mt-4 text-center text-sm">
                   Ya tienes una cuenta?{' '}
-                  <a href="/login" className="underline underline-offset-4">
+                  <a href="/login" className="underline underline-offset-4" >
                     Iniciar sesión
                   </a>
                 </div>
