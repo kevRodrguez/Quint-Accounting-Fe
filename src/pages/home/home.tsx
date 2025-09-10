@@ -1,8 +1,8 @@
-import { Badge } from './components/ui/badge';
-import { Button } from './components/ui/button'
+import { Badge } from '../../components/ui/badge';
+import { Button } from '../../components/ui/button'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
-import { ChartAreaInteractive } from './components/ui/areachart';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import { ChartAreaInteractive } from '../../components/ui/areachart';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -16,14 +16,14 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
 } from "@/components/ui/navigation-menu"
-import { AuthContext } from './context/AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 import React from 'react';
 
 export default function Home() {
     const navigate = useNavigate();
     const { isLoggedIn } = React.useContext(AuthContext);
     return (
-        <div style={{ backgroundColor: 'rgb(10 10 10)', padding: 0 }} className='grid grid-cols-4 gap-4'>
+        <div style={{ backgroundColor: 'black', padding: '2rem', textAlign: 'center', margin: '0 auto' }} className='grid grid-cols-4 gap-4'>
             <div className='col-span-4  justify-center '>
                 <NavigationMenu className='w-full max-w-none'>
                     <NavigationMenuList className='grid grid-cols-10' style={{ color: 'white', borderBottom: '1px solid gray', borderTop: 'none', borderRadius: '8px', backgroundColor: '#1a1a1a' }}>
@@ -89,7 +89,7 @@ export default function Home() {
             </p>
 
             <div className='col-span-2 col-start-2 grid grid-cols-4 gap-4 mt-5'>
-                <Button className='col-span-4 md:col-start-2  md:col-span-1' onClick={() => navigate('/sign-up')}>Crea tu cuenta!</Button>
+                <Button className='col-span-4 md:col-start-2  md:col-span-1' onClick={() => navigate('/sign-up')}>Regístrate</Button>
                 <Button className='col-span-4 md:col-start-3 md:col-span-1' onClick={() => navigate('/login')}>Inicia Sesión</Button>
             </div>
 

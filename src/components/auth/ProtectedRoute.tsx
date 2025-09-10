@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { AuthContext } from '@/context/AuthContext';
-import { LoadingScreen } from '@/components/LoadingScreen';
+import { LoadingScreen } from '@/components/dashboard/LoadingScreen';
 
 export function ProtectedRoute() {
     const { session, isLoading, isLoggedIn } = useContext(AuthContext);
