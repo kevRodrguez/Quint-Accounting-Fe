@@ -1,50 +1,45 @@
 "use client"
-import * as React from "react"
-import { ChevronDownIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Label } from "@/components/ui/label"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { Navigate, Route, Routes } from 'react-router-dom'
 
 import './App.css'
+import { LoginForm } from './components/auth/login-form'
+import { SignUpForm } from './components/auth/sign-up-form'
+import { ForgotPasswordForm } from './components/auth/forgot-password-form'
+import { AuthProvider } from './context/AuthContext'
+import { ProtectedRoute } from './components/auth/ProtectedRoute'
+import Dashboard from './pages/dashboard/dashboard'
+import Home from './home'
+import LibrosMayores from './pages/home/libros-mayores'
+import LibrosDiarios from './pages/home/libros-diarios'
+import Reportes from './pages/home/reportes'
+
 
 function App() {
-  const [open, setOpen] = React.useState(false)
-  const [date, setDate] = React.useState<Date | undefined>(undefined)
+
   return (
-    <div className="flex flex-col gap-3">
-      <Label htmlFor="date" className="px-1">
-        Date of birth
-      </Label>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            id="date"
-            className="w-48 justify-between font-normal"
-          >
-            {date ? date.toLocaleDateString() : "Select date"}
-            <ChevronDownIcon />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-          <Calendar
-            mode="single"
-            selected={date}
-            captionLayout="dropdown"
-            onSelect={(date) => {
-              setDate(date)
-              setOpen(false)
-            }}
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
-  )
+    <AuthProvider>
+      <Routes>
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/sign-up" element={<SignUpForm />} />
+        <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+        <Route path="/update-password" element={<SignUpForm />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/libros-mayores" element={<LibrosMayores />} />
+        <Route path="/libros-diarios" element={<LibrosDiarios />} />
+        <Route path="/reportes" element={<Reportes />} />
+
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+        {/* Protected routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          {/* Redirect to dashboard for any other route */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Route>
+
+      </Routes>
+    </AuthProvider>
+  );
 }
 
 export default App
