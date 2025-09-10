@@ -39,7 +39,7 @@ export function UpdatePasswordForm({ className, ...props }: React.ComponentProps
 
       <div className='w-full text-center mb-6 ' style={{ color: '#fafafa' }}>
         <h1 style={{ fontWeight: 'bold', fontSize: 'xxx-large' }}>Quint Accounting</h1>
-        <p style={{ color: "D9D9D9" }}>Tu mejor elección contable</p>
+        <p style={{ color: "#D9D9D9" }}>Tu mejor elección contable</p>
       </div>
 
       <div className={cn('w-full max-w-[500px] min-w-[300px] flex flex-col gap-6 px-4', className)} {...props}>
