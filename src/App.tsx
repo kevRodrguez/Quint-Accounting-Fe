@@ -2,8 +2,8 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 
 import './App.css'
-import { LoginForm } from './components/auth/login-form'
-import { SignUpForm } from './components/auth/sign-up-form'
+import { LoginForm } from './pages/auth/login-form'
+import { SignUpForm } from './pages/auth/sign-up-form'
 import { ForgotPasswordForm } from './components/auth/forgot-password-form'
 import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute } from './components/auth/ProtectedRoute'

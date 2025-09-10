@@ -1,8 +1,8 @@
 
-import { AppSidebar } from '@/components/app-sidebar';
-import { ChartAreaInteractive } from '@/components/chart-area-interactive';
-import { SectionCards } from '@/components/section-cards';
-import { SiteHeader } from '@/components/site-header';
+import { AppSidebar } from '@/components/dashboard/app-sidebar';
+import { ChartAreaInteractive } from '@/components/dashboard/chart-area-interactive';
+import { SectionCards } from '@/components/dashboard/section-cards';
+import { SiteHeader } from '@/components/dashboard/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { AuthContext } from '@/context/AuthContext';
 import React from 'react'
@@ -34,8 +34,6 @@ export default function Dashboard() {
                             <div className="px-4 lg:px-6">
                                 <ChartAreaInteractive />
                             </div>
-                            <button className='btn' onClick={handleLogOut}>Log Out</button>
-
                         </div>
                     </div>
                 </div>

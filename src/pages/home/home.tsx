@@ -89,7 +89,7 @@ export default function Home() {
             </p>
 
             <div className='col-span-2 col-start-2 grid grid-cols-4 gap-4 mt-5'>
-                <Button className='col-span-4 md:col-start-2  md:col-span-1' onClick={() => navigate('/sign-up')}>Crea tu cuenta!</Button>
+                <Button className='col-span-4 md:col-start-2  md:col-span-1' onClick={() => navigate('/sign-up')}>Regístrate</Button>
                 <Button className='col-span-4 md:col-start-3 md:col-span-1' onClick={() => navigate('/login')}>Inicia Sesión</Button>
             </div>
 
