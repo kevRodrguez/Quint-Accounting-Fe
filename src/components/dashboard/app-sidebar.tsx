@@ -2,23 +2,14 @@ import * as React from "react"
 import {
   IconCamera,
   IconDashboard,
-  IconDatabase,
   IconFileAi,
   IconFileDescription,
-  IconFileWord,
-  IconHelp,
-  IconInnerShadowTop,
-  IconSettings,
-  IconReport,
-  IconSearch,
   IconBook,
   IconBook2,
   IconBooks,
 } from "@tabler/icons-react"
 
-import { NavDocuments } from "@/components/dashboard/nav-documents"
 import { NavMain } from "@/components/dashboard/nav-main"
-import { NavSecondary } from "@/components/dashboard/nav-secondary"
 import { NavUser } from "@/components/dashboard/nav-user"
 import {
   Sidebar,
@@ -31,6 +22,8 @@ import {
 } from "@/components/ui/sidebar"
 import { AuthContext } from "@/context/AuthContext"
 import avatarDefault from '@/assets/avatar.jpg'
+
+import QuintLogoWhiteBG from '@/assets/quint-logos/quint-logo-whitebg.png'
 
 
 const data = {
@@ -167,14 +160,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
-          <SidebarMenuItem>
+          <SidebarMenuItem className="">
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="data-[slot=sidebar-menu-button]:!py-6"
             >
               <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Quint Accounting</span>
+                <img src={QuintLogoWhiteBG} alt="logo" width={130} style={{ borderRadius: '8px' }}/>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

@@ -1,9 +1,12 @@
-import { Badge } from '../../components/ui/badge';
-import { Button } from '../../components/ui/button'
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { ChartAreaInteractive } from '../../components/ui/areachart';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ChartAreaInteractive } from '@/components/ui/areachart';
 import { useNavigate } from 'react-router-dom';
+import QuintLogoBlackBG from '@/assets/quint-logos/quint-logo-blackbg.png';
+import QuintIconRed from '@/assets/quint-icons/quint-icon-red.png';
+
 
 
 
@@ -30,34 +33,38 @@ export default function Home() {
 
                         <NavigationMenuItem className='md:col-span-2 col-span-3' >
 
-                            <NavigationMenuLink style={{ fontSize: 'xx-large', fontWeight: 'bold' }} href='/home'>Quint</NavigationMenuLink>
+
+                            <NavigationMenuLink style={{ fontSize: 'xx-large', fontWeight: 'bold', padding: '1rem' }} href='/home' className='hover:bg-[#282828] hover:text-white focus:hover:bg-[#282828]'>
+
+                                <img src={QuintLogoBlackBG} alt="Logo" width={180} height={180} style={{ borderRadius: '8px' }}/>
+                            </NavigationMenuLink>
 
                         </NavigationMenuItem>
 
                         <NavigationMenuItem className='md:col-span-1 col-span-3' >
 
-                            <NavigationMenuLink href="#servicios">Servicios</NavigationMenuLink>
+                            <NavigationMenuLink className="hover:bg-[#282828] hover:text-white" href="#servicios">Servicios</NavigationMenuLink>
 
                         </NavigationMenuItem>
                         <NavigationMenuItem className='md:col-span-1 col-span-3' >
 
-                            <NavigationMenuLink href='https://www.asamblea.gob.sv/sites/default/files/documents/decretos/171117_072920482_archivo_documento_legislativo.pdf'>Código de comercio</NavigationMenuLink>
+                            <NavigationMenuLink className="hover:bg-[#282828] hover:text-white" href='https://www.asamblea.gob.sv/sites/default/files/documents/decretos/171117_072920482_archivo_documento_legislativo.pdf'>Código de comercio</NavigationMenuLink>
 
                         </NavigationMenuItem>
 
                         <NavigationMenuItem className='md:col-span-1 col-span-3' >
 
-                            <NavigationMenuLink onClick={() => navigate('/libros-diarios')}>Libros diarios</NavigationMenuLink>
+                            <NavigationMenuLink className="hover:bg-[#282828] hover:text-white" onClick={() => navigate('/libros-diarios')}>Libros diarios</NavigationMenuLink>
 
                         </NavigationMenuItem>
                         <NavigationMenuItem className='md:col-span-1 col-span-3' >
 
-                            <NavigationMenuLink onClick={() => navigate('/libros-mayores')}>Libros mayores</NavigationMenuLink>
+                            <NavigationMenuLink className="hover:bg-[#282828] hover:text-white" onClick={() => navigate('/libros-mayores')}>Libros mayores</NavigationMenuLink>
 
                         </NavigationMenuItem>
                         <NavigationMenuItem className='md:col-span-1 col-span-3' >
 
-                            <NavigationMenuLink onClick={() => navigate('/reportes')}>Reportes</NavigationMenuLink>
+                            <NavigationMenuLink className="hover:bg-[#282828] hover:text-white" onClick={() => navigate('/reportes')}>Reportes</NavigationMenuLink>
 
                         </NavigationMenuItem>
 
@@ -79,9 +86,14 @@ export default function Home() {
                 <Badge style={{ backgroundColor: '#262626' }}>Ahora Disponible en la versión 1.1</Badge>
             </div>
 
+            {/* imagen logo */}
+            <div className='col-span-4 justify-center flex'>
+                <img src={QuintIconRed} alt="Logo" width={100} height={100} style={{ borderRadius: '8px' }} />
+            </div>
+
             {/* Cambiado el header principal */}
-            <h1 style={{ color: 'white', fontSize: 'xxx-large' }} className='font-bold col-span-4'>
-                Bienvenido a Quint Accounting!!
+            <h1 style={{ color: 'white', fontSize: 'xx-large' }} className='font-bold col-span-4'>
+                ¡Bienvenido a Quint Accounting!
             </h1>
             {/* Cambiado el subheader */}
             <p style={{ color: 'white' }} className='col-span-2 col-start-2'>

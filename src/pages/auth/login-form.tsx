@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label'
 import { useContext, useState } from 'react'
 import { AuthContext } from '@/context/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import QuintIconRed from '@/assets/quint-icons/quint-icon-red.png';
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
 
@@ -51,6 +52,10 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 
     <div className='flex flex-col items-center justify-center bg-black min-h-screen'>
       <div className='w-full text-center mb-6 ' style={{ color: '#fafafa' }}>
+        {/* imagen logo */}
+        <div className='col-span-4 justify-center flex'>
+          <img src={QuintIconRed} alt="Logo" width={100} height={100} style={{ borderRadius: '8px' }} />
+        </div>
         <h1 style={{ fontWeight: 'bold', fontSize: 'xxx-large' }}>Quint Accounting</h1>
         <p style={{ color: "#D9D9D9" }}>Tu mejor elección contable</p>
       </div>

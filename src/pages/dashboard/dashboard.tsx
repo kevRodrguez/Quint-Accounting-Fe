@@ -4,16 +4,9 @@ import { ChartAreaInteractive } from '@/components/dashboard/chart-area-interact
 import { SectionCards } from '@/components/dashboard/section-cards';
 import { SiteHeader } from '@/components/dashboard/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { AuthContext } from '@/context/AuthContext';
 import React from 'react'
 
 export default function Dashboard() {
-
-    const { logOut } = React.useContext(AuthContext);
-
-    const handleLogOut = async () => {
-        await logOut();
-    }
 
     return (
         <SidebarProvider
