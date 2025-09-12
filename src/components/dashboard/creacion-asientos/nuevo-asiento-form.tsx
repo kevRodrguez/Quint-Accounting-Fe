@@ -86,9 +86,10 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                 <Popover>
                                     <PopoverTrigger asChild>
                                         <Button
+
                                             variant="outline"
                                             data-empty={!fecha}
-                                            style={{ backgroundColor: 'rgb(23 23 23)', color: 'rgb(229 229 229)' }}
+                                            style={{ backgroundColor: 'rgb(23 23 23)', color: 'rgb(229 229 229)', width: '100%' }}
                                             className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
                                         >
                                             <CalendarIcon />
@@ -101,13 +102,47 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                 </Popover>
                             </div>
                             <div className="grid gap-2">
+
+
+                                {/* form nuevo movimiento */}
+                                <div className="grid grid-cols-7 gap-1 p-3" style={{ border: '1px dashed gray', borderRadius: '8px' }}>
+                                    <div className='col-span-7 mb-5 font-bold'>Nuevo Movimiento:</div>
+                                    <span className='col-span-7' style={{ border: '1px solid gray', marginBottom: '8px' }}></span>
+                                    <div className='col-span-2' >
+                                        <Combobox style={{ width: '100%' }} title="cuenta" items={cuentaItems} />
+                                    </div>
+                                    <div className='col-span-2'>
+                                        <Input
+                                            style={{ border: 'none' }}
+                                            value={''}
+                                            onChange={(e) => console.log(e.target.value)}
+                                            placeholder="debe"
+                                            className="w-full"
+                                        />
+                                    </div>
+                                    <div className='col-span-2'>
+                                        <Input
+                                            style={{ border: 'none' }}
+                                            value={''}
+                                            onChange={(e) => console.log(e.target.value)}
+                                            placeholder="haber"
+                                            className="w-full"
+                                        />
+                                    </div>
+                                    <div className='col-span-1' style={{ display: 'flex', justifyContent: 'center' }} >
+                                        <Button>+</Button>
+                                    </div>
+                                </div>
+
+                                {/* tabla movimientos */}
+                                <h1 style={{ fontSize: 'large', fontWeight: 'bold' }}>Movimientos del asiento:</h1>
                                 <Table>
 
                                     <TableHeader>
                                         <TableRow >
-                                            <TableHead style={{ color: 'white' }} className="w-[100px]">cuenta</TableHead>
-                                            <TableHead style={{ color: 'white' }}>Debe</TableHead>
-                                            <TableHead style={{ color: 'white' }}>Haber</TableHead>
+                                            <TableHead style={{ color: 'white', backgroundColor: '#ac2020' }} className="w-[100px]">cuenta</TableHead>
+                                            <TableHead style={{ color: 'white', backgroundColor: '#ac2020' }}>Debe</TableHead>
+                                            <TableHead style={{ color: 'white', backgroundColor: '#ac2020' }}>Haber</TableHead>
 
                                         </TableRow>
                                     </TableHeader>
@@ -126,13 +161,7 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                                     />
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Input
-                                                        style={{ border: 'none' }}
-                                                        value={movimiento.debe}
-                                                        onChange={(e) => console.log(e.target.value)}
-                                                        placeholder="Seleccionar cuenta"
-                                                        className="w-full"
-                                                    />
+                                                    <Combobox style={{ width: '100%' }} title="cuenta" items={cuentaItems} />
                                                 </TableCell>
                                                 <TableCell>
                                                     <Input
@@ -172,51 +201,25 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
 
                                         </TableRow>
 
-
-
                                     </TableBody>
-                                    <TableBody>
-                                        <TableRow >
-                                            <TableCell>
-                                                <Combobox style={{ width: '90%' }} title='cuenta...' items={cuentaItems}></Combobox>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Input
-                                                    style={{ border: 'none' }}
-                                                    value={''}
-                                                    onChange={(e) => console.log(e.target.value)}
-                                                    placeholder="debe"
-                                                    className="w-full"
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <Input
-                                                    style={{ border: 'none' }}
-                                                    value={''}
-                                                    onChange={(e) => console.log(e.target.value)}
-                                                    placeholder="haber"
-                                                    className="w-full"
-                                                />
-                                            </TableCell>
 
-
-                                        </TableRow>
-                                        <Button style={{ marginLeft: '3%', marginTop: '3%' }}>Agregar</Button>
-                                    </TableBody>
                                 </Table>
                             </div>
 
-
-                            <Button type="submit" className="w-full" disabled={isLoading} style={{ backgroundColor: '#e5e5e5', color: 'black' }}>
-                                {isLoading ? 'Logging in...' : 'Login'}
+                            <Button
+                                type="submit"
+                                className="w-full"
+                                disabled={isLoading}
+                                style={{
+                                    backgroundColor: 'white',
+                                    color: 'black',
+                                    fontWeight: '600'
+                                }}
+                            >
+                                {isLoading ? 'Creando asiento...' : 'Crear Asiento Contable'}
                             </Button>
                         </div>
-                        <div className="mt-4 text-center text-sm">
-                            No tienes una cuenta?{' '}
-                            <a href="/sign-up" className="underline underline-offset-4">
-                                Registrarse
-                            </a>
-                        </div>
+
                     </form>
                 </CardContent>
             </Card>
