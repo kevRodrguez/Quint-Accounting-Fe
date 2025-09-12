@@ -9,8 +9,8 @@ import {
   IconBooks,
 } from "@tabler/icons-react"
 
-import { NavMain } from "@/components/dashboard/nav-main"
-import { NavUser } from "@/components/dashboard/nav-user"
+import { NavMain } from "@/components/dashboard/sidebar/nav-main"
+import { NavUser } from "@/components/dashboard/sidebar/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -30,12 +30,12 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: IconDashboard,
     },
     {
       title: "Libro Diario",
-      url: "#",
+      url: "/libro-diario",
       icon: IconBook,
     },
     {
@@ -165,7 +165,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!py-6"
             >
-              <a href="#">
+              <a href="/dashboard">
                 <img src={QuintLogoWhiteBG} alt="logo" width={130} style={{ borderRadius: '8px' }}/>
               </a>
             </SidebarMenuButton>

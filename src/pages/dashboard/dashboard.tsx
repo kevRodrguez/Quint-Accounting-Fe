@@ -1,27 +1,11 @@
 
-import { AppSidebar } from '@/components/dashboard/app-sidebar';
+import { AppSidebar } from '@/components/dashboard/sidebar/app-sidebar';
 import { ChartAreaInteractive } from '@/components/dashboard/chart-area-interactive';
 import { SectionCards } from '@/components/dashboard/section-cards';
 import { SiteHeader } from '@/components/dashboard/site-header';
-import { Button } from '@/components/ui/button';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import React from 'react'
-import Modal from 'react-modal';
-import { LoginForm } from '../auth/login-form';
-import { NuevoAsientoForm } from '@/components/dashboard/creacion-asientos/nuevo-asiento-form';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 export default function Dashboard() {
-    const customStyles = {
-        content: {
-            top: '50%',
-            left: '50%',
-            right: 'auto',
-            bottom: 'auto',
-            marginRight: '-50%',
-            transform: 'translate(-50%, -50%)',
-
-        },
-    };
 
     return (
 
@@ -33,16 +17,7 @@ export default function Dashboard() {
         >
             <AppSidebar variant="inset" />
             <SidebarInset>
-                <SiteHeader />
-
-                {/* Botón provisional para añadir nuevo asiento */}
-                <Dialog >
-                    <DialogTrigger>Nuevo Asiento</DialogTrigger>
-                    <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-auto " style={{ scrollbarWidth: 'none' }}>
-                        <NuevoAsientoForm />
-                    </DialogContent>
-                </Dialog>
-                {/* fin de botón para nuevo asiento */}
+                <SiteHeader title='Dashboard' />
 
                 <div className="flex flex-1 flex-col">
                     <div className="@container/main flex flex-1 flex-col gap-2">
