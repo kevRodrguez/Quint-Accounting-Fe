@@ -24,13 +24,20 @@ export interface ComboboxProps {
     title: string;
     className?: string;
     style?: React.CSSProperties;
+    selected?: string;
     onSelect?: (value: string) => void; // Nueva prop opcional
 }
 
-export function Combobox({ items, title, className, style, onSelect }: ComboboxProps) {
+export function Combobox({ items, title, className, style, selected, onSelect }: ComboboxProps) {
     const [open, setOpen] = React.useState(false)
     const [value, setValue] = React.useState("")
 
+
+    React.useEffect(() => {
+        if (selected) {
+            setValue(selected);
+        }
+    })
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>

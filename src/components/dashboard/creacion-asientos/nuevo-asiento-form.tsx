@@ -36,11 +36,11 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
         { label: 'Ingresos', value: 'ingresos' },
     ];
 
-
+    const [idCounter, setIdCounter] = useState(3); // Estado para llevar el conteo de IDs
 
     const [movimientos, setMovimientos] = useState([
-        { id: 1, cuenta: 'Caja', debe: 1000, haber: 0, descripcion: 'Venta de productos' },
-        { id: 2, cuenta: 'Ventas', debe: 0, haber: 1000, descripcion: 'Registro de venta' }
+        { id: 1, cuenta: 'Caja', debe: 1000, haber: 0, },
+        { id: 2, cuenta: 'Ventas', debe: 0, haber: 1000, }
     ]);
 
     const [nuevoMovimiento, setNuevoMovimiento] = useState({ cuenta: '', debe: 0, haber: 0, descripcion: '' });
@@ -132,7 +132,10 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
 
                                     </div>
                                     <div className='col-span-1' style={{ display: 'flex', justifyContent: 'center' }} >
-                                        <Button>+</Button>
+                                        <Button type='button' onClick={() => {
+                                            console.log(nuevoMovimiento);
+                                            setMovimientos([...movimientos, { id: idCounter, cuenta: nuevoMovimiento.cuenta, debe: nuevoMovimiento.debe, haber: nuevoMovimiento.haber }])
+                                        }}>+</Button>
                                     </div>
                                 </div>
 
@@ -154,17 +157,18 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                             <TableRow key={movimiento.id} style={{ borderBottom: '1px solid gray' }}>
 
                                                 <TableCell>
+                                                    <Combobox style={{ width: '100%' }} title="cuenta" items={cuentaItems} selected={movimiento.cuenta} />
+                                                </TableCell>
+                                                <TableCell>
                                                     <Input
                                                         style={{ border: 'none' }}
-                                                        value={movimiento.cuenta}
+                                                        value={movimiento.debe}
                                                         onChange={(e) => console.log(e.target.value)}
-                                                        placeholder="Seleccionar cuenta"
+                                                        placeholder="debe"
                                                         className="w-full"
                                                     />
                                                 </TableCell>
-                                                <TableCell>
-                                                    <Combobox style={{ width: '100%' }} title="cuenta" items={cuentaItems} />
-                                                </TableCell>
+
                                                 <TableCell>
                                                     <Input
                                                         style={{ border: 'none' }}
