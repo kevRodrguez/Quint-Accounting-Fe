@@ -21,6 +21,8 @@ import { format } from 'date-fns'
 import { date } from 'zod'
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
+
+import { Combobox } from '@/components/ui/combobox'
 export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
 
     const [email, setEmail] = useState('')
@@ -34,7 +36,24 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
 
     // Si ya hay una sesión activa, redirigir al dashboard
 
+    const cuentaItems = [
+        { label: 'Caja', value: 'caja' },
+        { label: 'Banco', value: 'banco' },
+        { label: 'Ventas', value: 'ventas' },
+        { label: 'Compras', value: 'compras' },
+        { label: 'Capital', value: 'capital' },
+        { label: 'Proveedores', value: 'proveedores' },
+        { label: 'Clientes', value: 'clientes' },
+        { label: 'Gastos', value: 'gastos' },
+        { label: 'Ingresos', value: 'ingresos' },
+    ];
 
+
+
+    const [movimientos, setMovimientos] = useState([
+        { id: 1, cuenta: 'Caja', debe: 1000, haber: 0, descripcion: 'Venta de productos' },
+        { id: 2, cuenta: 'Ventas', debe: 0, haber: 1000, descripcion: 'Registro de venta' }
+    ]);
 
     return (
 
@@ -83,22 +102,106 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                             </div>
                             <div className="grid gap-2">
                                 <Table>
-                                    <TableCaption>A list of your recent invoices.</TableCaption>
+
                                     <TableHeader>
-                                        <TableRow>
-                                            <TableHead className="w-[100px]">Invoice</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead>Method</TableHead>
-                                            <TableHead className="text-right">Amount</TableHead>
+                                        <TableRow >
+                                            <TableHead style={{ color: 'white' }} className="w-[100px]">cuenta</TableHead>
+                                            <TableHead style={{ color: 'white' }}>Debe</TableHead>
+                                            <TableHead style={{ color: 'white' }}>Haber</TableHead>
+
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        <TableRow>
-                                            <TableCell className="font-medium">INV001</TableCell>
-                                            <TableCell>Paid</TableCell>
-                                            <TableCell>Credit Card</TableCell>
-                                            <TableCell className="text-right">$250.00</TableCell>
+                                        {movimientos.map((movimiento) =>
+                                        (
+                                            <TableRow key={movimiento.id}>
+
+                                                <TableCell>
+                                                    <Input
+                                                        style={{ border: 'none' }}
+                                                        value={movimiento.cuenta}
+                                                        onChange={(e) => console.log(e.target.value)}
+                                                        placeholder="Seleccionar cuenta"
+                                                        className="w-full"
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Input
+                                                        style={{ border: 'none' }}
+                                                        value={movimiento.debe}
+                                                        onChange={(e) => console.log(e.target.value)}
+                                                        placeholder="Seleccionar cuenta"
+                                                        className="w-full"
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Input
+                                                        style={{ border: 'none' }}
+                                                        value={movimiento.haber}
+                                                        onChange={(e) => console.log(e.target.value)}
+                                                        placeholder="Seleccionar cuenta"
+                                                        className="w-full"
+                                                    />
+                                                </TableCell>
+
+                                            </TableRow>
+                                        ))}
+                                        <TableRow style={{ backgroundColor: 'rgb(42 42 42)' }} >
+
+                                            <TableCell>
+                                                <Label>Total:</Label>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Input
+                                                    style={{ border: 'none' }}
+                                                    value={10000}
+                                                    onChange={(e) => console.log(e.target.value)}
+                                                    placeholder="Seleccionar cuenta"
+                                                    className="w-full"
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <Input
+                                                    style={{ border: 'none' }}
+                                                    value={50000}
+                                                    onChange={(e) => console.log(e.target.value)}
+                                                    placeholder="Seleccionar cuenta"
+                                                    className="w-full"
+                                                />
+                                            </TableCell>
+
                                         </TableRow>
+
+
+
+                                    </TableBody>
+                                    <TableBody>
+                                        <TableRow >
+                                            <TableCell>
+                                                <Combobox style={{ width: '90%' }} title='cuenta...' items={cuentaItems}></Combobox>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Input
+                                                    style={{ border: 'none' }}
+                                                    value={''}
+                                                    onChange={(e) => console.log(e.target.value)}
+                                                    placeholder="debe"
+                                                    className="w-full"
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <Input
+                                                    style={{ border: 'none' }}
+                                                    value={''}
+                                                    onChange={(e) => console.log(e.target.value)}
+                                                    placeholder="haber"
+                                                    className="w-full"
+                                                />
+                                            </TableCell>
+
+
+                                        </TableRow>
+                                        <Button style={{ marginLeft: '3%', marginTop: '3%' }}>Agregar</Button>
                                     </TableBody>
                                 </Table>
                             </div>
