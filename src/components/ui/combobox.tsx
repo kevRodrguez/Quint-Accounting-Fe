@@ -24,9 +24,10 @@ export interface ComboboxProps {
     title: string;
     className?: string;
     style?: React.CSSProperties;
+    onSelect?: (value: string) => void; // Nueva prop opcional
 }
 
-export function Combobox({ items, title, className, style }: ComboboxProps) {
+export function Combobox({ items, title, className, style, onSelect }: ComboboxProps) {
     const [open, setOpen] = React.useState(false)
     const [value, setValue] = React.useState("")
 
@@ -59,6 +60,11 @@ export function Combobox({ items, title, className, style }: ComboboxProps) {
                                     onSelect={(currentValue) => {
                                         setValue(currentValue === value ? "" : currentValue)
                                         setOpen(false)
+
+                                        //al seleccionar un valor, llamar a la función onSelect si existe
+                                        if (onSelect) {
+                                            onSelect(currentValue);
+                                        }
                                     }}
                                 >
                                     {framework.label}

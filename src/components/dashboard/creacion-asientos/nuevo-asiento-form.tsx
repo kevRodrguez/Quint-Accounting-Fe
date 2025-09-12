@@ -17,7 +17,7 @@ import { Combobox } from '@/components/ui/combobox'
 import { useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
-
+import CurrencyInput from 'react-currency-input-field';
 export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
 
     const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +42,9 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
         { id: 1, cuenta: 'Caja', debe: 1000, haber: 0, descripcion: 'Venta de productos' },
         { id: 2, cuenta: 'Ventas', debe: 0, haber: 1000, descripcion: 'Registro de venta' }
     ]);
+
+    const [nuevoMovimiento, setNuevoMovimiento] = useState({ cuenta: '', debe: 0, haber: 0, descripcion: '' });
+
 
     return (
 
@@ -97,25 +100,36 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                     <div className='col-span-7 mb-5 font-bold'>Nuevo Movimiento:</div>
                                     <span className='col-span-7' style={{ border: '0.5px solid  gray', marginBottom: '8px', opacity: '0.3' }}></span>
                                     <div className='col-span-2' >
-                                        <Combobox style={{ width: '100%' }} title="cuenta" items={cuentaItems} />
+                                        <Combobox style={{ width: '100%' }} title="cuenta" items={cuentaItems} onSelect={(value) => setNuevoMovimiento({ ...nuevoMovimiento, cuenta: value })} />
                                     </div>
                                     <div className='col-span-2'>
-                                        <Input
+                                        <CurrencyInput
+                                            id="debe-input"
+                                            name="debe"
+                                            placeholder="$0.00"
+                                            defaultValue={0}
+                                            decimalsLimit={2}
+                                            prefix="$"
+                                            value={nuevoMovimiento.debe}
+                                            onValueChange={(value) => setNuevoMovimiento({ ...nuevoMovimiento, debe: Number(value) || 0 })}
                                             style={{ border: 'none' }}
-                                            value={''}
-                                            onChange={(e) => console.log(e.target.value)}
-                                            placeholder="debe"
-                                            className="w-full"
+                                            className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
                                         />
                                     </div>
-                                    <div className='col-span-2'>
-                                        <Input
+                                    <div className='col-span-2 flex' style={{ alignItems: 'center' }}>
+                                        <CurrencyInput
+                                            id="haber-input"
+                                            name="haber"
+                                            placeholder="$0.00"
+                                            defaultValue={0}
+                                            decimalsLimit={2}
+                                            prefix="$"
+                                            value={nuevoMovimiento.haber}
+                                            onValueChange={(value) => setNuevoMovimiento({ ...nuevoMovimiento, haber: Number(value) || 0 })}
                                             style={{ border: 'none' }}
-                                            value={''}
-                                            onChange={(e) => console.log(e.target.value)}
-                                            placeholder="haber"
-                                            className="w-full"
+                                            className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
                                         />
+
                                     </div>
                                     <div className='col-span-1' style={{ display: 'flex', justifyContent: 'center' }} >
                                         <Button>+</Button>
