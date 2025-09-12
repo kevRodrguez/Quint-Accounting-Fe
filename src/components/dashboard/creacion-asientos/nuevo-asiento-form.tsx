@@ -25,15 +25,15 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
     const [fecha, setFecha] = useState<Date | undefined>(new Date());
 
     const cuentaItems = [
-        { label: 'Caja', value: 'caja' },
-        { label: 'Banco', value: 'banco' },
-        { label: 'Ventas', value: 'ventas' },
-        { label: 'Compras', value: 'compras' },
-        { label: 'Capital', value: 'capital' },
-        { label: 'Proveedores', value: 'proveedores' },
-        { label: 'Clientes', value: 'clientes' },
-        { label: 'Gastos', value: 'gastos' },
-        { label: 'Ingresos', value: 'ingresos' },
+        { label: '001-Caja', value: '001-Caja' },
+        { label: '002-Banco', value: '002-Banco' },
+        { label: '003-Ventas', value: '003-Ventas' },
+        { label: '004-Compras', value: '004-Compras' },
+        { label: '005-Capital', value: '005-Capital' },
+        { label: '006-Proveedores', value: '006-Proveedores' },
+        { label: '007-Clientes', value: '007-Clientes' },
+        { label: '008-Gastos', value: '008-Gastos' },
+        { label: '009-Ingresos', value: '009-Ingresos' },
     ];
 
     const [idCounter, setIdCounter] = useState(3); // Estado para llevar el conteo de IDs
@@ -134,7 +134,10 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                     <div className='col-span-1' style={{ display: 'flex', justifyContent: 'center' }} >
                                         <Button type='button' onClick={() => {
                                             console.log(nuevoMovimiento);
+
                                             setMovimientos([...movimientos, { id: idCounter, cuenta: nuevoMovimiento.cuenta, debe: nuevoMovimiento.debe, haber: nuevoMovimiento.haber }])
+                                            setIdCounter(idCounter + 1); // Incrementar el contador de IDs
+                                            setNuevoMovimiento({ cuenta: '', debe: 0, haber: 0, descripcion: '' })
                                         }}>+</Button>
                                     </div>
                                 </div>
@@ -190,7 +193,10 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                                 <Input
                                                     style={{ border: 'none' }}
                                                     value={10000}
-                                                    onChange={(e) => console.log(e.target.value)}
+                                                    onChange={(e) => {
+                                                        setMovimientos
+                                                    }
+                                                    }
                                                     placeholder="Seleccionar cuenta"
                                                     className="w-full"
                                                 />
