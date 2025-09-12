@@ -9,32 +9,20 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useContext, useState } from 'react'
-import { AuthContext } from '@/context/AuthContext'
-import { useNavigate } from 'react-router-dom'
-import QuintIconRed from '@/assets/quint-icons/quint-icon-red.png';
 import { Calendar } from '@/components/ui/calendar'
-import { DatePicker } from '@/components/ui/date-picker'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { CalendarIcon } from 'lucide-react'
 import { format } from 'date-fns'
-import { date } from 'zod'
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-
-
 import { Combobox } from '@/components/ui/combobox'
+import { useState } from 'react'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+
+
 export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
-
+    const [isLoading, setIsLoading] = useState(false);
     const [descripcion, setDescripcion] = useState('');
     const [fecha, setFecha] = useState<Date | undefined>(new Date());
-
-    const navigate = useNavigate();
-
-    // Si ya hay una sesión activa, redirigir al dashboard
 
     const cuentaItems = [
         { label: 'Caja', value: 'caja' },
@@ -57,9 +45,9 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
 
     return (
 
-
-        <div className={cn('w-full max-w-[500px] min-w-[300px] flex flex-col gap-6 px-4', className)} {...props}>
-            <Card style={{ color: '#fafafa', backgroundColor: '#171717' }} className='m-3'>
+        //Modal para nuevo asiento
+        <div className={cn('w-full h-full flex flex-col gap-6', className)} {...props}>
+            <Card style={{ color: '#000000ff', backgroundColor: 'white' }} className='w-full h-full m-0 border-0'>
                 <CardHeader>
                     <CardTitle className="text-2xl">Nuevo Asiento</CardTitle>
                     <CardDescription>Ingresa los detalles del nuevo asiento a continuación</CardDescription>
@@ -89,7 +77,7 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
 
                                             variant="outline"
                                             data-empty={!fecha}
-                                            style={{ backgroundColor: 'rgb(23 23 23)', color: 'rgb(229 229 229)', width: '100%' }}
+                                            style={{ backgroundColor: 'white', color: 'black', width: '100%' }}
                                             className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
                                         >
                                             <CalendarIcon />
@@ -107,7 +95,7 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                 {/* form nuevo movimiento */}
                                 <div className="grid grid-cols-7 gap-1 p-3" style={{ border: '1px dashed gray', borderRadius: '8px' }}>
                                     <div className='col-span-7 mb-5 font-bold'>Nuevo Movimiento:</div>
-                                    <span className='col-span-7' style={{ border: '1px solid gray', marginBottom: '8px' }}></span>
+                                    <span className='col-span-7' style={{ border: '0.5px solid  gray', marginBottom: '8px', opacity: '0.3' }}></span>
                                     <div className='col-span-2' >
                                         <Combobox style={{ width: '100%' }} title="cuenta" items={cuentaItems} />
                                     </div>
@@ -136,20 +124,20 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
 
                                 {/* tabla movimientos */}
                                 <h1 style={{ fontSize: 'large', fontWeight: 'bold' }}>Movimientos del asiento:</h1>
-                                <Table>
+                                <Table >
 
                                     <TableHeader>
                                         <TableRow >
-                                            <TableHead style={{ color: 'white', backgroundColor: '#ac2020' }} className="w-[100px]">cuenta</TableHead>
-                                            <TableHead style={{ color: 'white', backgroundColor: '#ac2020' }}>Debe</TableHead>
-                                            <TableHead style={{ color: 'white', backgroundColor: '#ac2020' }}>Haber</TableHead>
+                                            <TableHead style={{ color: 'white', backgroundColor: 'rgb(254 46 46)' }} className="w-[100px]">cuenta</TableHead>
+                                            <TableHead style={{ color: 'white', backgroundColor: 'rgb(254 46 46)' }}>Debe</TableHead>
+                                            <TableHead style={{ color: 'white', backgroundColor: 'rgb(254 46 46)' }}>Haber</TableHead>
 
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {movimientos.map((movimiento) =>
                                         (
-                                            <TableRow key={movimiento.id}>
+                                            <TableRow key={movimiento.id} style={{ borderBottom: '1px solid gray' }}>
 
                                                 <TableCell>
                                                     <Input
@@ -175,7 +163,7 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
 
                                             </TableRow>
                                         ))}
-                                        <TableRow style={{ backgroundColor: 'rgb(42 42 42)' }} >
+                                        <TableRow style={{ backgroundColor: '#DEDEDE' }} >
 
                                             <TableCell>
                                                 <Label>Total:</Label>
@@ -211,8 +199,8 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                 className="w-full"
                                 disabled={isLoading}
                                 style={{
-                                    backgroundColor: 'white',
-                                    color: 'black',
+                                    backgroundColor: 'black',
+                                    color: 'white',
                                     fontWeight: '600'
                                 }}
                             >

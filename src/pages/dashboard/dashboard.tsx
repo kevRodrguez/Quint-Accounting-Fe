@@ -9,6 +9,7 @@ import React from 'react'
 import Modal from 'react-modal';
 import { LoginForm } from '../auth/login-form';
 import { NuevoAsientoForm } from '@/components/dashboard/creacion-asientos/nuevo-asiento-form';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 export default function Dashboard() {
     const customStyles = {
         content: {
@@ -21,62 +22,40 @@ export default function Dashboard() {
 
         },
     };
-    const [modalIsOpen, setIsOpen] = React.useState(false);
-    function openModal() {
-        setIsOpen(true);
-    }
 
-    function afterOpenModal() {
-        // references are now sync'd and can be accessed.
-        console.log("cerrando modal")
-    }
-
-    function closeModal() {
-        setIsOpen(false);
-    }
     return (
-        //Modal para nuevo asiento
-        <><Modal
-            isOpen={modalIsOpen}
-            onAfterOpen={afterOpenModal}
-            onRequestClose={closeModal}
+
+        <SidebarProvider
             style={{
-                ...customStyles,
-                content: {
-                    ...customStyles.content,
-                    backgroundColor: 'transparent',
-                    border: 'none', // Cambia aquí el color de fondo
-                },
-            }}
-            contentLabel="Example Modal"
+                "--sidebar-width": "calc(var(--spacing) * 72)",
+                "--header-height": "calc(var(--spacing) * 12)",
+            } as React.CSSProperties}
         >
-            <NuevoAsientoForm />
-        </Modal><>
+            <AppSidebar variant="inset" />
+            <SidebarInset>
+                <SiteHeader />
 
-                <SidebarProvider
-                    style={{
-                        "--sidebar-width": "calc(var(--spacing) * 72)",
-                        "--header-height": "calc(var(--spacing) * 12)",
-                    } as React.CSSProperties}
-                >
-                    <AppSidebar variant="inset" />
-                    <SidebarInset>
-                        <SiteHeader />
+                {/* Botón provisional para añadir nuevo asiento */}
+                <Dialog >
+                    <DialogTrigger>Nuevo Asiento</DialogTrigger>
+                    <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-auto " style={{ scrollbarWidth: 'none' }}>
+                        <NuevoAsientoForm />
+                    </DialogContent>
+                </Dialog>
+                {/* fin de botón para nuevo asiento */}
 
-                        {/* Botón provisional para añadir nuevo asiento */}
-                        <Button style={{ width: "10%", marginLeft: '4%', marginTop: '4%' }} onClick={openModal}>Añadir asiento</Button>
-                        <div className="flex flex-1 flex-col">
-                            <div className="@container/main flex flex-1 flex-col gap-2">
-                                <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                                    <SectionCards />
-                                    <div className="px-4 lg:px-6">
-                                        <ChartAreaInteractive />
-                                    </div>
-                                </div>
+                <div className="flex flex-1 flex-col">
+                    <div className="@container/main flex flex-1 flex-col gap-2">
+                        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                            <SectionCards />
+                            <div className="px-4 lg:px-6">
+                                <ChartAreaInteractive />
                             </div>
                         </div>
-                    </SidebarInset>
-                </SidebarProvider></></>
+                    </div>
+                </div>
+            </SidebarInset>
+        </SidebarProvider>
 
 
     )

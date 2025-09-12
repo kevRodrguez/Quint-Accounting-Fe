@@ -38,7 +38,7 @@ export function Combobox({ items, title, className, style }: ComboboxProps) {
                     role="combobox"
                     aria-expanded={open}
                     className={cn("w-[200px] justify-between", className)}
-                    style={{ backgroundColor: 'rgb(23 23 23)', color: 'white', ...style }}
+                    style={{ backgroundColor: 'white', color: 'black', ...style }}
                 >
                     {value
                         ? items.find((framework) => framework.value === value)?.label
