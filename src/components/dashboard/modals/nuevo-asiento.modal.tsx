@@ -45,9 +45,13 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
 
     const [nuevoMovimiento, setNuevoMovimiento] = useState<Omit<Movimiento, 'id'>>({ cuenta: '', debe: 0, haber: 0, descripcion: '' });
 
-    let [totalDebe, setTotalDebe] = useState(0);
-    let [totalHaber, setTotalHaber] = useState(0);
+    const [totalDebe, setTotalDebe] = useState(0);
+    const [totalHaber, setTotalHaber] = useState(0);
 
+
+    //para manejar estados de inputs de debe y haber
+    const [DebeIsDisabled, setDebeIsDisabled] = useState(false)
+    const [HaberIsDisabled, setHaberIsDisabled] = useState(false)
     const actualizarMovimiento = (id: number, cuenta: string, debe: number, haber: number) => {
         const nuevosMovimientos = movimientos.map(m => {
             if (m.id === id) {
@@ -90,6 +94,20 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
     useEffect(() => {
         console.log('Movimientos actualizados:', movimientos);
         actualizarTotales();
+
+        if (nuevoMovimiento.debe > 0) {
+            setHaberIsDisabled(true)
+        }
+        else {
+            setHaberIsDisabled(false)
+        }
+
+        if (nuevoMovimiento.haber > 0) {
+            setDebeIsDisabled(true)
+        }
+        else {
+            setDebeIsDisabled(false)
+        }
     })
     return (
 
@@ -149,6 +167,7 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                     </div>
                                     <div className='col-span-2'>
                                         <CurrencyInput
+                                            disabled={DebeIsDisabled}
                                             id="debe-input"
                                             name="debe"
                                             placeholder="$0.00"
@@ -163,6 +182,7 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                     </div>
                                     <div className='col-span-2 flex' style={{ alignItems: 'center' }}>
                                         <CurrencyInput
+                                            disabled={HaberIsDisabled}
                                             id="haber-input"
                                             name="haber"
                                             placeholder="$0.00"
@@ -217,9 +237,12 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                                         type='number'
                                                         style={{ border: 'none' }}
                                                         value={movimiento.debe}
-                                                        onChange={(e) => actualizarMovimiento(movimiento.id, movimiento.cuenta, Number(e.target.value), movimiento.haber)}
+                                                        onChange={(e) => {
+                                                            actualizarMovimiento(movimiento.id, movimiento.cuenta, Number(e.target.value), movimiento.haber);
+                                                        }}
                                                         placeholder="debe"
                                                         className="w-full"
+                                                        disabled={!(movimiento.haber === 0)}
                                                     />
                                                 </TableCell>
 
@@ -231,6 +254,8 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                                         onChange={(e) => actualizarMovimiento(movimiento.id, movimiento.cuenta, movimiento.debe, Number(e.target.value))}
                                                         placeholder="Seleccionar cuenta"
                                                         className="w-full"
+                                                        //si el monto del debe es diferente a 0, el haber no se puede editar
+                                                        disabled={!(movimiento.debe === 0)}
                                                     />
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>
