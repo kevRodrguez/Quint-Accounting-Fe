@@ -26,15 +26,15 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
     const [fecha, setFecha] = useState<Date | undefined>(new Date());
 
     const cuentaItems = [
-        { id: 1, label: '001-Caja', value: '001-Caja' },
-        { id: 2, label: '002-Banco', value: '002-Banco' },
-        { id: 3, label: '003-Ventas', value: '003-Ventas' },
-        { id: 4, label: '004-Compras', value: '004-Compras' },
-        { id: 5, label: '005-Capital', value: '005-Capital' },
-        { id: 6, label: '006-Proveedores', value: '006-Proveedores' },
-        { id: 7, label: '007-Clientes', value: '007-Clientes' },
-        { id: 8, label: '008-Gastos', value: '008-Gastos' },
-        { id: 9, label: '009-Ingresos', value: '009-Ingresos' },
+        { value: 1, label: '001-Caja' },
+        { value: 2, label: '002-Banco' },
+        { value: 3, label: '003-Ventas' },
+        { value: 4, label: '004-Compras' },
+        { value: 5, label: '005-Capital' },
+        { value: 6, label: '006-Proveedores' },
+        { value: 7, label: '007-Clientes' },
+        { value: 8, label: '008-Gastos' },
+        { value: 9, label: '009-Ingresos' },
     ];
 
     const [idCounter, setIdCounter] = useState(3); // Estado para llevar el conteo de IDs
