@@ -12,9 +12,9 @@ import { Label } from '@/components/ui/label'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { CalendarIcon } from 'lucide-react'
-import { format } from 'date-fns'
+import { format, set } from 'date-fns'
 import { Combobox } from '@/components/ui/combobox'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 import CurrencyInput from 'react-currency-input-field';
@@ -45,7 +45,23 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
 
     const [nuevoMovimiento, setNuevoMovimiento] = useState({ cuenta: '', debe: 0, haber: 0, descripcion: '' });
 
+    const actualizarMovimiento = (id: number, cuenta: string, debe: number, haber: number) => {
+        const nuevosMovimientos = movimientos.map(m => {
+            if (m.id === id) {
+                return { ...m, cuenta, debe, haber }; // Retorna un nuevo objeto con las modificaciones
+            }
 
+            return m
+        })
+        setMovimientos(nuevosMovimientos);
+
+
+
+    }
+
+    useEffect(() => {
+        console.log('Movimientos actualizados:', movimientos);
+    })
     return (
 
         //Modal para nuevo asiento
@@ -160,13 +176,16 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                             <TableRow key={movimiento.id} style={{ borderBottom: '1px solid gray' }}>
 
                                                 <TableCell>
-                                                    <Combobox style={{ width: '100%' }} title="cuenta" items={cuentaItems} selected={movimiento.cuenta} />
+                                                    <Combobox style={{ width: '100%' }} title="cuenta" items={cuentaItems} selected={movimiento.cuenta} onSelect={(value) => {
+                                                        actualizarMovimiento(movimiento.id, value, movimiento.debe, movimiento.haber);
+                                                    }} />
                                                 </TableCell>
                                                 <TableCell>
                                                     <Input
+                                                        type='number'
                                                         style={{ border: 'none' }}
                                                         value={movimiento.debe}
-                                                        onChange={(e) => console.log(e.target.value)}
+                                                        onChange={(e) => actualizarMovimiento(movimiento.id, movimiento.cuenta, Number(e.target.value), movimiento.haber)}
                                                         placeholder="debe"
                                                         className="w-full"
                                                     />
@@ -174,9 +193,10 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
 
                                                 <TableCell>
                                                     <Input
+                                                        type='number'
                                                         style={{ border: 'none' }}
                                                         value={movimiento.haber}
-                                                        onChange={(e) => console.log(e.target.value)}
+                                                        onChange={(e) => actualizarMovimiento(movimiento.id, movimiento.cuenta, movimiento.debe, Number(e.target.value))}
                                                         placeholder="Seleccionar cuenta"
                                                         className="w-full"
                                                     />
