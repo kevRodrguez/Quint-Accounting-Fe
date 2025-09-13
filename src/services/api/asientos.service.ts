@@ -1,6 +1,6 @@
-import { env } from "process";
+
 import axios, { type AxiosResponse } from 'axios'
-const API_BASE_URL = import.meta.env.BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
 //creacion instancia de axios
@@ -10,7 +10,7 @@ const api = axios.create({
     headers: {
         'Content-Type': 'application/json'
     },
-    timeout: 1000, //10 segundos para timeout
+    timeout: 10000, //10 segundos para timeout
 })
 
 
@@ -39,30 +39,34 @@ api.interceptors.response.use(
 );
 export interface AsientoRequest {
     descripcion: string,
-    fecha: string,
-    movimientos: {
-        cuentaId: number,
-        debe: number,
-        haber: number
-    }[]
+    fecha: Date | any,
+
 }
 
 export interface AsientoResponse {
     id: Number
     descripcion: string,
-    fecha: string,
-    movimientos: {
-        cuentaId: number,
-        debe: number,
-        haber: number
-    }[]
+    fecha: Date,
+
 }
 
+//TODO: mover interfaz a un archivo adecuado
+export interface Movimiento {
+    id: number;
+    cuentaId: string;
+    debe: number;
+    haber: number;
+    descripcion?: string;
+}
+
+
 export class AsientosService {
-    async crearAsiento(asiento: AsientoRequest): Promise<AsientoResponse> {
+    public static async crearAsiento(asiento: AsientoRequest): Promise<AsientoResponse> {
         try {
-            const response: AxiosResponse<AsientoResponse> = await api.post('/asientos', asiento);
+            const response: AxiosResponse<AsientoResponse> = await api.post('libro-diario/asientos/', asiento);
+            console.log("respuesta del api directa", response.data)
             return response.data
+
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 const message = error.status + ' ' + error.response?.data?.message || error.message;

@@ -19,6 +19,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 import CurrencyInput from 'react-currency-input-field';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { AsientosService, type AsientoRequest, type Movimiento } from '@/services/api/asientos.service'
 export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
 
     const [isLoading, setIsLoading] = useState(false);
@@ -39,11 +40,10 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
 
     const [idCounter, setIdCounter] = useState(3); // Estado para llevar el conteo de IDs
 
-    type Movimiento = { id: number; cuenta: string; debe: number; haber: number; descripcion?: string };
 
     const [movimientos, setMovimientos] = useState<Movimiento[]>([]);
 
-    const [nuevoMovimiento, setNuevoMovimiento] = useState<Omit<Movimiento, 'id'>>({ cuenta: '', debe: 0, haber: 0, descripcion: '' });
+    const [nuevoMovimiento, setNuevoMovimiento] = useState<Omit<Movimiento, 'id'>>({ cuentaId: '', debe: 0, haber: 0, descripcion: '' });
 
     const [totalDebe, setTotalDebe] = useState(0);
     const [totalHaber, setTotalHaber] = useState(0);
@@ -77,6 +77,28 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
         setIsLoading(true);
         console.log("Datos del asiento:", { descripcion, fecha, movimientos });
         console.log("movimientos:", movimientos);
+
+        try {
+
+            const asiento: AsientoRequest =
+            {
+                descripcion: descripcion,
+                fecha: fecha,
+                //convertimos el id de cuenta a number para cada movimiento
+
+            }
+
+            const asientoCreado = await AsientosService.crearAsiento(asiento);
+
+            //TODO: enviar detalle de asiento (movimientos[])
+            console.log("Asiento creado", asientoCreado)
+        } catch (error) {
+            console.log(error)
+        }
+        finally {
+            setIsLoading(false)
+        }
+
     }
 
     const actualizarTotales = () => {
@@ -109,6 +131,8 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
             setDebeIsDisabled(false)
         }
     })
+
+
     return (
 
         //Modal para nuevo asiento
@@ -163,7 +187,7 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                     <div className='col-span-7 mb-5 font-bold'>Nuevo Movimiento:</div>
                                     <span className='col-span-7' style={{ border: '0.5px solid  gray', marginBottom: '8px', opacity: '0.3' }}></span>
                                     <div className='col-span-2' >
-                                        <Combobox style={{ width: '100%' }} title="cuenta" items={cuentaItems} onSelect={(value) => setNuevoMovimiento({ ...nuevoMovimiento, cuenta: value })} />
+                                        <Combobox style={{ width: '100%' }} title="cuenta" items={cuentaItems} onSelect={(value) => setNuevoMovimiento({ ...nuevoMovimiento, cuentaId: value })} />
                                     </div>
                                     <div className='col-span-2'>
                                         <CurrencyInput
@@ -200,9 +224,9 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                         <Button type='button' onClick={() => {
                                             console.log(nuevoMovimiento);
 
-                                            setMovimientos([...movimientos, { id: idCounter, cuenta: nuevoMovimiento.cuenta, debe: nuevoMovimiento.debe, haber: nuevoMovimiento.haber }])
+                                            setMovimientos([...movimientos, { id: idCounter, cuentaId: nuevoMovimiento.cuentaId, debe: nuevoMovimiento.debe, haber: nuevoMovimiento.haber }])
                                             setIdCounter(idCounter + 1); // Incrementar el contador de IDs
-                                            setNuevoMovimiento({ cuenta: '', debe: 0, haber: 0, descripcion: '' })
+                                            setNuevoMovimiento({ cuentaId: '', debe: 0, haber: 0, descripcion: '' })
                                             //!! si se llama acá, la actutualizacion sufre delay, se reocmienda su uso en un useeffect
                                             // actualizarTotales();
                                         }}>+</Button>
@@ -228,7 +252,7 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                             <TableRow key={movimiento.id} style={{ borderBottom: '1px solid gray' }}>
 
                                                 <TableCell>
-                                                    <Combobox style={{ width: '100%' }} title="cuenta" items={cuentaItems} selected={movimiento.cuenta} onSelect={(value) => {
+                                                    <Combobox style={{ width: '100%' }} title="cuenta" items={cuentaItems} selected={movimiento.cuentaId} onSelect={(value) => {
                                                         actualizarMovimiento(movimiento.id, value, movimiento.debe, movimiento.haber);
                                                     }} />
                                                 </TableCell>
@@ -238,7 +262,7 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                                         style={{ border: 'none' }}
                                                         value={movimiento.debe}
                                                         onChange={(e) => {
-                                                            actualizarMovimiento(movimiento.id, movimiento.cuenta, Number(e.target.value), movimiento.haber);
+                                                            actualizarMovimiento(movimiento.id, movimiento.cuentaId, Number(e.target.value), movimiento.haber);
                                                         }}
                                                         placeholder="debe"
                                                         className="w-full"
@@ -251,7 +275,7 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                                         type='number'
                                                         style={{ border: 'none' }}
                                                         value={movimiento.haber}
-                                                        onChange={(e) => actualizarMovimiento(movimiento.id, movimiento.cuenta, movimiento.debe, Number(e.target.value))}
+                                                        onChange={(e) => actualizarMovimiento(movimiento.id, movimiento.cuentaId, movimiento.debe, Number(e.target.value))}
                                                         placeholder="Seleccionar cuenta"
                                                         className="w-full"
                                                         //si el monto del debe es diferente a 0, el haber no se puede editar
