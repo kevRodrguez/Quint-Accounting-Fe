@@ -49,7 +49,7 @@ export function Combobox({ items, title, className, style, selected, onSelect }:
                     style={{ backgroundColor: 'white', color: 'black', ...style }}
                 >
                     {value
-                        ? items.find((framework) => framework.value === value)?.label
+                        ? items.find((framework) => framework.label === value)?.label
                         : title}
                     <Search className="opacity-50" />
                 </Button>
@@ -63,14 +63,19 @@ export function Combobox({ items, title, className, style, selected, onSelect }:
                             {items.map((framework) => (
                                 <CommandItem
                                     key={framework.value}
-                                    value={framework.value}
-                                    onSelect={(currentValue) => {
-                                        setValue(currentValue === value ? "" : currentValue)
-                                        setOpen(false)
+                                    value={framework.label}
+                                    onSelect={(currentLabel) => {
+                                        // Encontrar el item por label para obtener el value real
+                                        const selectedItem = items.find(i => i.label === currentLabel);
+                                        const newValue = selectedItem?.value === value ? "" : selectedItem?.value || "";
+                                        setValue(newValue);
+                                        setOpen(false);
+
+                                        console.log("Selected item:", selectedItem);
 
                                         //al seleccionar un valor, llamar a la función onSelect si existe
-                                        if (onSelect) {
-                                            onSelect(currentValue);
+                                        if (onSelect && selectedItem) {
+                                            onSelect(selectedItem.value);
                                         }
                                     }}
                                 >
