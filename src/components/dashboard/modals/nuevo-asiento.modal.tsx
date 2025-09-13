@@ -14,7 +14,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { CalendarIcon, MoreVertical, Trash2 } from 'lucide-react'
 import { format, set } from 'date-fns'
 import { Combobox } from '@/components/ui/combobox'
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 import CurrencyInput from 'react-currency-input-field';
@@ -39,12 +39,14 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
 
     const [idCounter, setIdCounter] = useState(3); // Estado para llevar el conteo de IDs
 
-    const [movimientos, setMovimientos] = useState([
-        { id: 1, cuenta: 'Caja', debe: 1000, haber: 0, },
-        { id: 2, cuenta: 'Ventas', debe: 0, haber: 1000, }
-    ]);
+    type Movimiento = { id: number; cuenta: string; debe: number; haber: number; descripcion?: string };
 
-    const [nuevoMovimiento, setNuevoMovimiento] = useState({ cuenta: '', debe: 0, haber: 0, descripcion: '' });
+    const [movimientos, setMovimientos] = useState<Movimiento[]>([]);
+
+    const [nuevoMovimiento, setNuevoMovimiento] = useState<Omit<Movimiento, 'id'>>({ cuenta: '', debe: 0, haber: 0, descripcion: '' });
+
+    let [totalDebe, setTotalDebe] = useState(0);
+    let [totalHaber, setTotalHaber] = useState(0);
 
     const actualizarMovimiento = (id: number, cuenta: string, debe: number, haber: number) => {
         const nuevosMovimientos = movimientos.map(m => {
@@ -67,8 +69,27 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
         setMovimientos(movimientosRestantes);
     }
 
+    const crearAsiento = async () => {
+        setIsLoading(true);
+        console.log("Datos del asiento:", { descripcion, fecha, movimientos });
+        console.log("movimientos:", movimientos);
+    }
+
+    const actualizarTotales = () => {
+        let debe = 0, haber = 0;
+        movimientos.map(m => {
+            debe += m.debe
+            haber += m.haber
+        })
+
+
+        setTotalDebe(debe)
+        setTotalHaber(haber)
+    }
+
     useEffect(() => {
         console.log('Movimientos actualizados:', movimientos);
+        actualizarTotales();
     })
     return (
 
@@ -162,6 +183,8 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                             setMovimientos([...movimientos, { id: idCounter, cuenta: nuevoMovimiento.cuenta, debe: nuevoMovimiento.debe, haber: nuevoMovimiento.haber }])
                                             setIdCounter(idCounter + 1); // Incrementar el contador de IDs
                                             setNuevoMovimiento({ cuenta: '', debe: 0, haber: 0, descripcion: '' })
+                                            //!! si se llama acá, la actutualizacion sufre delay, se reocmienda su uso en un useeffect
+                                            // actualizarTotales();
                                         }}>+</Button>
                                     </div>
                                 </div>
@@ -235,25 +258,10 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                                 <Label>Total:</Label>
                                             </TableCell>
                                             <TableCell>
-                                                <Input
-                                                    style={{ border: 'none' }}
-                                                    value={10000}
-                                                    onChange={(e) => {
-                                                        setMovimientos
-                                                    }
-                                                    }
-                                                    placeholder="Seleccionar cuenta"
-                                                    className="w-full"
-                                                />
+                                                <Label >{totalDebe}</Label>
                                             </TableCell>
                                             <TableCell>
-                                                <Input
-                                                    style={{ border: 'none' }}
-                                                    value={50000}
-                                                    onChange={(e) => console.log(e.target.value)}
-                                                    placeholder="Seleccionar cuenta"
-                                                    className="w-full"
-                                                />
+                                                <Label >{totalHaber}</Label>
                                             </TableCell>
 
                                         </TableRow>
@@ -272,6 +280,7 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                     color: 'white',
                                     fontWeight: '600'
                                 }}
+                                onClick={crearAsiento}
                             >
                                 {isLoading ? 'Creando asiento...' : 'Crear Asiento Contable'}
                             </Button>
