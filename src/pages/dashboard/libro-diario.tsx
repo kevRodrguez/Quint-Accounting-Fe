@@ -31,17 +31,18 @@ export default function LibroDiario() {
 
                 <CardTitle className='justify-center flex text-3xl my-4'>Libro Diario</CardTitle>
 
-                {/* Botón para añadir nuevo asiento */}
-                <Dialog >
-                    <DialogTrigger className='bg-primary text-white w-32 rounded-full flex justify-center m-3 p-2' >Nuevo Asiento</DialogTrigger>
-                    <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-auto " style={{ scrollbarWidth: 'none' }}>
-                        <NuevoAsientoForm />
-                    </DialogContent>
-                </Dialog>
 
                 {/* Contenedor responsivo para la tabla con scroll horizontal cuando sea necesario */}
-                <div className="w-full max-w-[1200px] mx-auto px-4 overflow-x-auto">
+                <div className="w-full max-w-[1400px] mx-auto px-4 overflow-x-auto">
                     <div className="py-4">
+                        {/* Botón para añadir nuevo asiento */}
+                        <Dialog >
+                            <DialogTrigger className='bg-primary text-white w-32 rounded-full flex justify-center my-3 p-2' >Nuevo Asiento</DialogTrigger>
+                            <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-auto " style={{ scrollbarWidth: 'none' }}>
+                                <NuevoAsientoForm />
+                            </DialogContent>
+                        </Dialog>
+                        
                         <Table className="min-w-full">
                             <TableHeader>
                                 <TableRow className='bg-primary'>
@@ -77,7 +78,7 @@ export default function LibroDiario() {
                                     <TableCell className="text-right font-semibold">$0.00</TableCell>
                                     <TableCell className="text-right font-semibold">$800.00</TableCell>
                                 </TableRow>
-                                
+
                                 {/* Fila de totales */}
                                 <TableRow className="bg-muted font-bold">
                                     <TableCell colSpan={2} className="text-right">Totales:</TableCell>
