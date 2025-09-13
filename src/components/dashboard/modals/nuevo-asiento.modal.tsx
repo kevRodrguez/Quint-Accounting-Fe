@@ -11,13 +11,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { CalendarIcon } from 'lucide-react'
+import { CalendarIcon, MoreVertical, Trash2 } from 'lucide-react'
 import { format, set } from 'date-fns'
 import { Combobox } from '@/components/ui/combobox'
 import { useEffect, useState } from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 import CurrencyInput from 'react-currency-input-field';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
 
     const [isLoading, setIsLoading] = useState(false);
@@ -57,6 +58,13 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
 
 
 
+    }
+
+    const eliminarMovimiento = (id: number) => {
+
+        //trae los movimientos que que no coinciden con el id seleccionado
+        const movimientosRestantes = movimientos.filter(m => m.id !== id);
+        setMovimientos(movimientosRestantes);
     }
 
     useEffect(() => {
@@ -167,6 +175,7 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                             <TableHead style={{ color: 'white', backgroundColor: 'rgb(254 46 46)' }} className="w-[100px]">cuenta</TableHead>
                                             <TableHead style={{ color: 'white', backgroundColor: 'rgb(254 46 46)' }}>Debe</TableHead>
                                             <TableHead style={{ color: 'white', backgroundColor: 'rgb(254 46 46)' }}>Haber</TableHead>
+                                            {/* <TableHead style={{ color: 'white', backgroundColor: 'rgb(254 46 46)' }}>Acciones</TableHead> */}
 
                                         </TableRow>
                                     </TableHeader>
@@ -191,7 +200,7 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                                     />
                                                 </TableCell>
 
-                                                <TableCell>
+                                                <TableCell style={{ display: 'flex' }}>
                                                     <Input
                                                         type='number'
                                                         style={{ border: 'none' }}
@@ -200,6 +209,22 @@ export function NuevoAsientoForm({ className, ...props }: React.ComponentPropsWi
                                                         placeholder="Seleccionar cuenta"
                                                         className="w-full"
                                                     />
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
+                                                                <MoreVertical className="w-4 h-4" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent>
+                                                            <DropdownMenuItem
+                                                                onClick={() => eliminarMovimiento(movimiento.id)}
+                                                                className="text-red-600"
+                                                            >
+                                                                <Trash2 className="w-4 h-4 mr-2" />
+                                                                Eliminar
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
                                                 </TableCell>
 
                                             </TableRow>
