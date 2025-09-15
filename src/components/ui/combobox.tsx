@@ -30,14 +30,26 @@ export interface ComboboxProps {
 
 export function Combobox({ items, title, className, style, selected, onSelect }: ComboboxProps) {
     const [open, setOpen] = React.useState(false)
-    const [value, setValue] = React.useState("")
+    // Permitir que los valores sean string o number
+    type ItemValue = string | number;
 
+    // Ajustar el estado y props para aceptar ambos tipos
+    const [value, setValue] = React.useState<ItemValue>("");
 
     React.useEffect(() => {
-        if (selected) {
+        if (selected !== undefined) {
             setValue(selected);
         }
-    })
+    }, [selected]);
+
+    // Ajustar los tipos en las props
+    // (esto debe ir en la definición de ComboboxProps, fuera del componente)
+    // export interface ComboboxProps {
+    //     items: { value: string | number; label: string }[];
+    //     ...
+    //     selected?: string | number;
+    //     onSelect?: (value: string | number) => void;
+    // }
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
