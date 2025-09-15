@@ -1,3 +1,5 @@
+import type { AsientoRequest } from "@/types/asientoRequest.interface";
+import type { AsientoResponse } from "@/types/asientoResponse.interface";
 import axios, { type AxiosResponse } from "axios";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -33,25 +35,7 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-export interface AsientoRequest {
-  descripcion: string;
-  fecha: Date | undefined;
-}
 
-export interface AsientoResponse {
-  id: number;
-  descripcion: string;
-  fecha: Date;
-}
-
-//TODO: mover interfaz a un archivo adecuado
-export interface Movimiento {
-  id: number;
-  cuentaId: number | string;
-  debe: number;
-  haber: number;
-  descripcion?: string;
-}
 
 export class AsientosService {
   public static async crearAsiento(
