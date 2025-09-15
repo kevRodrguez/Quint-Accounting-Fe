@@ -44,12 +44,14 @@ import { Badge } from "@/components/ui/badge";
 
 export function NuevoAsientoForm({
   className,
+  setOpen,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+}: React.ComponentPropsWithoutRef<"div"> & {
+  setOpen?: (open: boolean) => void //se define el metodo setOpen en las props del modal
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const [descripcion, setDescripcion] = useState("");
   const [fecha, setFecha] = useState<Date | undefined>(new Date());
-
   const cuentaItems = [
     { value: 1, label: "001-Caja" },
     { value: 2, label: "002-Banco" },
@@ -116,10 +118,17 @@ export function NuevoAsientoForm({
 
       console.log("Asiento creado con detalles:", asientoCreado);
 
+
     } catch (error) {
       console.log(error);
     } finally {
       setIsLoading(false);
+
+      if (setOpen) {
+        //cerramos modal al finalizar
+        //al ser false, el DIalogo automaticamente se cierra (comportamiento embebido)
+        setOpen(false)
+      }
     }
   };
 

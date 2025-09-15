@@ -3,7 +3,7 @@ import { NuevoAsientoForm } from '@/components/dashboard/modals/nuevo-asiento.mo
 import { SiteHeader } from '@/components/dashboard/site-header'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
-import React from 'react'
+import React, { useState } from 'react'
 
 import {
     Table,
@@ -17,6 +17,9 @@ import {
 import { CardTitle } from '@/components/ui/card';
 
 export default function LibroDiario() {
+
+    //valores para controler cierre de modal
+    const [open, setOpen] = useState(false)
     return (
 
         <SidebarProvider
@@ -36,13 +39,17 @@ export default function LibroDiario() {
                 <div className="w-full max-w-[1400px] mx-auto px-4 overflow-x-auto">
                     <div className="py-4">
                         {/* Botón para añadir nuevo asiento */}
-                        <Dialog >
+
+                        {/* le pasamos el estado actual al dialogo y la funcion para cambiar el mismo */}
+                        <Dialog open={open} onOpenChange={setOpen}>
                             <DialogTrigger className='bg-primary text-white w-32 rounded-full flex justify-center my-3 p-2' >Nuevo Asiento</DialogTrigger>
                             <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-auto " style={{ scrollbarWidth: 'none' }}>
-                                <NuevoAsientoForm />
+
+                                {/* le pasamos el metodo setOpen al fomrulario, para que se pueda cerrar desde dentro */}
+                                <NuevoAsientoForm setOpen={setOpen} />
                             </DialogContent>
                         </Dialog>
-                        
+
                         <Table className="min-w-full">
                             <TableHeader>
                                 <TableRow className='bg-primary'>
