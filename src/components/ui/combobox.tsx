@@ -49,16 +49,16 @@ export function Combobox({ items, title, className, style, selected, onSelect }:
                     style={{ backgroundColor: 'white', color: 'black', ...style }}
                 >
                     {value
-                        ? items.find((framework) => framework.label === value)?.label
+                        ? items.find((cuenta) => cuenta.value === value)?.label
                         : title}
                     <Search className="opacity-50" />
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-[200px] p-0">
                 <Command>
-                    <CommandInput placeholder="Search framework..." className="h-9" />
+                    <CommandInput placeholder="Buscar Cuenta..." className="h-9" />
                     <CommandList>
-                        <CommandEmpty>No framework found.</CommandEmpty>
+                        <CommandEmpty>Cuentas no encontradas.</CommandEmpty>
                         <CommandGroup>
                             {items.map((framework) => (
                                 <CommandItem
