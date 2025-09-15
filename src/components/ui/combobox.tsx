@@ -20,17 +20,17 @@ import {
 } from "@/components/ui/popover"
 
 export interface ComboboxProps {
-    items: { value: string; label: string }[];
+    items: { value: string | number; label: string }[];
     title: string;
     className?: string;
     style?: React.CSSProperties;
     selected?: string;
-    onSelect?: (value: string) => void; // Nueva prop opcional
+    onSelect?: (value: string | number) => void; // Nueva prop opcional
 }
 
 export function Combobox({ items, title, className, style, selected, onSelect }: ComboboxProps) {
     const [open, setOpen] = React.useState(false)
-    const [value, setValue] = React.useState("")
+    const [value, setValue] = React.useState<string | number | undefined>(selected)
 
 
     React.useEffect(() => {
