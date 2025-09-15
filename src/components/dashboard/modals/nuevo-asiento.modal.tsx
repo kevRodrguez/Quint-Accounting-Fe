@@ -35,12 +35,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import {
   AsientosService,
-  type AsientoRequest,
   type Movimiento,
 } from "@/services/api/asientos.service";
-import { DetalleAsientosService as DetalleAsientoService } from "@/services/api/detalleAsientos.service";
+
 export function NuevoAsientoForm({
   className,
   ...props
@@ -50,15 +50,15 @@ export function NuevoAsientoForm({
   const [fecha, setFecha] = useState<Date | undefined>(new Date());
 
   const cuentaItems = [
-    { value: "1", label: "001-Caja" },
-    { value: "2", label: "002-Banco" },
-    { value: "3", label: "003-Ventas" },
-    { value: "4", label: "004-Compras" },
-    { value: "5", label: "005-Capital" },
-    { value: "6", label: "006-Proveedores" },
-    { value: "7", label: "007-Clientes" },
-    { value: "8", label: "008-Gastos" },
-    { value: "9", label: "009-Ingresos" },
+    { value: 1, label: "001-Caja" },
+    { value: 2, label: "002-Banco" },
+    { value: 3, label: "003-Ventas" },
+    { value: 4, label: "004-Compras" },
+    { value: 5, label: "005-Capital" },
+    { value: 6, label: "006-Proveedores" },
+    { value: 7, label: "007-Clientes" },
+    { value: 8, label: "008-Gastos" },
+    { value: 9, label: "009-Ingresos" },
   ];
 
   const [idCounter, setIdCounter] = useState(3); // Estado para llevar el conteo de IDs
@@ -99,32 +99,22 @@ export function NuevoAsientoForm({
 
   const crearAsiento = async () => {
     setIsLoading(true);
-    console.log("Datos del asiento:", { descripcion, fecha, movimientos });
-    console.log("movimientos:", movimientos);
 
     try {
-      const asiento: AsientoRequest = {
-        descripcion: descripcion,
-        fecha: fecha,
-        //convertimos el id de cuenta a number para cada movimiento
-      };
-
-      const asientoCreado = await AsientosService.crearAsiento(asiento);
-
-      //TODO: enviar detalle de asiento (movimientos[])
-      console.log("Asiento creado", asientoCreado);
-
-      //Creación de detalles de asiento
-      for (const m of movimientos) {
-        const detalle = {
-          id_cuenta: Number(m.cuentaId),
-          id_asiento: asientoCreado.id,
+      const payload = {
+        descripcion,
+        fecha,
+        movimientos: movimientos.map((m) => ({
+          cuentaId: Number(m.cuentaId),
           debe: m.debe,
           haber: m.haber,
-        };
+        })),
+      };
 
-        await DetalleAsientoService.crearDetalleAsiento(detalle);
-      }
+      const asientoCreado = await AsientosService.crearAsiento(payload);
+
+      console.log("Asiento creado con detalles:", asientoCreado);
+
     } catch (error) {
       console.log(error);
     } finally {
