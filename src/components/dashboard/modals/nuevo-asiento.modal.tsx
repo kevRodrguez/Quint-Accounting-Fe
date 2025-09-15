@@ -40,6 +40,7 @@ import {
   AsientosService,
   type Movimiento,
 } from "@/services/api/asientos.service";
+import { Badge } from "@/components/ui/badge";
 
 export function NuevoAsientoForm({
   className,
@@ -440,7 +441,7 @@ export function NuevoAsientoForm({
                         </TableCell>
                       </TableRow>
                     ))}
-                    <TableRow style={{ backgroundColor: "#DEDEDE" }}>
+                    <TableRow style={totalDebe !== totalHaber ? { backgroundColor: '#DEDEDE', color: 'red', border: '3px solid red' } : { backgroundColor: '#DEDEDE' }}>
                       <TableCell>
                         <Label>Total:</Label>
                       </TableCell>
@@ -458,16 +459,24 @@ export function NuevoAsientoForm({
               <Button
                 type="submit"
                 className="w-full"
-                disabled={isLoading}
-                style={{
-                  backgroundColor: "black",
-                  color: "white",
-                  fontWeight: "600",
-                }}
+                disabled={isLoading || totalDebe !== totalHaber}
+                style={
+                  {
+                    fontWeight: "600",
+                    backgroundColor: "black"
+                  }
+
+                }
                 onClick={crearAsiento}
               >
-                {isLoading ? "Creando asiento..." : "Crear Asiento Contable"}
+                {isLoading ?
+                  "Creando asiento..." :
+                  totalDebe !== totalHaber ?
+                    "Advertencia:El total y el debe no coindicen!!!"
+                    :
+                    "Crear Asiento Contable"}
               </Button>
+
             </div>
           </form>
         </CardContent>
