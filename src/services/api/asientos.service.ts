@@ -47,7 +47,7 @@ export interface AsientoResponse {
 //TODO: mover interfaz a un archivo adecuado
 export interface Movimiento {
   id: number;
-  cuentaId: string;
+  cuentaId: number | string;
   debe: number;
   haber: number;
   descripcion?: string;

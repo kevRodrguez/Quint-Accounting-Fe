@@ -77,7 +77,7 @@ export function NuevoAsientoForm({
   const [HaberIsDisabled, setHaberIsDisabled] = useState(false);
   const actualizarMovimiento = (
     id: number,
-    cuenta: string,
+    cuenta: number | string,
     debe: number,
     haber: number
   ) => {

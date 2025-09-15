@@ -24,7 +24,7 @@ export interface ComboboxProps {
     title: string;
     className?: string;
     style?: React.CSSProperties;
-    selected?: string;
+    selected?: string | number;
     onSelect?: (value: string | number) => void; // Nueva prop opcional
 }
 
