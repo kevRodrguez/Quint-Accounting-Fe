@@ -38,7 +38,7 @@ import {
 
 import {
   AsientosService
-} from "@/services/api/asientos.service";
+} from "@/services/asientos/asientos.service";
 import type { Movimiento } from "@/types/movimiento.interface";
 
 export function NuevoAsientoForm({
