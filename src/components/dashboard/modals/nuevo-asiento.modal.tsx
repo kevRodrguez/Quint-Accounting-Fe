@@ -16,9 +16,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CalendarIcon, MoreVertical, Trash2 } from "lucide-react";
-import { format, set } from "date-fns";
+import { format } from "date-fns";
 import { Combobox } from "@/components/ui/combobox";
-import { use, useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -37,10 +37,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import {
-  AsientosService,
-  type Movimiento,
+  AsientosService
 } from "@/services/api/asientos.service";
-import { Badge } from "@/components/ui/badge";
+import type { Movimiento } from "@/types/movimiento.interface";
 
 export function NuevoAsientoForm({
   className,
