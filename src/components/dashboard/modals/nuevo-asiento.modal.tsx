@@ -52,7 +52,7 @@ export function NuevoAsientoForm({
   const [descripcion, setDescripcion] = useState("");
   const [fecha, setFecha] = useState<Date | undefined>(new Date());
   const cuentaItems = [
-    { value: 62, label: "110101 - Caja General" },
+    { value: 1, label: "110101 - Caja General" },
     { value: 64, label: "110102 - Banco" },
     { value: 3, label: "003-Ventas" },
     { value: 4, label: "004-Compras" },
@@ -108,8 +108,8 @@ export function NuevoAsientoForm({
         fecha,
         movimientos: movimientos.map((m) => ({
           cuentaId: Number(m.cuentaId),
-          debe: m.debe,
-          haber: m.haber,
+          debe: Number(m.debe),
+          haber: Number(m.haber),
         })),
       };
 
@@ -135,8 +135,8 @@ export function NuevoAsientoForm({
     let debe = 0,
       haber = 0;
     movimientos.map((m) => {
-      debe += m.debe;
-      haber += m.haber;
+      debe += Number(m.debe);
+      haber += Number(m.haber);
     });
 
     setTotalDebe(debe);
@@ -147,13 +147,13 @@ export function NuevoAsientoForm({
     console.log("Movimientos actualizados:", movimientos);
     actualizarTotales();
 
-    if (nuevoMovimiento.debe > 0) {
+    if (Number(nuevoMovimiento.debe) > 0) {
       setHaberIsDisabled(true);
     } else {
       setHaberIsDisabled(false);
     }
 
-    if (nuevoMovimiento.haber > 0) {
+    if (Number(nuevoMovimiento.haber) > 0) {
       setDebeIsDisabled(true);
     } else {
       setDebeIsDisabled(false);
@@ -262,11 +262,14 @@ export function NuevoAsientoForm({
                       defaultValue={0}
                       decimalsLimit={2}
                       prefix="$"
+                      intlConfig={{ locale: 'en-US', currency: 'USD' }}
+                      allowDecimals
+                      decimalSeparator="."
                       value={nuevoMovimiento.debe}
                       onValueChange={(value) =>
                         setNuevoMovimiento({
                           ...nuevoMovimiento,
-                          debe: Number(value) || 0,
+                          debe: (value) || 0,
                         })
                       }
                       style={{ border: "none", width: "100%" }}
@@ -285,11 +288,14 @@ export function NuevoAsientoForm({
                       defaultValue={0}
                       decimalsLimit={2}
                       prefix="$"
+                      intlConfig={{ locale: 'en-US', currency: 'USD' }}
+                      allowDecimals
+                      decimalSeparator="."
                       value={nuevoMovimiento.haber}
                       onValueChange={(value) =>
                         setNuevoMovimiento({
                           ...nuevoMovimiento,
-                          haber: Number(value) || 0,
+                          haber: (value) || 0,
                         })
                       }
                       style={{ border: "none" }}
@@ -381,8 +387,8 @@ export function NuevoAsientoForm({
                               actualizarMovimiento(
                                 movimiento.id,
                                 value,
-                                movimiento.debe,
-                                movimiento.haber
+                                Number(movimiento.debe),
+                                Number(movimiento.haber)
                               );
                             }}
                           />
@@ -397,7 +403,7 @@ export function NuevoAsientoForm({
                                 movimiento.id,
                                 movimiento.cuentaId,
                                 Number(e.target.value),
-                                movimiento.haber
+                                Number(movimiento.haber)
                               );
                             }}
                             placeholder="debe"
@@ -415,7 +421,7 @@ export function NuevoAsientoForm({
                               actualizarMovimiento(
                                 movimiento.id,
                                 movimiento.cuentaId,
-                                movimiento.debe,
+                                Number(movimiento.debe),
                                 Number(e.target.value)
                               )
                             }
