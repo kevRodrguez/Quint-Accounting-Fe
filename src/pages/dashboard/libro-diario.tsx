@@ -20,10 +20,12 @@ import type { LibroDiario as LibroDiarioType, DetalleAsiento } from '@/types/lib
 import { LoadingScreen } from '@/components/dashboard/LoadingScreen';
 import { ErrorScreen } from '@/components/dashboard/ErrorScreen';
 
+
 export default function LibroDiario() {
 
   //valores para controler cierre de modal
   const [open, setOpen] = useState(false)
+  const [mounted, setMounted] = useState(true)
 
   const [asientos, setAsientos] = useState<LibroDiarioType[]>([])
   const [loading, setLoading] = useState(true)
@@ -32,21 +34,20 @@ export default function LibroDiario() {
   const fmtCurrency = new Intl.NumberFormat('es-SV', { style: 'currency', currency: 'USD' })
   const fmtDate = (iso: string) => new Intl.DateTimeFormat('es-SV').format(new Date(iso))
 
+  const loadLibroDiario = async () => {
+    try {
+      const data = await LibroDiarioService.obtenerLibroDiario()
+      if (data) setAsientos(data)
+    } catch (e: any) {
+      setError(e?.message || 'No se pudo cargar el libro diario')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+
   useEffect(() => {
-    let mounted = true;
-
-    (async () => {
-      try {
-        const data = await LibroDiarioService.obtenerLibroDiario()
-        if (mounted) setAsientos(data)
-      } catch (e: any) {
-        if (mounted) setError(e?.message || 'No se pudo cargar el libro diario')
-      } finally {
-        if (mounted) setLoading(false)
-      }
-    })()
-
-    return () => { mounted = false }
+    loadLibroDiario()
   }, [])
 
   return (
@@ -73,7 +74,7 @@ export default function LibroDiario() {
               <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-auto " style={{ scrollbarWidth: 'none' }}>
 
                 {/* le pasamos el metodo setOpen al fomrulario, para que se pueda cerrar desde dentro */}
-                <NuevoAsientoForm setOpen={setOpen} />
+                <NuevoAsientoForm setOpen={setOpen} onCreated={loadLibroDiario}/>
               </DialogContent>
             </Dialog>
 
@@ -128,14 +129,14 @@ export default function LibroDiario() {
                           {fmtDate(asiento.fecha)}
                         </TableCell>
                         <TableCell colSpan={3}>
-                          <span className="font-semibold">'{asiento.descripcion}'</span>
+                          <span className="font-semibold">{asiento.descripcion}</span>
                         </TableCell>
                       </TableRow>
 
                       {/* Filas para los detalles del asiento */}
                       {detalles.map((det) => (
-                        <TableRow key={asiento.id_asiento} className="border-l-4 border-l-muted">
-                            {/* Celda vacía para alineación */}
+                        <TableRow className="border-l-4 border-l-muted">
+                          {/* Celda vacía para alineación */}
                           <TableCell>
                           </TableCell>
 
@@ -144,7 +145,7 @@ export default function LibroDiario() {
                               <span className="text-muted-foreground text-sm">{det.cuenta.codigo} - {det.cuenta.nombre_cuenta}</span>
                             </div>
                           </TableCell>
-                          
+
                           <TableCell className="text-right font-semibold">{fmtCurrency.format(det.debe || 0)}</TableCell>
                           <TableCell className="text-right font-semibold">{fmtCurrency.format(det.haber || 0)}</TableCell>
                         </TableRow>
