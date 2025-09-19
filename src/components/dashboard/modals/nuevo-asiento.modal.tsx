@@ -18,7 +18,7 @@ import {
 import { CalendarIcon, MoreVertical, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { Combobox } from "@/components/ui/combobox";
-import {useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -52,8 +52,8 @@ export function NuevoAsientoForm({
   const [descripcion, setDescripcion] = useState("");
   const [fecha, setFecha] = useState<Date | undefined>(new Date());
   const cuentaItems = [
-    { value: 1, label: "001-Caja" },
-    { value: 2, label: "002-Banco" },
+    { value: 62, label: "110101 - Caja General" },
+    { value: 64, label: "110102 - Banco" },
     { value: 3, label: "003-Ventas" },
     { value: 4, label: "004-Compras" },
     { value: 5, label: "005-Capital" },
@@ -226,14 +226,14 @@ export function NuevoAsientoForm({
               <div className="grid gap-2">
                 {/* form nuevo movimiento */}
                 <div
-                  className="grid grid-cols-7 gap-1 p-3"
+                  className="grid grid-cols-5 gap-1 p-3"
                   style={{ border: "1px dashed gray", borderRadius: "8px" }}
                 >
-                  <div className="col-span-7 mb-5 font-bold">
+                  <div className="col-span-5 mb-5 font-bold">
                     Nuevo Movimiento:
                   </div>
                   <span
-                    className="col-span-7"
+                    className="col-span-5"
                     style={{
                       border: "0.5px solid  gray",
                       marginBottom: "8px",
@@ -242,7 +242,7 @@ export function NuevoAsientoForm({
                   ></span>
                   <div className="col-span-2">
                     <Combobox
-                      style={{ width: "100%" }}
+                      style={{ width: "100%", fontSize: "small" }}
                       title="cuenta"
                       items={cuentaItems}
                       onSelect={(value) =>
@@ -253,7 +253,7 @@ export function NuevoAsientoForm({
                       }
                     />
                   </div>
-                  <div className="col-span-2">
+                  <div className="col-span-1">
                     <CurrencyInput
                       disabled={DebeIsDisabled}
                       id="debe-input"
@@ -269,12 +269,12 @@ export function NuevoAsientoForm({
                           debe: Number(value) || 0,
                         })
                       }
-                      style={{ border: "none" }}
+                      style={{ border: "none", width: "100%" }}
                       className="file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
                     />
                   </div>
                   <div
-                    className="col-span-2 flex"
+                    className="col-span-1 flex"
                     style={{ alignItems: "center" }}
                   >
                     <CurrencyInput
