@@ -15,8 +15,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon, MoreVertical, Terminal, Trash2 } from "lucide-react";
-import { format, set } from "date-fns";
+import { CalendarIcon, MoreVertical, Trash2 } from "lucide-react";
+import { format } from "date-fns";
 import { Combobox } from "@/components/ui/combobox";
 import { useEffect, useState } from "react";
 import {
@@ -40,16 +40,17 @@ import {
   AsientosService
 } from "@/services/asientos/asientos.service";
 import type { Movimiento } from "@/types/movimiento.interface";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle} from "@/components/ui/alert-dialog";
 
 
 export function NuevoAsientoForm({
   className,
   setOpen,
+  onCreated,
   ...props
 }: React.ComponentPropsWithoutRef<"div"> & {
   setOpen?: (open: boolean) => void //se define el metodo setOpen en las props del modal
+  onCreated?: () => void //callback para recargar datos en el padre
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [descripcion, setDescripcion] = useState("");
@@ -147,6 +148,11 @@ export function NuevoAsientoForm({
 
       console.log("Asiento creado con detalles:", asientoCreado);
       setIsLoading(false);
+
+      //llama al callback para recargar datos en el padre
+      if (onCreated) {
+        onCreated();
+      }
 
       if (setOpen) {
         //cerramos modal al finalizar

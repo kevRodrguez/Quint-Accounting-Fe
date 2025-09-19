@@ -25,7 +25,6 @@ export default function LibroDiario() {
 
   //valores para controler cierre de modal
   const [open, setOpen] = useState(false)
-  const [mounted, setMounted] = useState(true)
 
   const [asientos, setAsientos] = useState<LibroDiarioType[]>([])
   const [loading, setLoading] = useState(true)
