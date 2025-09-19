@@ -1,7 +1,7 @@
 export interface Movimiento {
     id: number;
     cuentaId: number | string;
-    debe: number;
-    haber: number;
+    debe: number | string;
+    haber: number | string;
     descripcion?: string;
 }
