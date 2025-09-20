@@ -1,9 +1,9 @@
 import { AppSidebar } from "@/components/dashboard/sidebar/app-sidebar";
-import { NuevoAsientoForm } from "@/components/dashboard/modals/nuevo-asiento.modal";
 import { SiteHeader } from "@/components/dashboard/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
 import React, { useEffect, useState, type JSX } from "react";
+import { DropzoneSimple } from "@/components/dropzone";
 
 import {
   Table,
@@ -27,14 +27,17 @@ export default function CatalogoCuentas() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<
+    "idle" | "ready" | "uploading" | "success" | "error"
+  >("idle");
 
   const loadCuentas = async () => {
     try {
       const data = await CuentasServices.obtenerCuentas();
       if (data) setCuentas(data);
-      
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       setError(e?.message || "No se pudo cargar el catálogo de cuentas");
     } finally {
@@ -43,11 +46,11 @@ export default function CatalogoCuentas() {
   };
 
   function toggleExpand(codigo: string) {
-  setExpanded(prev => ({
-    ...prev,
-    [codigo]: !prev[codigo],
-  }));
-}
+    setExpanded((prev) => ({
+      ...prev,
+      [codigo]: !prev[codigo],
+    }));
+  }
 
   useEffect(() => {
     loadCuentas();
@@ -56,16 +59,18 @@ export default function CatalogoCuentas() {
   const cuentaTree = buildCuentaTree(cuentas);
 
   function buildCuentaTree(cuentas: CuentaType[]) {
-  const sorted = [...cuentas].sort((a, b) => Number(a.codigo) - Number(b.codigo));
+    const sorted = [...cuentas].sort(
+      (a, b) => Number(a.codigo) - Number(b.codigo)
+    );
 
-  const lookup: Record<string, CuentaType & { children?: CuentaType[] }> = {};
-  const tree: (CuentaType & { children?: CuentaType[] })[] = [];
+    const lookup: Record<string, CuentaType & { children?: CuentaType[] }> = {};
+    const tree: (CuentaType & { children?: CuentaType[] })[] = [];
 
-  sorted.forEach((cuenta) => {
-    const code = cuenta.codigo;
-    lookup[code] = { ...cuenta, children: [] };
+    sorted.forEach((cuenta) => {
+      const code = cuenta.codigo;
+      lookup[code] = { ...cuenta, children: [] };
 
-    let parentCode: string | null = null;
+      let parentCode: string | null = null;
 
     if (code.length === 2) {
       parentCode = code.slice(0, 1); // Ej: "11" → padre "1"
@@ -75,49 +80,69 @@ export default function CatalogoCuentas() {
       parentCode = code.slice(0, 4); // Ej: "110101" → padre "1101"
     }
 
-    if (parentCode && lookup[parentCode]) {
-      lookup[parentCode].children!.push(lookup[code]);
-    } else if (code.length === 1) {
-      tree.push(lookup[code]);
-    }
-  });
+      if (parentCode && lookup[parentCode]) {
+        lookup[parentCode].children!.push(lookup[code]);
+      } else if (code.length === 1) {
+        tree.push(lookup[code]);
+      }
+    });
 
-  return tree;
-}
+    return tree;
+  }
 
+  function renderCuentaRows(
+    cuentas: (CuentaType & { children?: CuentaType[] })[],
+    level = 0
+  ): JSX.Element[] {
+    return cuentas.flatMap((cuenta) => {
+      const isExpanded = expanded[cuenta.codigo] ?? false;
+      const hasChildren = cuenta.children && cuenta.children.length > 0;
 
-  // Función para renderizar filas con indentación según nivel de la cuenta
-function renderCuentaRows(
-  cuentas: (CuentaType & { children?: CuentaType[] })[],
-  level = 0
-): JSX.Element[] {
-  return cuentas.flatMap((cuenta) => {
-    const isExpanded = expanded[cuenta.codigo] ?? false;
-    const hasChildren = cuenta.children && cuenta.children.length > 0;
+      return [
+        <TableRow key={cuenta.codigo}>
+          <TableCell style={{ paddingLeft: `${level * 20}px` }}>
+            {hasChildren && (
+              <button
+                onClick={() => toggleExpand(cuenta.codigo)}
+                className="mr-2 focus:outline-none"
+              >
+                {isExpanded ? "▼" : "►"}
+              </button>
+            )}
+            {cuenta.codigo}
+          </TableCell>
+          <TableCell>{cuenta.nombre_cuenta}</TableCell>
+        </TableRow>,
+        hasChildren && isExpanded
+          ? renderCuentaRows(cuenta.children!, level + 1)
+          : [],
+      ];
+    }) as JSX.Element[];
+  }
 
-    return [
-      <TableRow key={cuenta.codigo}>
-        <TableCell style={{ paddingLeft: `${level * 20}px` }}>
-          {hasChildren && (
-            <button
-              onClick={() => toggleExpand(cuenta.codigo)}
-              className="mr-2 focus:outline-none"
-            >
-              {isExpanded ? "▼" : "►"}
-            </button>
-          )}
-          {cuenta.codigo}
-        </TableCell>
-        <TableCell>{cuenta.nombre_cuenta}</TableCell>
-      </TableRow>,
-      hasChildren && isExpanded
-        ? renderCuentaRows(cuenta.children!, level + 1)
-        : [],
-    ];
-  }) as JSX.Element[];
-}
+  const handleUpload = async () => {
+    if (!selectedFile) return;
 
+    setUploadStatus("uploading");
 
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const data = e.target?.result;
+      if (typeof data === "string") {
+        const base64String = data.split(",")[1];
+
+        try {
+          await CuentasServices.importarCuentas(base64String);
+          setUploadStatus("success");
+          await loadCuentas();
+        } catch (err) {
+          console.error(err);
+          setUploadStatus("error");
+        }
+      }
+    };
+    reader.readAsDataURL(selectedFile);
+  };
 
   return (
     <SidebarProvider
@@ -146,7 +171,45 @@ function renderCuentaRows(
                 className="max-w-4xl w-full h-[90vh] p-0 overflow-auto"
                 style={{ scrollbarWidth: "none" }}
               >
-                <NuevoAsientoForm setOpen={setOpen} onCreated={loadCuentas} />
+                <DialogTitle>Importar Catálogo de Cuentas</DialogTitle>
+
+                <DropzoneSimple
+                  onFilesSelected={(files) => {
+                    const file = files[0];
+                    if (!file) return;
+                    setSelectedFile(file);
+                    setUploadStatus("ready");
+                  }}
+                />
+
+                {selectedFile && (
+                  <div className="mt-4 flex flex-col gap-2">
+                    <p className="text-sm text-muted-foreground">
+                      Archivo seleccionado: <strong>{selectedFile.name}</strong>
+                    </p>
+
+                    <button
+                      className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/80"
+                      onClick={handleUpload}
+                      disabled={uploadStatus === "uploading"}
+                    >
+                      {uploadStatus === "uploading"
+                        ? "Importando..."
+                        : "Confirmar Importación"}
+                    </button>
+                  </div>
+                )}
+
+                {uploadStatus === "success" && (
+                  <p className="mt-4 text-green-600">
+                    Archivo importado correctamente
+                  </p>
+                )}
+                {uploadStatus === "error" && (
+                  <p className="mt-4 text-red-600">
+                    Error al importar el archivo
+                  </p>
+                )}
               </DialogContent>
             </Dialog>
 
