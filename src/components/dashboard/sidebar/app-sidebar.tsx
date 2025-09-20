@@ -45,7 +45,7 @@ const data = {
     },
     {
       title: "Catálogo de Cuentas",
-      url: "#",
+      url: "/catalogo-cuentas",
       icon: IconBooks,
     },
   ],

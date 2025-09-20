@@ -14,6 +14,7 @@ import LibrosDiarios from './pages/home/libros-diarios'
 import Reportes from './pages/home/reportes'
 import { UpdatePasswordForm } from './components/auth/update-password-form'
 import LibroDiario from './pages/dashboard/libro-diario'
+import CatalogoCuentas from './pages/cuentas/cuentas'
 
 
 function App() {
@@ -38,6 +39,7 @@ function App() {
 
           {/* Sidebar Routes */}
           <Route path="/libro-diario" element={<LibroDiario />} />
+          <Route path="/catalogo-cuentas" element={<CatalogoCuentas />} />
 
           {/* Redirect to dashboard for any other route */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
