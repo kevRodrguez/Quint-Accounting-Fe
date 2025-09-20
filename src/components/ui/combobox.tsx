@@ -46,11 +46,11 @@ export function Combobox({ items, title, className, style, selected, onSelect }:
                     role="combobox"
                     aria-expanded={open}
                     className={cn("w-[200px] justify-between", className)}
-                    style={{ backgroundColor: 'white', color: 'black', ...style }}
+                    style={{ backgroundColor: 'white', color: 'black', textOverflow: 'ellipsis', ...style }}
                 >
-                    {value
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}> {value
                         ? items.find((cuenta) => cuenta.value === value)?.label
-                        : title}
+                        : title}</span>
                     <Search className="opacity-50" />
                 </Button>
             </PopoverTrigger>

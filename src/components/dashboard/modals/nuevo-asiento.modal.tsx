@@ -40,7 +40,9 @@ import {
   AsientosService
 } from "@/services/asientos/asientos.service";
 import type { Movimiento } from "@/types/movimiento.interface";
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle} from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { CuentasService } from "@/services/cuentas/cuentas.service";
+import type { Cuenta } from "@/types/libroDiario.interface";
 
 
 export function NuevoAsientoForm({
@@ -85,6 +87,8 @@ export function NuevoAsientoForm({
 
   //mensaje de error para dialog
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [cuentasSelect, setCuentasSelect] = useState<Cuenta[]>([])
 
   const actualizarMovimiento = (
     id: number,
@@ -172,6 +176,23 @@ export function NuevoAsientoForm({
       setIsLoading(false);
     }
   };
+  const obtenerCuentas = async () => {
+    try {
+      const cuentas = await CuentasService.obtenerCuentas();
+      console.log("Cuentas obtenidas:", cuentas);
+      setCuentasSelect(cuentas)
+    } catch (error) {
+      console.log(error);
+
+      let errorMsg = ""
+      if (typeof error === "object" && error !== null && "message" in error) {
+        errorMsg += ": " + String((error as { message?: string }).message);
+      }
+      setErrorMessage(errorMsg);
+      setIsAlertVisible(true);
+      setIsLoading(false);
+    }
+  }
 
   const actualizarTotales = () => {
     let debe = 0,
@@ -200,9 +221,16 @@ export function NuevoAsientoForm({
     } else {
       setDebeIsDisabled(false);
     }
-  }), [movimientos, nuevoMovimiento];
+
+  }, [movimientos, nuevoMovimiento]);
 
 
+
+  //el array vacio hace que se ejecute solo una vez al montar el componente
+  useEffect(() => {
+    obtenerCuentas();
+
+  }, [])
 
   return (
     <>
@@ -308,7 +336,7 @@ export function NuevoAsientoForm({
                       <Combobox
                         style={{ width: "100%", fontSize: "small" }}
                         title="cuenta"
-                        items={cuentaItems}
+                        items={cuentasSelect as any[]}
                         onSelect={(value) =>
                           setNuevoMovimiento({
                             ...nuevoMovimiento,
@@ -454,7 +482,7 @@ export function NuevoAsientoForm({
                             <Combobox
                               style={{ width: "100%" }}
                               title="cuenta"
-                              items={cuentaItems}
+                              items={cuentasSelect as any[]}
                               selected={movimiento.cuentaId}
                               onSelect={(value) => {
                                 actualizarMovimiento(
