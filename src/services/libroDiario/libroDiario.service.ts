@@ -3,9 +3,9 @@ import axios from "axios";
 import type { LibroDiario } from "@/types/libroDiario.interface";
 
 export class LibroDiarioService {
-  public static async obtenerLibroDiario(): Promise<LibroDiario[]> {
+  public static async obtenerLibroDiario(): Promise<LibroDiario> {
     try {
-      const { data } = await api.get<LibroDiario[]>("libro-diario/asientos/");
+      const { data } = await api.get<LibroDiario>("libro-diario/asientos/");
       return data;
     } catch (error) {
       if (axios.isAxiosError(error)) {

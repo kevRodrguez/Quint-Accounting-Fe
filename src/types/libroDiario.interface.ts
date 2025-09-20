@@ -1,8 +1,12 @@
 export interface LibroDiario {
+    asientosConTotales:        AsientosConTotale[];
+    asientosConTotalesMayores: AsientosConTotalesMayores;
+}
+
+export interface AsientosConTotale {
     id_asiento:      number;
     descripcion:     string;
-    //  Fecha en formato ISO 8601 ej. "2025-09-18T00:00:00.000Z"
-    fecha:           string;
+    fecha:           Date;
     detalle_asiento: DetalleAsiento[];
     total_debe:      number;
     total_haber:     number;
@@ -18,4 +22,9 @@ export interface Cuenta {
     id_cuenta:     number;
     nombre_cuenta: string;
     codigo:        string;
+}
+
+export interface AsientosConTotalesMayores {
+    total_debe:  number;
+    total_haber: number;
 }

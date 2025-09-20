@@ -9,6 +9,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -16,7 +17,7 @@ import {
 import { CardTitle } from '@/components/ui/card';
 
 import { LibroDiarioService } from '@/services/libroDiario/libroDiario.service'
-import type { LibroDiario as LibroDiarioType, DetalleAsiento } from '@/types/libroDiario.interface'
+import type { AsientosConTotale, DetalleAsiento, AsientosConTotalesMayores, LibroDiario } from '@/types/libroDiario.interface'
 import { LoadingScreen } from '@/components/dashboard/LoadingScreen';
 import { ErrorScreen } from '@/components/dashboard/ErrorScreen';
 
@@ -26,7 +27,8 @@ export default function LibroDiario() {
   //valores para controler cierre de modal
   const [open, setOpen] = useState(false)
 
-  const [asientos, setAsientos] = useState<LibroDiarioType[]>([])
+  const [asientos, setAsientos] = useState<AsientosConTotale[]>([])
+  const [totalesMayores, setTotalesMayores] = useState<AsientosConTotalesMayores | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -35,14 +37,16 @@ export default function LibroDiario() {
 
   const loadLibroDiario = async () => {
     try {
-      const data = await LibroDiarioService.obtenerLibroDiario()
-      if (data) setAsientos(data)
+      const data = await LibroDiarioService.obtenerLibroDiario();
+      setAsientos(data.asientosConTotales);
+      setTotalesMayores(data.asientosConTotalesMayores);
     } catch (e: any) {
-      setError(e?.message || 'No se pudo cargar el libro diario')
+      console.error('Error al cargar libro diario:', e);
+      setError(e?.message || 'No se pudo cargar el libro diario');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
 
   useEffect(() => {
@@ -61,19 +65,19 @@ export default function LibroDiario() {
       <SidebarInset>
         <SiteHeader title="Libro Diario" />
 
-        <CardTitle className='justify-center flex text-3xl my-4'>Libro Diario</CardTitle>
+        <CardTitle className='justify-center flex text-3xl my-2'>Libro Diario</CardTitle>
 
 
         {/* Contenedor responsivo para la tabla con scroll horizontal cuando sea necesario */}
         <div className="w-full max-w-[1400px] mx-auto px-4 overflow-x-auto">
-          <div className="py-4">
+          <div className="py-2">
             {/* Botón para añadir nuevo asiento */}
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger className='bg-primary text-white w-32 rounded-full flex justify-center my-3 p-2' >Nuevo Asiento</DialogTrigger>
               <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-auto " style={{ scrollbarWidth: 'none' }}>
 
                 {/* le pasamos el metodo setOpen al fomrulario, para que se pueda cerrar desde dentro */}
-                <NuevoAsientoForm setOpen={setOpen} onCreated={loadLibroDiario}/>
+                <NuevoAsientoForm setOpen={setOpen} onCreated={loadLibroDiario} />
               </DialogContent>
             </Dialog>
 
@@ -114,7 +118,7 @@ export default function LibroDiario() {
                   </TableRow>
                 )}
 
-                {!loading && !error && asientos.map((asiento) => {
+                {!loading && !error && asientos && asientos.length > 0 && asientos.map((asiento) => {
                   const detalles = (asiento.detalle_asiento?.length
                     ? asiento.detalle_asiento
                     : [{ debe: 0, haber: 0, cuenta: { id_cuenta: 0, nombre_cuenta: '', codigo: '' } }] as DetalleAsiento[])
@@ -125,7 +129,7 @@ export default function LibroDiario() {
                       {/* Fila para la fecha y descripción */}
                       <TableRow className="bg-muted/30">
                         <TableCell className="font-medium">
-                          {fmtDate(asiento.fecha)}
+                          {fmtDate(asiento.fecha.toString())}
                         </TableCell>
                         <TableCell colSpan={3}>
                           <span className="font-semibold">{asiento.descripcion}</span>
@@ -133,7 +137,7 @@ export default function LibroDiario() {
                       </TableRow>
 
                       {/* Filas para los detalles del asiento */}
-                      {detalles.map((det) => (
+                      {detalles.map((det: DetalleAsiento) => (
                         <TableRow className="border-l-4 border-l-muted">
                           {/* Celda vacía para alineación */}
                           <TableCell>
@@ -153,19 +157,33 @@ export default function LibroDiario() {
                         <TableCell colSpan={2} className="text-right">Totales:</TableCell>
                         <TableCell className="text-right border-t-3 border-primary/30">
                           {fmtCurrency.format(
-                            (asiento.total_debe ?? detalles.reduce((s, d) => s + (d.debe || 0), 0))
+                            (asiento.total_debe ?? detalles.reduce((s: number, d: DetalleAsiento) => s + (d.debe || 0), 0))
                           )}
                         </TableCell>
                         <TableCell className="text-right border-t-3 border-primary/30">
                           {fmtCurrency.format(
-                            (asiento.total_haber ?? detalles.reduce((s, d) => s + (d.haber || 0), 0))
+                            (asiento.total_haber ?? detalles.reduce((s: number, d: DetalleAsiento) => s + (d.haber || 0), 0))
                           )}
                         </TableCell>
                       </TableRow>
+
                     </React.Fragment>
                   )
                 })}
               </TableBody>
+
+              {/* Footer con los totales mayores */}
+              <TableFooter className='p-4'>
+                <TableRow className="bg-primary font-bold">
+                  <TableCell colSpan={2} className="text-right text-white">Total Libro Diario:</TableCell>
+                  <TableCell className="text-right border-t-3 border-primary/30 text-white">
+                    {totalesMayores && totalesMayores.total_debe !== undefined ? fmtCurrency.format(totalesMayores.total_debe) : '$0.00'}
+                  </TableCell>
+                  <TableCell className="text-right border-t-3 border-primary/30 text-white">
+                    {totalesMayores && totalesMayores.total_haber !== undefined ? fmtCurrency.format(totalesMayores.total_haber) : '$0.00'}
+                  </TableCell>
+                </TableRow>
+              </TableFooter>
             </Table>
           </div>
         </div>
