@@ -74,7 +74,7 @@ export default function LibroDiario() {
             {/* Botón para añadir nuevo asiento */}
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger className='bg-primary text-white w-32 rounded-full flex justify-center my-3 p-2' >Nuevo Asiento</DialogTrigger>
-              <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-auto " style={{ scrollbarWidth: 'none' }}>
+              <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-auto " style={{ scrollbarWidth: 'none', minWidth: '45%' }}>
 
                 {/* le pasamos el metodo setOpen al fomrulario, para que se pueda cerrar desde dentro */}
                 <NuevoAsientoForm setOpen={setOpen} onCreated={loadLibroDiario} />
@@ -110,7 +110,7 @@ export default function LibroDiario() {
                   </TableRow>
                 )}
 
-                {!loading && !error && asientos.length === 0 && (
+                {!loading && !error && asientos?.length === 0 && (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center py-6">
                       <ErrorScreen title="Sin asientos registrados" />
