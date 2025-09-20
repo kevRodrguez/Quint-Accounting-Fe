@@ -138,10 +138,9 @@ function renderCuentaRows(
 
         <div className="w-full max-w-[1400px] mx-auto px-4 overflow-x-auto">
           <div className="py-4">
-            {/* Botón para añadir nuevo asiento/cuenta */}
             <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger className="bg-primary text-white w-32 rounded-full flex justify-center my-3 p-2">
-                Nuevo Asiento
+              <DialogTrigger className="bg-primary text-white w-40 rounded-full flex justify-center my-3 p-2">
+                Importar Catálogo
               </DialogTrigger>
               <DialogContent
                 className="max-w-4xl w-full h-[90vh] p-0 overflow-auto"
