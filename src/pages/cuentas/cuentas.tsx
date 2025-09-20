@@ -168,7 +168,7 @@ export default function CatalogoCuentas() {
                 Importar Catálogo
               </DialogTrigger>
               <DialogContent
-                className="max-w-4xl w-full h-[90vh] p-0 overflow-auto"
+                className="max-w-4xl w-full h-auto p-0 overflow-auto p-6 "
                 style={{ scrollbarWidth: "none" }}
               >
                 <DialogTitle>Importar Catálogo de Cuentas</DialogTitle>
