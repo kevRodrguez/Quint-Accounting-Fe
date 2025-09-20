@@ -92,7 +92,7 @@ export function NuevoAsientoForm({
 
   const actualizarMovimiento = (
     id: number,
-    cuenta: number | string,
+    cuentaId: number | string,
     debe: number | string,
     haber: number | string
   ) => {
@@ -102,7 +102,7 @@ export function NuevoAsientoForm({
     //mapea los movimientos, si el id coincide, retorna el objeto modificado
     const nuevosMovimientos = movimientos.map((m) => {
       if (m.id === id) {
-        return { ...m, cuenta, debe, haber }; // Retorna un nuevo objeto con las modificaciones
+        return { ...m, cuentaId, debe, haber }; // Retorna un nuevo objeto con las modificaciones
       }
 
       return m;
