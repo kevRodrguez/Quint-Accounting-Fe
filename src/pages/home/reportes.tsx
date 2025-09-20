@@ -16,7 +16,7 @@ export default function Reportes() {
     const { isLoggedIn } = React.useContext(AuthContext);
 
     return (
-        <div style={{ backgroundColor: 'rgb(10 10 10)', padding: 0 }} className='grid grid-cols-4 gap-4'>
+        <div style={{ backgroundColor: 'black', padding: '2rem', textAlign: 'center', margin: '0 auto' }} className='grid grid-cols-4 gap-4'>
             <div className='col-span-4  justify-center '>
                 <NavigationMenu className='w-full max-w-none'>
                     <NavigationMenuList className='grid grid-cols-10' style={{ color: 'white', borderBottom: '1px solid gray', borderTop: 'none', borderRadius: '8px', backgroundColor: '#1a1a1a' }}>

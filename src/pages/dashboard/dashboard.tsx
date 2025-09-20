@@ -1,22 +1,39 @@
-import { AuthContext } from '@/context/AuthContext';
-import React from 'react'
 
+import { AppSidebar } from '@/components/dashboard/sidebar/app-sidebar';
+import { ChartAreaInteractive } from '@/components/dashboard/chart-area-interactive';
+import { SectionCards } from '@/components/dashboard/section-cards';
+import { SiteHeader } from '@/components/dashboard/site-header';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
+import React from 'react'
 export default function Dashboard() {
 
-    const { logOut } = React.useContext(AuthContext);
-
-    const handleLogOut = async () => {
-        await logOut();
-    }
-    
     return (
-        <div className="p-8">
-            <h1 className="text-2xl font-bold">Dashboard</h1>
-            <p>¡Bienvenido al dashboard!</p>
-            {/* logout button */}
-            <button className="mt-4 px-4 py-2 bg-red-500 text-white rounded" onClick={handleLogOut}>
-                Cerrar sesión
-            </button>
-        </div>
+
+        <SidebarProvider
+            style={{
+                "--sidebar-width": "calc(var(--spacing) * 72)",
+                "--header-height": "calc(var(--spacing) * 12)",
+            } as React.CSSProperties}
+        >
+            <AppSidebar variant="inset" />
+            <SidebarInset>
+                <SiteHeader title='Dashboard' />
+
+                <div className="flex flex-1 flex-col">
+                    <div className="@container/main flex flex-1 flex-col gap-2">
+                        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                            <SectionCards />
+                            <div className="px-4 lg:px-6">
+                                <ChartAreaInteractive />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </SidebarInset>
+        </SidebarProvider>
+
+
     )
 }
+
+
