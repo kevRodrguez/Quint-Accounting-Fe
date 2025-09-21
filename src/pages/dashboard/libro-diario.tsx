@@ -6,6 +6,9 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import React, { useEffect, useState } from 'react'
 
 import {
+  IconTrash
+} from "@tabler/icons-react"
+import {
   Table,
   TableBody,
   TableCell,
@@ -20,6 +23,9 @@ import { LibroDiarioService } from '@/services/libroDiario/libroDiario.service'
 import type { AsientosConTotale, DetalleAsiento, AsientosConTotalesMayores, LibroDiario } from '@/types/libroDiario.interface'
 import { LoadingScreen } from '@/components/dashboard/LoadingScreen';
 import { ErrorScreen } from '@/components/dashboard/ErrorScreen';
+import { Button } from '@/components/ui/button';
+import { AsientosService } from '@/services/asientos/asientos.service';
+import { toast } from 'react-toastify';
 
 
 export default function LibroDiario() {
@@ -47,6 +53,18 @@ export default function LibroDiario() {
       setLoading(false);
     }
   };
+
+  const eliminarAsiento = async (id_asiento: number) => {
+    try {
+      const data = await AsientosService.eliminarAsiento(id_asiento);
+      toast.success('Asiento eliminado con éxito: ' + data.descripcion);
+      loadLibroDiario();
+    } catch (error: any) {
+      console.error("Error al eliminar asiento:", error);
+      setError(error?.message || 'No se pudo eliminar el asiento');
+    }
+
+  }
 
 
   useEffect(() => {
@@ -88,6 +106,7 @@ export default function LibroDiario() {
                   <TableHead className="w-[200px] md:w-[300px] text-white">Descripción / Cuenta</TableHead>
                   <TableHead className="text-right w-[100px] md:w-[150px] text-white font-bold">Debe</TableHead>
                   <TableHead className="text-right w-[100px] md:w-[150px] text-white font-bold">Haber</TableHead>
+                  <TableHead className="text-right w-[100px] md:w-[150px] text-white font-bold">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -134,6 +153,17 @@ export default function LibroDiario() {
                         <TableCell colSpan={3}>
                           <span className="font-semibold">{asiento.descripcion}</span>
                         </TableCell>
+                        <TableCell>
+                          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+
+                            <Button style={{ width: '30%' }} onClick={() => {
+                              console.log("Eliminar asiento", asiento.id_asiento);
+                              eliminarAsiento(asiento.id_asiento)
+                            }}>
+                              <IconTrash size={16} />
+                            </Button>
+                          </div>
+                        </TableCell>
                       </TableRow>
 
                       {/* Filas para los detalles del asiento */}
@@ -165,6 +195,9 @@ export default function LibroDiario() {
                             (asiento.total_haber ?? detalles.reduce((s: number, d: DetalleAsiento) => s + (d.haber || 0), 0))
                           )}
                         </TableCell>
+                        <TableCell className="text-right border-t-3 border-primary/30 text-white">
+
+                        </TableCell>
                       </TableRow>
 
                     </React.Fragment>
@@ -181,6 +214,9 @@ export default function LibroDiario() {
                   </TableCell>
                   <TableCell className="text-right border-t-3 border-primary/30 text-white">
                     {totalesMayores && totalesMayores.total_haber !== undefined ? fmtCurrency.format(totalesMayores.total_haber) : '$0.00'}
+                  </TableCell>
+                  <TableCell className="text-right border-t-3 border-primary/30 text-white">
+
                   </TableCell>
                 </TableRow>
               </TableFooter>
