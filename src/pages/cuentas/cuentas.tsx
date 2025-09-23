@@ -28,9 +28,13 @@ import { Button } from "@/components/ui/button";
 import { CuentasService } from "@/services/cuentas/cuentas.service";
 import { EditarCuentaForm } from "@/components/dashboard/modals/editar-cuenta.modal";
 import { NuevoAsientoForm } from "@/components/dashboard/modals/nuevo-asiento.modal";
+import { NuevaCuentaForm } from "@/components/dashboard/modals/nueva-cuenta.modal";
 
 export default function CatalogoCuentas() {
-  const [open, setOpen] = useState(false);
+
+  //TODO: implementar alerts con toastify
+  const [openImportar, setOpenImportar] = useState(false);
+  const [openNuevaCuenta, setOpenNuevaCuenta] = useState(false);
   const [cuentas, setCuentas] = useState<CuentaType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -216,57 +220,76 @@ export default function CatalogoCuentas() {
             Catálogo de Cuentas
           </CardTitle>
 
+
+
           <div className="w-full max-w-[1400px] mx-auto px-4 overflow-x-auto">
             <div className="py-4">
-              <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger className="bg-primary text-white w-40 rounded-full flex justify-center my-3 p-2">
-                  Importar Catálogo
-                </DialogTrigger>
-                <DialogContent
-                  className="max-w-4xl w-full h-auto p-0 overflow-auto p-6 "
-                  style={{ scrollbarWidth: "none" }}
-                >
-                  <DialogTitle>Importar Catálogo de Cuentas</DialogTitle>
 
-                  <DropzoneSimple
-                    onFilesSelected={(files) => {
-                      const file = files[0];
-                      if (!file) return;
-                      setSelectedFile(file);
-                      setUploadStatus("ready");
-                    }}
-                  />
+              <div style={{ display: "flex", gap: "10px", justifyContent: 'space-between' }}>
 
-                  {selectedFile && (
-                    <div className="mt-4 flex flex-col gap-2">
-                      <p className="text-sm text-muted-foreground">
-                        Archivo seleccionado: <strong>{selectedFile.name}</strong>
+                {/* Botón para añadir nuevo asiento */}
+                <Dialog open={openNuevaCuenta} onOpenChange={setOpenNuevaCuenta}>
+                  <DialogTrigger className='bg-primary text-white w-32 rounded-full flex justify-center my-3 p-2' >Nueva Cuenta</DialogTrigger>
+                  <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-auto " style={{ scrollbarWidth: 'none', minWidth: '45%' }}>
+
+                    {/* le pasamos el metodo setOpen al fomrulario, para que se pueda cerrar desde dentro */}
+                    <NuevaCuentaForm setOpen={setOpenNuevaCuenta} onCreated={loadCuentas}></NuevaCuentaForm>
+                  </DialogContent>
+                </Dialog>
+
+
+                {/* Dialog para importar catálogo */}
+                <Dialog open={openImportar} onOpenChange={setOpenImportar}>
+                  <DialogTrigger className="bg-primary text-white w-40 rounded-full flex justify-center my-3 p-2">
+                    Importar Catálogo
+                  </DialogTrigger>
+                  <DialogContent
+                    className="max-w-4xl w-full h-auto p-0 overflow-auto p-6 "
+                    style={{ scrollbarWidth: "none" }}
+                  >
+                    <DialogTitle>Importar Catálogo de Cuentas</DialogTitle>
+
+                    <DropzoneSimple
+                      onFilesSelected={(files) => {
+                        const file = files[0];
+                        if (!file) return;
+                        setSelectedFile(file);
+                        setUploadStatus("ready");
+                      }}
+                    />
+
+                    {selectedFile && (
+                      <div className="mt-4 flex flex-col gap-2">
+                        <p className="text-sm text-muted-foreground">
+                          Archivo seleccionado: <strong>{selectedFile.name}</strong>
+                        </p>
+
+                        <button
+                          className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/80"
+                          onClick={handleUpload}
+                          disabled={uploadStatus === "uploading"}
+                        >
+                          {uploadStatus === "uploading"
+                            ? "Importando..."
+                            : "Confirmar Importación"}
+                        </button>
+                      </div>
+                    )}
+
+                    {uploadStatus === "success" && (
+                      <p className="mt-4 text-green-600">
+                        Archivo importado correctamente
                       </p>
+                    )}
+                    {uploadStatus === "error" && (
+                      <p className="mt-4 text-red-600">
+                        Error al importar el archivo
+                      </p>
+                    )}
+                  </DialogContent>
+                </Dialog>
+              </div>
 
-                      <button
-                        className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/80"
-                        onClick={handleUpload}
-                        disabled={uploadStatus === "uploading"}
-                      >
-                        {uploadStatus === "uploading"
-                          ? "Importando..."
-                          : "Confirmar Importación"}
-                      </button>
-                    </div>
-                  )}
-
-                  {uploadStatus === "success" && (
-                    <p className="mt-4 text-green-600">
-                      Archivo importado correctamente
-                    </p>
-                  )}
-                  {uploadStatus === "error" && (
-                    <p className="mt-4 text-red-600">
-                      Error al importar el archivo
-                    </p>
-                  )}
-                </DialogContent>
-              </Dialog>
 
               <Table className="min-w-full">
                 <TableHeader>
