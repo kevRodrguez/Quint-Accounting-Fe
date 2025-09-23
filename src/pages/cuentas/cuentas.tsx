@@ -21,6 +21,11 @@ import { LoadingScreen } from "@/components/dashboard/LoadingScreen";
 import { ErrorScreen } from "@/components/dashboard/ErrorScreen";
 import { CuentasServices } from "@/services/cuentas/cuentas.services";
 
+
+//importar iconos de lucide-react
+import { Pen, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
 export default function CatalogoCuentas() {
   const [open, setOpen] = useState(false);
   const [cuentas, setCuentas] = useState<CuentaType[]>([]);
@@ -72,13 +77,13 @@ export default function CatalogoCuentas() {
 
       let parentCode: string | null = null;
 
-    if (code.length === 2) {
-      parentCode = code.slice(0, 1); // Ej: "11" → padre "1"
-    } else if (code.length === 4) {
-      parentCode = code.slice(0, 2); // Ej: "1101" → padre "11"
-    } else if (code.length === 6) {
-      parentCode = code.slice(0, 4); // Ej: "110101" → padre "1101"
-    }
+      if (code.length === 2) {
+        parentCode = code.slice(0, 1); // Ej: "11" → padre "1"
+      } else if (code.length === 4) {
+        parentCode = code.slice(0, 2); // Ej: "1101" → padre "11"
+      } else if (code.length === 6) {
+        parentCode = code.slice(0, 4); // Ej: "110101" → padre "1101"
+      }
 
       if (parentCode && lookup[parentCode]) {
         lookup[parentCode].children!.push(lookup[code]);
@@ -112,6 +117,17 @@ export default function CatalogoCuentas() {
             {cuenta.codigo}
           </TableCell>
           <TableCell>{cuenta.nombre_cuenta}</TableCell>
+          {cuenta.codigo.length > 2 && (
+
+            <TableCell>
+              <Button style={{ marginRight: '8px' }}>
+                <Pen></Pen>
+              </Button>
+              <Button>
+                <Trash2></Trash2>
+              </Button>
+            </TableCell>
+          )}
         </TableRow>,
         hasChildren && isExpanded
           ? renderCuentaRows(cuenta.children!, level + 1)
@@ -221,6 +237,9 @@ export default function CatalogoCuentas() {
                   </TableHead>
                   <TableHead className="w-[200px] md:w-[300px] text-white">
                     Nombre de la cuenta
+                  </TableHead>
+                  <TableHead className="w-[200px] md:w-[300px] text-white">
+                    Acciones
                   </TableHead>
                 </TableRow>
               </TableHeader>
