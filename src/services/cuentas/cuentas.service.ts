@@ -2,6 +2,7 @@ import api from "@/lib/axios";
 import axios from "axios";
 import type { Cuenta, LibroDiario } from "@/types/libroDiario.interface";
 import type { actualizarCuentaResponse } from "@/types/actualizarCuentaResponse.interface";
+import type { eliminarCuentaResponse } from "@/types/eliminarCuentaResponse.interface copy";
 
 
 
@@ -42,6 +43,22 @@ export class CuentasService {
       const { data } = await api.put<actualizarCuentaResponse>("catalogo-cuentas/" + id_cuenta,
         { codigo, nombre_cuenta: nombre }
       );
+      return data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message =
+          (error.status ? String(error.status) + " " : "") +
+          (error.response?.data?.message || error.message);
+        throw new Error(`Error al actualizar cuenta: ${message}`);
+      }
+      throw new Error("Error desconocido al actualizar cuenta");
+    }
+
+  }
+
+  public static async eliminarCuenta(id_cuenta: number): Promise<eliminarCuentaResponse> {
+    try {
+      const { data } = await api.delete<eliminarCuentaResponse>("catalogo-cuentas/" + id_cuenta);
       return data;
     } catch (error) {
       if (axios.isAxiosError(error)) {

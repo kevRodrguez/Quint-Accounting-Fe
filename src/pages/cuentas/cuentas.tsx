@@ -138,7 +138,7 @@ export default function CatalogoCuentas() {
 
 
               {/* Botón para eliminar cuenta */}
-              <Button>
+              <Button onClick={() => eliminarCuenta(cuenta.id_cuenta)}>
                 <Trash2></Trash2>
               </Button>
             </TableCell>
@@ -174,6 +174,17 @@ export default function CatalogoCuentas() {
     };
     reader.readAsDataURL(selectedFile);
   };
+
+  function eliminarCuenta(id_cuenta: number) {
+    if (!id_cuenta) return;
+    try {
+      const response = CuentasService.eliminarCuenta(id_cuenta);
+      console.log("Cuenta eliminada:", response);
+      loadCuentas();
+    } catch (error) {
+      console.error("Error al eliminar la cuenta:", error);
+    }
+  }
 
   return (
 
