@@ -17,10 +17,15 @@ import LibroDiario from './pages/dashboard/libro-diario'
 import CatalogoCuentas from './pages/cuentas/cuentas'
 
 
+//import para toastify alerts
+import { ToastContainer } from 'react-toastify';
 function App() {
 
   return (
     <AuthProvider>
+
+      {/* necesario para poder utilizar los toasts */}
+      <ToastContainer />
       <Routes>
         <Route path="/login" element={<LoginForm />} />
         <Route path="/sign-up" element={<SignUpForm />} />
