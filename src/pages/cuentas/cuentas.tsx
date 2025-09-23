@@ -21,16 +21,32 @@ import { LoadingScreen } from "@/components/dashboard/LoadingScreen";
 import { ErrorScreen } from "@/components/dashboard/ErrorScreen";
 import { CuentasServices } from "@/services/cuentas/cuentas.services";
 
+
+//importar iconos de lucide-react
+import { Pen, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CuentasService } from "@/services/cuentas/cuentas.service";
+import { EditarCuentaForm } from "@/components/dashboard/modals/editar-cuenta.modal";
+import { NuevoAsientoForm } from "@/components/dashboard/modals/nuevo-asiento.modal";
+import { NuevaCuentaForm } from "@/components/dashboard/modals/nueva-cuenta.modal";
+
 export default function CatalogoCuentas() {
-  const [open, setOpen] = useState(false);
+
+  //TODO: implementar alerts con toastify
+  const [openImportar, setOpenImportar] = useState(false);
+  const [openNuevaCuenta, setOpenNuevaCuenta] = useState(false);
   const [cuentas, setCuentas] = useState<CuentaType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+
   const [uploadStatus, setUploadStatus] = useState<
     "idle" | "ready" | "uploading" | "success" | "error"
   >("idle");
+
+  const [cuentaSeleccionada, setCuentaSeleccionada] = useState<(CuentaType & { children?: CuentaType[] }) | null>(null);
 
   const loadCuentas = async () => {
     try {
@@ -52,6 +68,8 @@ export default function CatalogoCuentas() {
     }));
   }
 
+
+
   useEffect(() => {
     loadCuentas();
   }, []);
@@ -72,13 +90,13 @@ export default function CatalogoCuentas() {
 
       let parentCode: string | null = null;
 
-    if (code.length === 2) {
-      parentCode = code.slice(0, 1); // Ej: "11" → padre "1"
-    } else if (code.length === 4) {
-      parentCode = code.slice(0, 2); // Ej: "1101" → padre "11"
-    } else if (code.length === 6) {
-      parentCode = code.slice(0, 4); // Ej: "110101" → padre "1101"
-    }
+      if (code.length === 2) {
+        parentCode = code.slice(0, 1); // Ej: "11" → padre "1"
+      } else if (code.length === 4) {
+        parentCode = code.slice(0, 2); // Ej: "1101" → padre "11"
+      } else if (code.length === 6) {
+        parentCode = code.slice(0, 4); // Ej: "110101" → padre "1101"
+      }
 
       if (parentCode && lookup[parentCode]) {
         lookup[parentCode].children!.push(lookup[code]);
@@ -112,6 +130,23 @@ export default function CatalogoCuentas() {
             {cuenta.codigo}
           </TableCell>
           <TableCell>{cuenta.nombre_cuenta}</TableCell>
+          {cuenta.codigo.length > 2 && (
+
+            <TableCell>
+
+
+              {/* Botón para editar cuenta */}
+              <Button style={{ marginRight: "10px" }} onClick={() => {
+                setCuentaSeleccionada(cuenta);
+              }}><Pen></Pen></Button>
+
+
+              {/* Botón para eliminar cuenta */}
+              <Button onClick={() => eliminarCuenta(cuenta.id_cuenta)}>
+                <Trash2></Trash2>
+              </Button>
+            </TableCell>
+          )}
         </TableRow>,
         hasChildren && isExpanded
           ? renderCuentaRows(cuenta.children!, level + 1)
@@ -144,110 +179,157 @@ export default function CatalogoCuentas() {
     reader.readAsDataURL(selectedFile);
   };
 
+  function eliminarCuenta(id_cuenta: number) {
+    if (!id_cuenta) return;
+    try {
+      const response = CuentasService.eliminarCuenta(id_cuenta);
+      console.log("Cuenta eliminada:", response);
+      loadCuentas();
+    } catch (error) {
+      console.error("Error al eliminar la cuenta:", error);
+    }
+  }
+
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader title="Catálogo de Cuentas" />
 
-        <CardTitle className="justify-center flex text-3xl my-4">
-          Catálogo de Cuentas
-        </CardTitle>
+    <>
 
-        <div className="w-full max-w-[1400px] mx-auto px-4 overflow-x-auto">
-          <div className="py-4">
-            <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger className="bg-primary text-white w-40 rounded-full flex justify-center my-3 p-2">
-                Importar Catálogo
-              </DialogTrigger>
-              <DialogContent
-                className="max-w-4xl w-full h-auto p-0 overflow-auto p-6 "
-                style={{ scrollbarWidth: "none" }}
-              >
-                <DialogTitle>Importar Catálogo de Cuentas</DialogTitle>
+      {/* Dialog para editar cuenta */}
+      <Dialog open={!!cuentaSeleccionada} onOpenChange={open => { if (!open) setCuentaSeleccionada(null) }}>
+        <DialogContent>
 
-                <DropzoneSimple
-                  onFilesSelected={(files) => {
-                    const file = files[0];
-                    if (!file) return;
-                    setSelectedFile(file);
-                    setUploadStatus("ready");
-                  }}
-                />
+          {/* Cuando el modal se cierra, se llama al metodo seOpen, que limpia la cuentaSeleciconada */}
+          <EditarCuentaForm setOpen={() => setCuentaSeleccionada(null)} cuentaSeleccionada={cuentaSeleccionada || undefined} onCreated={loadCuentas}></EditarCuentaForm>
+        </DialogContent>
+      </Dialog>
 
-                {selectedFile && (
-                  <div className="mt-4 flex flex-col gap-2">
-                    <p className="text-sm text-muted-foreground">
-                      Archivo seleccionado: <strong>{selectedFile.name}</strong>
-                    </p>
 
-                    <button
-                      className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/80"
-                      onClick={handleUpload}
-                      disabled={uploadStatus === "uploading"}
-                    >
-                      {uploadStatus === "uploading"
-                        ? "Importando..."
-                        : "Confirmar Importación"}
-                    </button>
-                  </div>
-                )}
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "calc(var(--spacing) * 72)",
+            "--header-height": "calc(var(--spacing) * 12)",
+          } as React.CSSProperties
+        }
+      >
+        <AppSidebar variant="inset" />
+        <SidebarInset>
+          <SiteHeader title="Catálogo de Cuentas" />
 
-                {uploadStatus === "success" && (
-                  <p className="mt-4 text-green-600">
-                    Archivo importado correctamente
-                  </p>
-                )}
-                {uploadStatus === "error" && (
-                  <p className="mt-4 text-red-600">
-                    Error al importar el archivo
-                  </p>
-                )}
-              </DialogContent>
-            </Dialog>
+          <CardTitle className="justify-center flex text-3xl my-4">
+            Catálogo de Cuentas
+          </CardTitle>
 
-            <Table className="min-w-full">
-              <TableHeader>
-                <TableRow className="bg-primary">
-                  <TableHead className="w-[100px] md:w-[120px] text-white">
-                    Código
-                  </TableHead>
-                  <TableHead className="w-[200px] md:w-[300px] text-white">
-                    Nombre de la cuenta
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
 
-              <TableBody>
-                {loading && (
-                  <TableRow>
-                    <TableCell colSpan={2} className="text-center py-6">
-                      <LoadingScreen title="Cargando cuentas..." text="" />
-                    </TableCell>
+
+          <div className="w-full max-w-[1400px] mx-auto px-4 overflow-x-auto">
+            <div className="py-4">
+
+              <div style={{ display: "flex", gap: "10px", justifyContent: 'space-between' }}>
+
+                {/* Botón para añadir nuevo asiento */}
+                <Dialog open={openNuevaCuenta} onOpenChange={setOpenNuevaCuenta}>
+                  <DialogTrigger className='bg-primary text-white w-32 rounded-full flex justify-center my-3 p-2' >Nueva Cuenta</DialogTrigger>
+                  <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-auto " style={{ scrollbarWidth: 'none', minWidth: '45%' }}>
+
+                    {/* le pasamos el metodo setOpen al fomrulario, para que se pueda cerrar desde dentro */}
+                    <NuevaCuentaForm setOpen={setOpenNuevaCuenta} onCreated={loadCuentas}></NuevaCuentaForm>
+                  </DialogContent>
+                </Dialog>
+
+
+                {/* Dialog para importar catálogo */}
+                <Dialog open={openImportar} onOpenChange={setOpenImportar}>
+                  <DialogTrigger className="bg-primary text-white w-40 rounded-full flex justify-center my-3 p-2">
+                    Importar Catálogo
+                  </DialogTrigger>
+                  <DialogContent
+                    className="max-w-4xl w-full h-auto p-0 overflow-auto p-6 "
+                    style={{ scrollbarWidth: "none" }}
+                  >
+                    <DialogTitle>Importar Catálogo de Cuentas</DialogTitle>
+
+                    <DropzoneSimple
+                      onFilesSelected={(files) => {
+                        const file = files[0];
+                        if (!file) return;
+                        setSelectedFile(file);
+                        setUploadStatus("ready");
+                      }}
+                    />
+
+                    {selectedFile && (
+                      <div className="mt-4 flex flex-col gap-2">
+                        <p className="text-sm text-muted-foreground">
+                          Archivo seleccionado: <strong>{selectedFile.name}</strong>
+                        </p>
+
+                        <button
+                          className="bg-primary text-white px-4 py-2 rounded hover:bg-primary/80"
+                          onClick={handleUpload}
+                          disabled={uploadStatus === "uploading"}
+                        >
+                          {uploadStatus === "uploading"
+                            ? "Importando..."
+                            : "Confirmar Importación"}
+                        </button>
+                      </div>
+                    )}
+
+                    {uploadStatus === "success" && (
+                      <p className="mt-4 text-green-600">
+                        Archivo importado correctamente
+                      </p>
+                    )}
+                    {uploadStatus === "error" && (
+                      <p className="mt-4 text-red-600">
+                        Error al importar el archivo
+                      </p>
+                    )}
+                  </DialogContent>
+                </Dialog>
+              </div>
+
+
+              <Table className="min-w-full">
+                <TableHeader>
+                  <TableRow className="bg-primary">
+                    <TableHead className="w-[100px] md:w-[120px] text-white">
+                      Código
+                    </TableHead>
+                    <TableHead className="w-[200px] md:w-[300px] text-white">
+                      Nombre de la cuenta
+                    </TableHead>
+                    <TableHead className="w-[200px] md:w-[300px] text-white">
+                      Acciones
+                    </TableHead>
                   </TableRow>
-                )}
+                </TableHeader>
 
-                {!loading && !error && renderCuentaRows(cuentaTree)}
+                <TableBody>
+                  {loading && (
+                    <TableRow>
+                      <TableCell colSpan={2} className="text-center py-6">
+                        <LoadingScreen title="Cargando cuentas..." text="" />
+                      </TableCell>
+                    </TableRow>
+                  )}
 
-                {!loading && error && (
-                  <TableRow>
-                    <TableCell colSpan={2} className="text-center text-red-600 py-6">
-                      <ErrorScreen title="Error al cargar cuentas" error={error} />
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                  {!loading && !error && renderCuentaRows(cuentaTree)}
+
+                  {!loading && error && (
+                    <TableRow>
+                      <TableCell colSpan={2} className="text-center text-red-600 py-6">
+                        <ErrorScreen title="Error al cargar cuentas" error={error} />
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </div>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+        </SidebarInset>
+      </SidebarProvider>
+    </>
   );
 }
