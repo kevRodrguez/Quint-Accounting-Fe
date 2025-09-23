@@ -136,7 +136,7 @@ export default function CatalogoCuentas() {
 
 
               {/* Botón para editar cuenta */}
-              <Button onClick={() => {
+              <Button style={{ marginRight: "10px" }} onClick={() => {
                 setCuentaSeleccionada(cuenta);
               }}><Pen></Pen></Button>
 
