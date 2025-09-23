@@ -1,7 +1,8 @@
 import api from "@/lib/axios";
 import axios from "axios";
 import type { Cuenta, LibroDiario } from "@/types/libroDiario.interface";
-import type { actualizarCuentaResponse } from "@/types/actualizarCuentaResponde.interface";
+import type { actualizarCuentaResponse } from "@/types/actualizarCuentaResponse.interface";
+
 
 
 export class CuentasService {
@@ -39,7 +40,7 @@ export class CuentasService {
   public static async actualizarCuenta(id_cuenta: number, codigo: string, nombre: string): Promise<actualizarCuentaResponse> {
     try {
       const { data } = await api.put<actualizarCuentaResponse>("catalogo-cuentas/" + id_cuenta,
-        { codigo, nombre }
+        { codigo, nombre_cuenta: nombre }
       );
       return data;
     } catch (error) {

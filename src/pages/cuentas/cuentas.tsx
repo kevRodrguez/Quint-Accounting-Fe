@@ -64,15 +64,7 @@ export default function CatalogoCuentas() {
     }));
   }
 
-  async function actualizarCuenta(id_cuenta: number, codigo: string, nombre: string) {
-    try {
-      const response = await CuentasService.actualizarCuenta(id_cuenta, codigo, nombre);
 
-      await loadCuentas();
-    } catch (error) {
-      console.error("Error al actualizar la cuenta:", error);
-    }
-  }
 
   useEffect(() => {
     loadCuentas();
@@ -192,7 +184,7 @@ export default function CatalogoCuentas() {
         <DialogContent>
 
           {/* Cuando el modal se cierra, se llama al metodo seOpen, que limpia la cuentaSeleciconada */}
-          <EditarCuentaForm setOpen={() => setCuentaSeleccionada(null)} cuentaSeleccionada={cuentaSeleccionada || undefined}></EditarCuentaForm>
+          <EditarCuentaForm setOpen={() => setCuentaSeleccionada(null)} cuentaSeleccionada={cuentaSeleccionada || undefined} onCreated={loadCuentas}></EditarCuentaForm>
         </DialogContent>
       </Dialog>
 

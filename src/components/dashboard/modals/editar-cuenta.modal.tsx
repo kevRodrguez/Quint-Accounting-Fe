@@ -16,7 +16,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CalendarIcon, MoreVertical, Trash2 } from "lucide-react";
-import { format } from "date-fns";
+import { format, set } from "date-fns";
 import { Combobox } from "@/components/ui/combobox";
 import { useEffect, useState } from "react";
 import {
@@ -56,8 +56,28 @@ export function EditarCuentaForm({
   onCreated?: () => void //callback para recargar datos en el padre
   cuentaSeleccionada?: Cuenta // agrega la propiedad cuentaSeleccionada a las props
 }) {
-  const [isLoading, setIsLoading] = useState(false);
 
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [id_cuenta, setIdCuenta] = useState(cuentaSeleccionada?.id_cuenta || 0);
+  const [codigo, setCodigo] = useState(cuentaSeleccionada?.codigo || "");
+  const [nombre, setNombre] = useState(cuentaSeleccionada?.nombre_cuenta || "");
+
+  async function actualizarCuenta() {
+    setIsLoading(true);
+    console.log("Actualizando cuenta:", { id_cuenta, codigo, nombre });
+    try {
+      const response = await CuentasService.actualizarCuenta(id_cuenta, codigo, nombre);
+
+      console.log("Cuenta actualizada:", response);
+      if (onCreated) onCreated(); //llama al callback para recargar datos en el padre
+
+      if (setOpen) setOpen(false); //cierra el modal
+    } catch (error) {
+      console.error("Error al actualizar la cuenta:", error);
+    }
+    setIsLoading(false);
+  }
   return (
     <>
 
@@ -75,7 +95,7 @@ export function EditarCuentaForm({
           <CardHeader>
             <CardTitle className="text-2xl">Editar cuenta</CardTitle>
             <CardDescription>
-              Ingresa los detalles de la cuenta a continuación
+              Ingresa los nuevos detalles de la cuenta contable
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -88,7 +108,9 @@ export function EditarCuentaForm({
                     type="text"
                     placeholder="código de la cuenta contable"
                     required
-                    value={cuentaSeleccionada?.codigo}
+                    value={codigo}
+                    onChange={(e) => setCodigo(e.target.value)}
+                    disabled={true}  // El campo código está deshabilitado para edición
                   />
                 </div>
                 <div className="grid gap-2">
@@ -96,9 +118,10 @@ export function EditarCuentaForm({
                   <Input
                     id="nombre"
                     type="text"
-                    placeholder="nombre de la cuenta contable"
+                    placeholder="nuevo nombre de la cuenta contable"
                     required
-                    value={cuentaSeleccionada?.nombre_cuenta}
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value)}
                   />
                 </div>
 
@@ -106,6 +129,7 @@ export function EditarCuentaForm({
                   type="submit"
                   className="w-full"
                   disabled={isLoading}
+                  onClick={() => actualizarCuenta()}
                   style={
                     {
                       fontWeight: "600",
@@ -118,6 +142,7 @@ export function EditarCuentaForm({
                   {isLoading ?
                     "Actualizando cuenta..." :
                     "Actualizar cuenta"}
+
                 </Button>
 
               </div>
