@@ -26,7 +26,12 @@ import { ErrorScreen } from '@/components/dashboard/ErrorScreen';
 import { Button } from '@/components/ui/button';
 import { AsientosService } from '@/services/asientos/asientos.service';
 import { toast } from 'react-toastify';
+import withReactContent from 'sweetalert2-react-content';
+import Swal from 'sweetalert2';
 
+
+//sweet-alerts
+const mySwal = withReactContent(Swal);
 
 export default function LibroDiario() {
 
@@ -75,6 +80,20 @@ export default function LibroDiario() {
   };
 
   const eliminarAsiento = async (id_asiento: number) => {
+
+    const result = await mySwal.fire({
+      title: '¿Estás seguro que deseas eliminar este asiento??',
+      text: "Esta acción no se puede deshacer.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      cancelButtonColor: '#fe2e2e',
+      confirmButtonColor: '#0a0a0a',
+      iconColor: '#fe2e2e'
+    })
+
+    if (!result.isConfirmed) return;
     if (eliminandoAsiento !== null) return;
 
     console.log("Iniciando eliminación del asiento:", id_asiento);

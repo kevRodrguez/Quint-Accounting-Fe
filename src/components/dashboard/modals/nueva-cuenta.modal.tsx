@@ -43,6 +43,7 @@ import type { Movimiento } from "@/types/movimiento.interface";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { CuentasService } from "@/services/cuentas/cuentas.service";
 import type { Cuenta } from "@/types/libroDiario.interface";
+import { toast } from "react-toastify";
 
 
 export function NuevaCuentaForm({
@@ -73,8 +74,17 @@ export function NuevaCuentaForm({
       if (onCreated) onCreated(); //llama al callback para recargar datos en el padre
 
       if (setOpen) setOpen(false); //cierra el modal
+
+      toast.success("Cuenta creada con éxito");
     } catch (error) {
-      console.error("Error al actualizar la cuenta:", error);
+      console.error("Error al crear la cuenta:", error);
+      if (error instanceof Error) {
+
+        toast.error(error?.message, { autoClose: false });
+      }
+      else {
+        toast.error("Error desconocido al crear la cuenta", { autoClose: false });
+      }
     }
     setIsLoading(false);
   }

@@ -43,6 +43,7 @@ import type { Movimiento } from "@/types/movimiento.interface";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { CuentasService } from "@/services/cuentas/cuentas.service";
 import type { Cuenta } from "@/types/libroDiario.interface";
+import { toast } from "react-toastify";
 
 
 export function NuevoAsientoForm({
@@ -163,6 +164,7 @@ export function NuevoAsientoForm({
         //al ser false, el DIalogo automaticamente se cierra (comportamiento embebido)
         setOpen(false)
       }
+      toast.success("Asiento creado con éxito:" + asientoCreado.descripcion);
 
     } catch (error) {
       console.log(error);

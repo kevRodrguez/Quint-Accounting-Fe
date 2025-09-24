@@ -30,6 +30,12 @@ import { EditarCuentaForm } from "@/components/dashboard/modals/editar-cuenta.mo
 import { NuevoAsientoForm } from "@/components/dashboard/modals/nuevo-asiento.modal";
 import { NuevaCuentaForm } from "@/components/dashboard/modals/nueva-cuenta.modal";
 
+
+//sweet-alerts
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+const mySwal = withReactContent(Swal);
+
 export default function CatalogoCuentas() {
 
   //TODO: implementar alerts con toastify
@@ -179,8 +185,20 @@ export default function CatalogoCuentas() {
     reader.readAsDataURL(selectedFile);
   };
 
-  function eliminarCuenta(id_cuenta: number) {
+  async function eliminarCuenta(id_cuenta: number) {
     if (!id_cuenta) return;
+    const result = await mySwal.fire({
+      title: '¿Estás seguro que deseas eliminar esta cuenta?',
+      text: "Esta acción no se puede deshacer.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      cancelButtonColor: '#fe2e2e',
+      confirmButtonColor: '#0a0a0a',
+      iconColor: '#fe2e2e'
+    })
+    if (!result.isConfirmed) return;
     try {
       const response = CuentasService.eliminarCuenta(id_cuenta);
       console.log("Cuenta eliminada:", response);

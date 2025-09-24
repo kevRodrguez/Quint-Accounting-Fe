@@ -43,6 +43,7 @@ import type { Movimiento } from "@/types/movimiento.interface";
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { CuentasService } from "@/services/cuentas/cuentas.service";
 import type { Cuenta } from "@/types/libroDiario.interface";
+import { toast } from "react-toastify";
 
 
 export function EditarCuentaForm({
@@ -73,8 +74,10 @@ export function EditarCuentaForm({
       if (onCreated) onCreated(); //llama al callback para recargar datos en el padre
 
       if (setOpen) setOpen(false); //cierra el modal
+      toast.success("Cuenta actualizada con éxito");
     } catch (error) {
       console.error("Error al actualizar la cuenta:", error);
+      toast.error("Error al actualizar la cuenta", { autoClose: false });
     }
     setIsLoading(false);
   }
