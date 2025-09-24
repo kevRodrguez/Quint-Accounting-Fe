@@ -193,7 +193,10 @@ export default function CatalogoCuentas() {
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
+      cancelButtonText: 'Cancelar',
+      cancelButtonColor: '#fe2e2e',
+      confirmButtonColor: '#0a0a0a',
+      iconColor: '#fe2e2e'
     })
     if (!result.isConfirmed) return;
     try {
