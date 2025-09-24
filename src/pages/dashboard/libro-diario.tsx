@@ -37,6 +37,7 @@ export default function LibroDiario() {
   const [totalesMayores, setTotalesMayores] = useState<AsientosConTotalesMayores | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [eliminandoAsiento, setEliminandoAsiento] = useState<number | null>(null)
 
   const fmtCurrency = new Intl.NumberFormat('es-SV', { style: 'currency', currency: 'USD' })
   const fmtDate = (iso: string) => new Intl.DateTimeFormat('es-SV').format(new Date(iso))
@@ -46,6 +47,9 @@ export default function LibroDiario() {
       const data = await LibroDiarioService.obtenerLibroDiario();
       setAsientos(data.asientosConTotales);
       setTotalesMayores(data.asientosConTotalesMayores);
+
+      // Limpiar errores cuando la carga es exitosa
+      setError(null);
     } catch (e: any) {
       console.error('Error al cargar libro diario:', e);
       setError(e?.message || 'No se pudo cargar el libro diario');
@@ -54,16 +58,46 @@ export default function LibroDiario() {
     }
   };
 
+  const recargarDatos = async () => {
+    try {
+      const data = await LibroDiarioService.obtenerLibroDiario();
+
+      setAsientos(data.asientosConTotales);
+      setTotalesMayores(data.asientosConTotalesMayores);
+
+      setError(null);
+      console.log("Estados actualizados correctamente");
+    } catch (e: any) {
+      console.error('Error al recargar libro diario:', e);
+      setError(e?.message || 'No se pudo recargar el libro diario');
+      throw e;
+    }
+  };
+
   const eliminarAsiento = async (id_asiento: number) => {
+    if (eliminandoAsiento !== null) return;
+
+    console.log("Iniciando eliminación del asiento:", id_asiento);
+    setEliminandoAsiento(id_asiento);
+
     try {
       const data = await AsientosService.eliminarAsiento(id_asiento);
+      console.log("Asiento eliminado exitosamente:", data);
       toast.success('Asiento eliminado con éxito: ' + data.descripcion);
-      loadLibroDiario();
+
+      console.log("Recargando datos del libro diario...");
+      // Pequeño delay para asegurar que la eliminación se complete en el backend
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      await recargarDatos();
+      console.log("Datos recargados exitosamente");
     } catch (error: any) {
       console.error("Error al eliminar asiento:", error);
-      setError(error?.message || 'No se pudo eliminar el asiento');
+      toast.error('Error al eliminar el asiento: ' + (error?.message || 'Error desconocido'));
+      // No establecer setError aquí ya que recargarDatos ya lo maneja
+    } finally {
+      setEliminandoAsiento(null);
     }
-
   }
 
 
@@ -95,7 +129,7 @@ export default function LibroDiario() {
               <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-auto " style={{ scrollbarWidth: 'none', minWidth: '45%' }}>
 
                 {/* le pasamos el metodo setOpen al fomrulario, para que se pueda cerrar desde dentro */}
-                <NuevoAsientoForm setOpen={setOpen} onCreated={loadLibroDiario} />
+                <NuevoAsientoForm setOpen={setOpen} onCreated={recargarDatos} />
               </DialogContent>
             </Dialog>
 
@@ -156,11 +190,20 @@ export default function LibroDiario() {
                         <TableCell>
                           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
 
-                            <Button style={{ width: '30%' }} onClick={() => {
-                              console.log("Eliminar asiento", asiento.id_asiento);
-                              eliminarAsiento(asiento.id_asiento)
-                            }}>
-                              <IconTrash size={16} />
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              disabled={eliminandoAsiento === asiento.id_asiento}
+                              onClick={() => {
+                                console.log("Eliminar asiento", asiento.id_asiento);
+                                eliminarAsiento(asiento.id_asiento)
+                              }}
+                            >
+                              {eliminandoAsiento === asiento.id_asiento ? (
+                                "Eliminando..."
+                              ) : (
+                                <IconTrash size={16} />
+                              )}
                             </Button>
                           </div>
                         </TableCell>
