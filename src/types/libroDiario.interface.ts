@@ -28,3 +28,8 @@ export interface AsientosConTotalesMayores {
     total_debe:  number;
     total_haber: number;
 }
+
+// si no encuentra el libro diario
+export interface LibroDiarioErrorResponse {
+    message: string;
+}
