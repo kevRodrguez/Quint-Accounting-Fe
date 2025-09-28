@@ -1,6 +1,5 @@
-import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
-
-import { Badge } from "@/components/ui/badge"
+import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardAction,
@@ -8,95 +7,119 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
+import { mayorizacionServices } from "@/services/cuentas/mayorizacion.service";
+import type { MayorizacionItem } from "@/types/mayorizacion.interface";
+import { useEffect, useState } from "react";
 
-export function SectionCards() {
+interface SectionCardsProps {
+  onCardClick?: (codigoCuenta: string) => void;
+  haber?: boolean;
+  fechaInicio: Date | undefined;
+  fechaFinal: Date | undefined;
+}
+
+export function SectionCards({
+  onCardClick,
+  fechaInicio,
+  fechaFinal,
+  haber,
+}: SectionCardsProps) {
+  const [mayorizacionArray, setMayorizacionArray] = useState<
+    MayorizacionItem[]
+  >([]);
+  const [loading, setLoading] = useState(false);
+
+  const obtenerMayorizaciones = async () => {
+    if (!fechaInicio || !fechaFinal) {
+      return;
+    }
+    try {
+      const mayorizacion = await mayorizacionServices.obtenerMayorizacion(
+        fechaInicio,
+        fechaFinal
+      );
+      setMayorizacionArray(mayorizacion);
+    } catch (error) {
+      console.log(error);
+
+      // let errorMsg = ""
+      // if (typeof error === "object" && error !== null && "message" in error) {
+      //   errorMsg += ": " + String((error as { message?: string }).message);
+      // }
+      // setErrorMessage(errorMsg);
+      // setIsAlertVisible(true);
+      // setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (fechaInicio && fechaFinal) {
+      obtenerMayorizaciones();
+    }
+  }, [fechaInicio, fechaFinal]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-6">
+        <span className="text-muted-foreground">Cargando mayorización...</span>
+      </div>
+    );
+  }
+
+  const cardsData = mayorizacionArray
+
+    .filter((item) => item.Movimientos.length > 0)
+    .filter((item) => {
+      if (haber) {
+        return item.Totales.Saldo < 0;
+      }
+      return item.Totales.Saldo >= 0;
+    })
+    .map((item) => ({
+      codigo: item.Codigo,
+      desc: item.Cuenta,
+      value: `$${item.Totales.Saldo.toFixed(2)}`,
+      trend: `Debe: $${item.Totales.Debe.toFixed(
+        2
+      )} | Haber: $${item.Totales.Haber.toFixed(2)}`,
+      up: item.Totales.Saldo >= 0,
+      footer: "Saldo final",
+    }));
+
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Total Revenue</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            $1,250.00
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month <IconTrendingUp className="size-4" />
-          </div>
-          <div className="text-muted-foreground">
-            Visitors for the last 6 months
-          </div>
-        </CardFooter>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>New Customers</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            1,234
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingDown />
-              -20%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Down 20% this period <IconTrendingDown className="size-4" />
-          </div>
-          <div className="text-muted-foreground">
-            Acquisition needs attention
-          </div>
-        </CardFooter>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Active Accounts</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            45,678
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +12.5%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Strong user retention <IconTrendingUp className="size-4" />
-          </div>
-          <div className="text-muted-foreground">Engagement exceed targets</div>
-        </CardFooter>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Growth Rate</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            4.5%
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <IconTrendingUp />
-              +4.5%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Steady performance increase <IconTrendingUp className="size-4" />
-          </div>
-          <div className="text-muted-foreground">Meets growth projections</div>
-        </CardFooter>
-      </Card>
+      {cardsData.map((card) => (
+        <Card
+          key={card.codigo}
+          className="@container/card cursor-pointer"
+          onClick={() => onCardClick?.(card.codigo)}
+        >
+          <CardHeader>
+            <CardDescription>{card.desc}</CardDescription>
+            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+              {card.value}
+            </CardTitle>
+            <CardAction>
+              <Badge variant="outline">
+                {card.up ? <IconTrendingUp /> : <IconTrendingDown />}
+                {card.trend}
+              </Badge>
+            </CardAction>
+          </CardHeader>
+          <CardFooter className="flex-col items-start gap-1.5 text-sm">
+            <div className="line-clamp-1 flex gap-2 font-medium">
+              {card.footer}
+              {card.up ? (
+                <IconTrendingUp className="size-4" />
+              ) : (
+                <IconTrendingDown className="size-4" />
+              )}
+            </div>
+            <div className="text-muted-foreground">{card.desc}</div>
+          </CardFooter>
+        </Card>
+      ))}
     </div>
-  )
+  );
 }
