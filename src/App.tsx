@@ -15,6 +15,7 @@ import Reportes from './pages/home/reportes'
 import { UpdatePasswordForm } from './components/auth/update-password-form'
 import LibroDiario from './pages/dashboard/libro-diario'
 import CatalogoCuentas from './pages/cuentas/cuentas'
+import Mayorizacion from './pages/dashboard/mayorización'
 
 
 //import para toastify alerts
@@ -39,12 +40,13 @@ function App() {
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
         {/* Protected routes */}
-        <Route element={<ProtectedRoute />}>
+          <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
 
           {/* Sidebar Routes */}
           <Route path="/libro-diario" element={<LibroDiario />} />
           <Route path="/catalogo-cuentas" element={<CatalogoCuentas />} />
+          <Route path="/mayorizacion" element={<Mayorizacion />} />
 
           {/* Redirect to dashboard for any other route */}
           <Route path="*" element={<Navigate to="/dashboard" replace />} />

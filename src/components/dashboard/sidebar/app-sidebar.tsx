@@ -39,8 +39,8 @@ const data = {
       icon: IconBook,
     },
     {
-      title: "Libro Mayor",
-      url: "#",
+      title: "Mayorización",
+      url: "/mayorizacion",
       icon: IconBook2,
     },
     {
