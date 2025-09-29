@@ -10,6 +10,7 @@ import { IconTrendingUp } from '@tabler/icons-react';
 import { Badge } from 'lucide-react';
 import { EstadisticasService } from '@/services/estadisticas/estadisticas.service';
 import { toast } from 'react-toastify';
+import { Skeleton } from '@/components/ui/skeleton';
 export default function Dashboard() {
 
 
@@ -71,48 +72,65 @@ export default function Dashboard() {
                                     {/* Total de Activos en el último mes */}
                                     <Card className="@container/card mt-2">
                                         <CardHeader>
-                                            <CardDescription>Total de Activos</CardDescription>
-                                            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                                                {"$ " + totalActivos}
-                                            </CardTitle>
-                                            <CardAction>
-                                                <Badge>
-                                                    <IconTrendingUp />
-                                                    +12.5%
-                                                </Badge>
-                                            </CardAction>
+                                            {isLoading ? (
+                                                <Skeleton className="h-[20px] w-[100px] rounded-full" />
+                                            ) : (
+                                                <><CardDescription>Total de Activos</CardDescription><CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                                                    {"$ " + totalActivos}
+                                                </CardTitle><CardAction>
+                                                        <Badge>
+                                                            <IconTrendingUp />
+                                                            +12.5%
+                                                        </Badge>
+                                                    </CardAction></>
+                                            )}
+
                                         </CardHeader>
                                         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-                                            <div className="line-clamp-1 flex gap-2 font-medium">
-                                                Han aumentado un 12.5% este último mes <IconTrendingUp className="size-4" />
-                                            </div>
-                                            <div className="text-muted-foreground">
-                                                Total de activos registrados en el último mes
-                                            </div>
+                                            {isLoading ? (
+                                                <Skeleton className="h-[20px] w-[100px] rounded-full" />
+                                            ) : (
+                                                <><div className="line-clamp-1 flex gap-2 font-medium">
+                                                    Han aumentado un 12.5% este último mes <IconTrendingUp className="size-4" />
+                                                </div><div className="text-muted-foreground">
+                                                        Total de activos registrados en el último mes
+                                                    </div></>
+                                            )}
                                         </CardFooter>
                                     </Card>
-
                                     {/* Total de Pasivos en el último mes */}
                                     <Card className="@container/card mt-2">
                                         <CardHeader>
-                                            <CardDescription>Total de Pasivos</CardDescription>
-                                            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                                                {"$ " + totalPasivos}
-                                            </CardTitle>
-                                            <CardAction>
-                                                <Badge>
-                                                    <IconTrendingUp />
-                                                    +8.2%
-                                                </Badge>
-                                            </CardAction>
+                                            {isLoading ? (
+                                                <Skeleton className="h-[20px] w-[100px] rounded-full" />
+                                            ) : (
+                                                <>
+                                                    <CardDescription>Total de Pasivos</CardDescription>
+                                                    <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                                                        {"$ " + totalPasivos}
+                                                    </CardTitle>
+                                                    <CardAction>
+                                                        <Badge>
+                                                            <IconTrendingUp />
+                                                            +8.2%
+                                                        </Badge>
+                                                    </CardAction>
+                                                </>
+                                            )}
                                         </CardHeader>
                                         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-                                            <div className="line-clamp-1 flex gap-2 font-medium">
-                                                Han aumentado un 8.2% este último mes <IconTrendingUp className="size-4" />
-                                            </div>
-                                            <div className="text-muted-foreground">
-                                                Total de pasivos registrados en el último mes
-                                            </div>
+                                            {isLoading ? (
+                                                <Skeleton className="h-[20px] w-[100px] rounded-full" />
+                                            ) : (
+                                                <>
+                                                    <div className="line-clamp-1 flex gap-2 font-medium">
+                                                        Han aumentado un 8.2% este último mes <IconTrendingUp className="size-4" />
+                                                    </div>
+                                                    <div className="text-muted-foreground">
+                                                        Total de pasivos registrados en el último mes
+                                                    </div>
+                                                </>
+                                            )}
                                         </CardFooter>
                                     </Card>
                                 </div>
@@ -123,48 +141,72 @@ export default function Dashboard() {
                                     {/* Total de Capital Contable */}
                                     <Card className="@container/card mt-2">
                                         <CardHeader>
-                                            <CardDescription>Total de Capital Contable</CardDescription>
-                                            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                                                {"$ " + totalCapitalContable}
-                                            </CardTitle>
-                                            <CardAction>
-                                                <Badge>
-                                                    <IconTrendingUp />
-                                                    +5.0%
-                                                </Badge>
-                                            </CardAction>
+                                            {isLoading ? (
+                                                <Skeleton className="h-[20px] w-[150px] rounded-full" />
+                                            ) : (
+                                                <>
+                                                    <CardDescription>Total de Capital Contable</CardDescription>
+                                                    <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                                                        {"$ " + totalCapitalContable}
+                                                    </CardTitle>
+                                                    <CardAction>
+                                                        <Badge>
+                                                            <IconTrendingUp />
+                                                            +5.0%
+                                                        </Badge>
+                                                    </CardAction>
+                                                </>
+                                            )}
                                         </CardHeader>
                                         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-                                            <div className="line-clamp-1 flex gap-2 font-medium">
-                                                Ha aumentado un 5% este último mes <IconTrendingUp className="size-4" />
-                                            </div>
-                                            <div className="text-muted-foreground">
-                                                Capital contable acumulado en el último mes
-                                            </div>
+                                            {isLoading ? (
+                                                <Skeleton className="h-[20px] w-[150px] rounded-full" />
+                                            ) : (
+                                                <>
+                                                    <div className="line-clamp-1 flex gap-2 font-medium">
+                                                        Ha aumentado un 5% este último mes <IconTrendingUp className="size-4" />
+                                                    </div>
+                                                    <div className="text-muted-foreground">
+                                                        Capital contable acumulado en el último mes
+                                                    </div>
+                                                </>
+                                            )}
                                         </CardFooter>
                                     </Card>
 
                                     {/* Total de Ingresos en el último mes */}
                                     <Card className="@container/card mt-2">
                                         <CardHeader>
-                                            <CardDescription>Total de Ingresos</CardDescription>
-                                            <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                                                {"$ " + totalIngresos}
-                                            </CardTitle>
-                                            <CardAction>
-                                                <Badge>
-                                                    <IconTrendingUp />
-                                                    +15.3%
-                                                </Badge>
-                                            </CardAction>
+                                            {isLoading ? (
+                                                <Skeleton className="h-[20px] w-[120px] rounded-full" />
+                                            ) : (
+                                                <>
+                                                    <CardDescription>Total de Ingresos</CardDescription>
+                                                    <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                                                        {"$ " + totalIngresos}
+                                                    </CardTitle>
+                                                    <CardAction>
+                                                        <Badge>
+                                                            <IconTrendingUp />
+                                                            +15.3%
+                                                        </Badge>
+                                                    </CardAction>
+                                                </>
+                                            )}
                                         </CardHeader>
                                         <CardFooter className="flex-col items-start gap-1.5 text-sm">
-                                            <div className="line-clamp-1 flex gap-2 font-medium">
-                                                Han aumentado un 15.3% este último mes <IconTrendingUp className="size-4" />
-                                            </div>
-                                            <div className="text-muted-foreground">
-                                                Ingresos totales generados en el último mes
-                                            </div>
+                                            {isLoading ? (
+                                                <Skeleton className="h-[20px] w-[120px] rounded-full" />
+                                            ) : (
+                                                <>
+                                                    <div className="line-clamp-1 flex gap-2 font-medium">
+                                                        Han aumentado un 15.3% este último mes <IconTrendingUp className="size-4" />
+                                                    </div>
+                                                    <div className="text-muted-foreground">
+                                                        Ingresos totales generados en el último mes
+                                                    </div>
+                                                </>
+                                            )}
                                         </CardFooter>
                                     </Card>
                                 </div>
