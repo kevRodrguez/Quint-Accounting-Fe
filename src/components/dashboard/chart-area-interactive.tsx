@@ -118,7 +118,7 @@ export function ChartAreaInteractive() {
       fecha: item.fecha,
       asientos: item.asientos,
     }))
-  }, [timeRange])
+  }, [timeRange, asientosUltimosTresMeses])
 
   return (
 
