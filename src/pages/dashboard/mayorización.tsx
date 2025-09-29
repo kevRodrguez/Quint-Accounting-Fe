@@ -20,7 +20,8 @@ export default function Mayorizacion() {
 
   // calcular rango por defecto: desde 1 de enero del año anterior hasta 31 de diciembre del año actual
   const today = new Date();
-  const defaultStart = new Date(today.getFullYear() - 1, 0, 1); // 1 Jan previous year
+  // ahora: 1 de enero del año actual hasta 31 de diciembre del año actual
+  const defaultStart = new Date(today.getFullYear(), 0, 1); // 1 Jan current year
   const defaultEnd = new Date(today.getFullYear(), 11, 31); // 31 Dec current year
 
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
