@@ -18,7 +18,15 @@ export default function Mayorizacion() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedCuenta, setSelectedCuenta] = useState<string | null>(null);
 
-  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  // calcular rango por defecto: desde 1 de enero del año anterior hasta 31 de diciembre del año actual
+  const today = new Date();
+  const defaultStart = new Date(today.getFullYear() - 1, 0, 1); // 1 Jan previous year
+  const defaultEnd = new Date(today.getFullYear(), 11, 31); // 31 Dec current year
+
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: defaultStart,
+    to: defaultEnd,
+  });
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,8 +37,8 @@ export default function Mayorizacion() {
     fechaInicio: Date | undefined;
     fechaFinal: Date | undefined;
   }>({
-    fechaInicio: new Date(),
-    fechaFinal: new Date()
+    fechaInicio: defaultStart,
+    fechaFinal: defaultEnd,
   });
 
   const initializePage = async () => {
@@ -82,8 +90,8 @@ export default function Mayorizacion() {
   const limpiarFiltros = async () => {
     setDateRange(undefined);
     setFechasFiltradas({
-      fechaInicio: new Date(),
-      fechaFinal: new Date()
+      fechaInicio: undefined,
+      fechaFinal: undefined
     });
     toast.info("Filtros limpiados");
   };
