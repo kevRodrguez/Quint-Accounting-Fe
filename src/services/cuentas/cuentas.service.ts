@@ -1,6 +1,10 @@
 import api from "@/lib/axios";
 import axios from "axios";
 import type { Cuenta, LibroDiario } from "@/types/libroDiario.interface";
+import type { actualizarCuentaResponse } from "@/types/actualizarCuentaResponse.interface";
+import type { eliminarCuentaResponse } from "@/types/eliminarCuentaResponse.interface copy";
+import type { InsertarCuentaResponse } from "@/types/insertarCuentaResponse.interface";
+
 
 
 export class CuentasService {
@@ -31,6 +35,57 @@ export class CuentasService {
         throw new Error(`Error al obtener cuentas: ${message}`);
       }
       throw new Error("Error desconocido al obtener cuentas");
+    }
+
+  }
+
+
+  public static async insertarCuenta(codigo: string, nombre: string): Promise<InsertarCuentaResponse> {
+    try {
+      const { data } = await api.post<InsertarCuentaResponse>("catalogo-cuentas", { codigo, nombre_cuenta: nombre });
+      console.log("Cuenta insertada:", data);
+      return data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message =
+          (error.status ? String(error.status) + " " : "") +
+          (error.response?.data?.message || error.message);
+        throw new Error(`Error al actualizar cuenta: ${message}`);
+      }
+      throw new Error("Error desconocido al actualizar cuenta");
+    }
+
+  }
+  public static async actualizarCuenta(id_cuenta: number, codigo: string, nombre: string): Promise<actualizarCuentaResponse> {
+    try {
+      const { data } = await api.put<actualizarCuentaResponse>("catalogo-cuentas/" + id_cuenta,
+        { codigo, nombre_cuenta: nombre }
+      );
+      return data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message =
+          (error.status ? String(error.status) + " " : "") +
+          (error.response?.data?.message || error.message);
+        throw new Error(`Error al actualizar cuenta: ${message}`);
+      }
+      throw new Error("Error desconocido al actualizar cuenta");
+    }
+
+  }
+
+  public static async eliminarCuenta(id_cuenta: number): Promise<eliminarCuentaResponse> {
+    try {
+      const { data } = await api.delete<eliminarCuentaResponse>("catalogo-cuentas/" + id_cuenta);
+      return data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message =
+          (error.status ? String(error.status) + " " : "") +
+          (error.response?.data?.message || error.message);
+        throw new Error(`Error al actualizar cuenta: ${message}`);
+      }
+      throw new Error("Error desconocido al actualizar cuenta");
     }
 
   }
