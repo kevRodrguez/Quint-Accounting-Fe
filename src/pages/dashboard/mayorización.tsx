@@ -14,9 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import { SectionCards } from "@/components/dashboard/section-cards";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { DetalleMayorizacion } from "@/components/dashboard/modals/detalle-mayorizacion-modal";
-import { DialogTitle } from "@radix-ui/react-dialog";
 
 export default function Mayorizacion() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -36,9 +35,9 @@ export default function Mayorizacion() {
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader title="Catálogo de Cuentas" />
+        <SiteHeader title="Mayorización de cuentas" />
         <CardTitle className="justify-center flex text-3xl my-4">
-          Catálogo de Cuentas
+          Mayorización de cuentas
         </CardTitle>
 
         <div className="w-full max-w-[1400px] mx-auto px-6 overflow-x-auto">
@@ -99,7 +98,7 @@ export default function Mayorizacion() {
             </div>
           </div>
           <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-            <DialogTitle>holaxd</DialogTitle>
+            <DialogTitle></DialogTitle>
             <DialogContent className="max-w-4xl w-full h-[80vh] p-0 overflow-auto">
               <DetalleMayorizacion
                 codigo={selectedCuenta}
