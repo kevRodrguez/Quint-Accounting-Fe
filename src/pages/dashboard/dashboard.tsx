@@ -4,10 +4,11 @@ import { ChartAreaInteractive } from '@/components/dashboard/chart-area-interact
 // import { SectionCards } from '@/components/dashboard/section-cards';
 import { SiteHeader } from '@/components/dashboard/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { IconTrendingUp } from '@tabler/icons-react';
 import { Badge } from 'lucide-react';
+import { EstadisticasService } from '@/services/estadisticas/estadisticas.service';
 export default function Dashboard() {
 
     return (
