@@ -70,8 +70,16 @@ export default function LibroDiario() {
     style: "currency",
     currency: "USD",
   });
-  const fmtDate = (iso: string) =>
-    new Intl.DateTimeFormat("es-SV").format(new Date(iso));
+  const fmtDate = (iso: string) => {
+    // Evitar problemas de zona horaria parseando solo la fecha
+    if (iso.includes('T')) {
+      const soloFecha = iso.split('T')[0];
+      const [year, month, day] = soloFecha.split('-').map(Number);
+      const fecha = new Date(year, month - 1, day); // month - 1 porque Date usa 0-indexado
+      return new Intl.DateTimeFormat("es-SV").format(fecha);
+    }
+    return new Intl.DateTimeFormat("es-SV").format(new Date(iso));
+  };
 
   const loadLibroDiario = async () => {
     try {
@@ -237,7 +245,7 @@ export default function LibroDiario() {
       console.error("Error al eliminar asiento:", error);
       toast.error(
         "Error al eliminar el asiento: " +
-          (error?.message || "Error desconocido")
+        (error?.message || "Error desconocido")
       );
       // No establecer setError aquí ya que recargarDatos ya lo maneja
     } finally {
@@ -414,16 +422,16 @@ export default function LibroDiario() {
                     const detalles = asiento.detalle_asiento?.length
                       ? asiento.detalle_asiento
                       : ([
-                          {
-                            debe: 0,
-                            haber: 0,
-                            cuenta: {
-                              id_cuenta: 0,
-                              nombre_cuenta: "",
-                              codigo: "",
-                            },
+                        {
+                          debe: 0,
+                          haber: 0,
+                          cuenta: {
+                            id_cuenta: 0,
+                            nombre_cuenta: "",
+                            codigo: "",
                           },
-                        ] as DetalleAsiento[]);
+                        },
+                      ] as DetalleAsiento[]);
 
                     return (
                       // React fragment es una especie de div invisible que no añade nodos extra al DOM
@@ -444,6 +452,7 @@ export default function LibroDiario() {
                               style={{
                                 display: "flex",
                                 justifyContent: "flex-end",
+                                gap: "0.5rem",
                               }}
                             >
                               <Button
@@ -511,21 +520,21 @@ export default function LibroDiario() {
                           <TableCell className="text-right border-t-3 border-primary/30">
                             {fmtCurrency.format(
                               asiento.total_debe ??
-                                detalles.reduce(
-                                  (s: number, d: DetalleAsiento) =>
-                                    s + (d.debe || 0),
-                                  0
-                                )
+                              detalles.reduce(
+                                (s: number, d: DetalleAsiento) =>
+                                  s + (d.debe || 0),
+                                0
+                              )
                             )}
                           </TableCell>
                           <TableCell className="text-right border-t-3 border-primary/30">
                             {fmtCurrency.format(
                               asiento.total_haber ??
-                                detalles.reduce(
-                                  (s: number, d: DetalleAsiento) =>
-                                    s + (d.haber || 0),
-                                  0
-                                )
+                              detalles.reduce(
+                                (s: number, d: DetalleAsiento) =>
+                                  s + (d.haber || 0),
+                                0
+                              )
                             )}
                           </TableCell>
                           <TableCell className="text-right border-t-3 border-primary/30 text-white"></TableCell>
