@@ -36,33 +36,61 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import {
-  AsientosService
-} from "@/services/asientos/asientos.service";
+import { AsientosService } from "@/services/asientos/asientos.service";
 import type { Movimiento } from "@/types/movimiento.interface";
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { CuentasService } from "@/services/cuentas/cuentas.service";
-import type { Cuenta } from "@/types/libroDiario.interface";
+import type { AsientosConTotale, Cuenta } from "@/types/libroDiario.interface";
 import { toast } from "react-toastify";
 
-
-export function NuevoAsientoForm({
+export function EditarAsientoForm({
+  asiento,
   className,
   setOpen,
   onCreated,
+  onUpdated,
   ...props
 }: React.ComponentPropsWithoutRef<"div"> & {
-  setOpen?: (open: boolean) => void //se define el metodo setOpen en las props del modal
-  onCreated?: () => void //callback para recargar datos en el padre
+  asiento: AsientosConTotale | null;
+  setOpen?: (open: boolean) => void;
+  onCreated?: () => void;
+  onUpdated?: () => void;
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  const [descripcion, setDescripcion] = useState("");
-  const [fecha, setFecha] = useState<Date | undefined>(new Date());
+  const [descripcion, setDescripcion] = useState(asiento?.descripcion || "");
+  const [fecha, setFecha] = useState<Date | undefined>(asiento?.fecha);
 
+  // const [movimientos, setMovimientos] = useState<Movimiento[]>(
+  //   asiento?.detalle_asiento?.map((d, index) => ({
+  //     id: index + 1,
+  //     cuentaId: d.cuenta.id_cuenta,
+  //     debe: d.debe,
+  //     haber: d.haber,
+  //     descripcion: d.cuenta.nombre_cuenta,
+  //   })) || []
+  // );
 
-  const [idCounter, setIdCounter] = useState(3); // Estado para llevar el conteo de IDs
+  const [movimientos, setMovimientos] = useState<Movimiento[]>(
+    asiento?.detalle_asiento?.map((d, index) => ({
+      id: index + 1,
+      cuentaId: d.cuenta.id_cuenta,
+      debe: d.debe,
+      haber: d.haber,
+      descripcion: d.cuenta.nombre_cuenta,
+    })) || []
+  );
 
-  const [movimientos, setMovimientos] = useState<Movimiento[]>([]);
+  const [idCounter, setIdCounter] = useState(
+    asiento?.detalle_asiento ? asiento.detalle_asiento.length + 1 : 1
+  );
 
   const [nuevoMovimiento, setNuevoMovimiento] = useState<
     Omit<Movimiento, "id">
@@ -79,7 +107,7 @@ export function NuevoAsientoForm({
   //mensaje de error para dialog
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [cuentasSelect, setCuentasSelect] = useState<Cuenta[]>([])
+  const [cuentasSelect, setCuentasSelect] = useState<Cuenta[]>([]);
 
   const actualizarMovimiento = (
     id: number,
@@ -93,7 +121,7 @@ export function NuevoAsientoForm({
     //mapea los movimientos, si el id coincide, retorna el objeto modificado
     const nuevosMovimientos = movimientos.map((m) => {
       if (m.id === id) {
-        return { ...m, cuentaId, debe, haber }; // Retorna un nuevo objeto con las modificaciones
+        return { ...m, cuentaId, debe, haber };
       }
 
       return m;
@@ -102,14 +130,10 @@ export function NuevoAsientoForm({
   };
 
   const eliminarMovimiento = (id: number) => {
-    //trae los movimientos que que no coinciden con el id seleccionado
     const movimientosRestantes = movimientos.filter((m) => m.id !== id);
     setMovimientos(movimientosRestantes);
   };
 
-
-  //valida que ningun movimiento tenga ambos valores en 0
-  //si lo tiene, muestra alerta y detiene la creacion del asiento
   const validarMovimientos = () => {
     for (let movimiento of movimientos) {
       if (movimiento.debe == 0 && movimiento.haber == 0) {
@@ -117,49 +141,48 @@ export function NuevoAsientoForm({
       }
     }
     return true;
-  }
+  };
 
-  const crearAsiento = async () => {
+  const editarAsiento = async () => {
+    if (!asiento) return;
     setIsLoading(true);
 
     if (!validarMovimientos()) {
-      setErrorMessage("Todos los movimientos deben tener un monto mayor a $0 en el debe o haber");
+      setErrorMessage(
+        "Todos los movimientos deben tener un monto mayor a $0 en el debe o haber"
+      );
       setIsAlertVisible(true);
       setIsLoading(false);
-      return; // Detener la creación del asiento si la validación falla
+      return;
     }
+
     try {
-      const payload = {
+      await AsientosService.actualizarAsiento(
+        asiento.id_asiento,
         descripcion,
-        fecha,
-        movimientos: movimientos.map((m) => ({
-          cuentaId: Number(m.cuentaId),
-          debe: Number(m.debe),
-          haber: Number(m.haber),
-        })),
-      };
+        fecha || asiento.fecha,
+        movimientos
+      );
 
-      const asientoCreado = await AsientosService.crearAsiento(payload);
-
-      console.log("Asiento creado con detalles:", asientoCreado);
+      if (onCreated) onCreated();
+      if (setOpen) setOpen(false);
+      toast.success("Asiento actualizado con éxito");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al actualizar el asiento", { autoClose: false });
+    } finally {
       setIsLoading(false);
+    }
+  };
 
-      //llama al callback para recargar datos en el padre
-      if (onCreated) {
-        onCreated();
-      }
-
-      if (setOpen) {
-        //cerramos modal al finalizar
-        //al ser false, el DIalogo automaticamente se cierra (comportamiento embebido)
-        setOpen(false)
-      }
-      toast.success("Asiento creado con éxito:" + asientoCreado.descripcion);
-
+  const obtenerCuentas = async () => {
+    try {
+      const cuentas = await CuentasService.obtenerCuentas();
+      setCuentasSelect(cuentas);
     } catch (error) {
       console.log(error);
-      console.log("mostrando modal de error");
-      let errorMsg = ""
+
+      let errorMsg = "";
       if (typeof error === "object" && error !== null && "message" in error) {
         errorMsg += ": " + String((error as { message?: string }).message);
       }
@@ -168,23 +191,6 @@ export function NuevoAsientoForm({
       setIsLoading(false);
     }
   };
-  const obtenerCuentas = async () => {
-    try {
-      const cuentas = await CuentasService.obtenerCuentas();
-      console.log("Cuentas obtenidas:", cuentas);
-      setCuentasSelect(cuentas)
-    } catch (error) {
-      console.log(error);
-
-      let errorMsg = ""
-      if (typeof error === "object" && error !== null && "message" in error) {
-        errorMsg += ": " + String((error as { message?: string }).message);
-      }
-      setErrorMessage(errorMsg);
-      setIsAlertVisible(true);
-      setIsLoading(false);
-    }
-  }
 
   const actualizarTotales = () => {
     let debe = 0,
@@ -213,28 +219,21 @@ export function NuevoAsientoForm({
     } else {
       setDebeIsDisabled(false);
     }
-
   }, [movimientos, nuevoMovimiento]);
-
-
 
   //el array vacio hace que se ejecute solo una vez al montar el componente
   useEffect(() => {
     obtenerCuentas();
-
-  }, [])
+  }, []);
 
   return (
     <>
       {isAlertVisible && (
         <AlertDialog open={isAlertVisible} onOpenChange={setIsAlertVisible}>
-
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Alerta</AlertDialogTitle>
-              <AlertDialogDescription>
-                {errorMessage}.
-              </AlertDialogDescription>
+              <AlertDialogDescription>{errorMessage}.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogAction>Continuar</AlertDialogAction>
@@ -243,10 +242,8 @@ export function NuevoAsientoForm({
         </AlertDialog>
       )}
 
-
-
       {/* //Modal para nuevo asiento */}
-      < div
+      <div
         className={cn("w-full h-full flex flex-col gap-6", className)}
         {...props}
       >
@@ -255,7 +252,7 @@ export function NuevoAsientoForm({
           className="w-full h-full m-0 border-0"
         >
           <CardHeader>
-            <CardTitle className="text-2xl">Nuevo Asiento</CardTitle>
+            <CardTitle className="text-2xl">Editar Asiento</CardTitle>
             <CardDescription>
               Ingresa los detalles del nuevo asiento a continuación
             </CardDescription>
@@ -327,7 +324,7 @@ export function NuevoAsientoForm({
                     <div className="col-span-2">
                       <Combobox
                         style={{ width: "100%", fontSize: "small" }}
-                        title="Seleccionar cuenta"
+                        title="cuenta"
                         items={cuentasSelect as any[]}
                         onSelect={(value) =>
                           setNuevoMovimiento({
@@ -346,14 +343,14 @@ export function NuevoAsientoForm({
                         defaultValue={0}
                         decimalsLimit={2}
                         prefix="$"
-                        intlConfig={{ locale: 'en-US', currency: 'USD' }}
+                        intlConfig={{ locale: "en-US", currency: "USD" }}
                         allowDecimals
                         decimalSeparator="."
                         value={nuevoMovimiento.debe}
                         onValueChange={(value) =>
                           setNuevoMovimiento({
                             ...nuevoMovimiento,
-                            debe: (value) || 0,
+                            debe: Number(value) || 0, // <-- fuerza a número
                           })
                         }
                         style={{ border: "none", width: "100%" }}
@@ -372,14 +369,14 @@ export function NuevoAsientoForm({
                         defaultValue={0}
                         decimalsLimit={2}
                         prefix="$"
-                        intlConfig={{ locale: 'en-US', currency: 'USD' }}
+                        intlConfig={{ locale: "en-US", currency: "USD" }}
                         allowDecimals
                         decimalSeparator="."
                         value={nuevoMovimiento.haber}
                         onValueChange={(value) =>
                           setNuevoMovimiento({
                             ...nuevoMovimiento,
-                            haber: (value) || 0,
+                            haber: Number(value) || 0,
                           })
                         }
                         style={{ border: "none" }}
@@ -393,22 +390,26 @@ export function NuevoAsientoForm({
                       <Button
                         type="button"
                         onClick={() => {
-                          if (nuevoMovimiento.debe == 0 && nuevoMovimiento.haber == 0) {
-                            console.log("El monto del debe o haber debe ser mayor a 0");
+                          if (
+                            nuevoMovimiento.debe == 0 &&
+                            nuevoMovimiento.haber == 0
+                          ) {
+                            console.log(
+                              "El monto del debe o haber debe ser mayor a 0"
+                            );
 
-                            setErrorMessage("El monto del debe o haber debe ser mayor a 0");
+                            setErrorMessage(
+                              "El monto del debe o haber debe ser mayor a 0"
+                            );
                             setIsAlertVisible(true);
-
-                          }
-                          else {
-
+                          } else {
                             setMovimientos([
                               ...movimientos,
                               {
                                 id: idCounter,
                                 cuentaId: nuevoMovimiento.cuentaId,
                                 debe: nuevoMovimiento.debe,
-                                haber: (nuevoMovimiento.haber),
+                                haber: nuevoMovimiento.haber,
                               },
                             ]);
                             setIdCounter(idCounter + 1); // Incrementar el contador de IDs
@@ -421,7 +422,6 @@ export function NuevoAsientoForm({
                             //!! si se llama acá, la actutualizacion sufre delay, se reocmienda su uso en un useeffect
                             // actualizarTotales();
                           }
-
                         }}
                       >
                         +
@@ -495,13 +495,13 @@ export function NuevoAsientoForm({
                                 actualizarMovimiento(
                                   movimiento.id,
                                   movimiento.cuentaId,
-                                  (e.target.value),
-                                  (movimiento.haber)
+                                  Number(e.target.value), // <-- fuerza a número
+                                  Number(movimiento.haber)
                                 );
                               }}
                               placeholder="debe"
                               className="w-full"
-                            // disabled={!(movimiento.haber === 0)}
+                              // disabled={!(movimiento.haber === 0)}
                             />
                           </TableCell>
 
@@ -510,18 +510,18 @@ export function NuevoAsientoForm({
                               type="number"
                               style={{ border: "none" }}
                               value={movimiento.haber}
-                              onChange={(e) =>
+                              onChange={(e) => {
                                 actualizarMovimiento(
                                   movimiento.id,
                                   movimiento.cuentaId,
-                                  movimiento.debe,
-                                  e.target.value
-                                )
-                              }
+                                  Number(movimiento.debe),
+                                  Number(e.target.value) // <-- fuerza a número
+                                );
+                              }}
                               placeholder="Seleccionar cuenta"
                               className="w-full"
-                            //si el monto del debe es diferente a 0, el haber no se puede editar
-                            // disabled={!(movimiento.debe === 0)}
+                              //si el monto del debe es diferente a 0, el haber no se puede editar
+                              // disabled={!(movimiento.debe === 0)}
                             />
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
@@ -548,7 +548,17 @@ export function NuevoAsientoForm({
                           </TableCell>
                         </TableRow>
                       ))}
-                      <TableRow style={totalDebe !== totalHaber ? { backgroundColor: '#DEDEDE', color: 'red', border: '3px solid red' } : { backgroundColor: '#DEDEDE' }}>
+                      <TableRow
+                        style={
+                          totalDebe !== totalHaber
+                            ? {
+                                backgroundColor: "#DEDEDE",
+                                color: "red",
+                                border: "3px solid red",
+                              }
+                            : { backgroundColor: "#DEDEDE" }
+                        }
+                      >
                         <TableCell>
                           <Label>Total:</Label>
                         </TableCell>
@@ -567,28 +577,23 @@ export function NuevoAsientoForm({
                   type="submit"
                   className="w-full"
                   disabled={isLoading || totalDebe !== totalHaber}
-                  style={
-                    {
-                      fontWeight: "600",
-                      backgroundColor: "black"
-                    }
-
-                  }
-                  onClick={crearAsiento}
+                  style={{
+                    fontWeight: "600",
+                    backgroundColor: "black",
+                  }}
+                  onClick={editarAsiento}
                 >
-                  {isLoading ?
-                    "Creando asiento..." :
-                    totalDebe !== totalHaber ?
-                      "Advertencia:El total y el debe no coindicen!!!"
-                      :
-                      "Crear Asiento Contable"}
+                  {isLoading
+                    ? "Editando asiento..."
+                    : totalDebe !== totalHaber
+                    ? "Advertencia:El total y el debe no coindicen!!!"
+                    : "Editar Asiento Contable"}
                 </Button>
-
               </div>
             </form>
           </CardContent>
         </Card>
-      </div >
+      </div>
     </>
   );
 }
