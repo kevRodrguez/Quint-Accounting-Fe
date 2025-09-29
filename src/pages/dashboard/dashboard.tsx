@@ -9,8 +9,42 @@ import { Card, CardAction, CardDescription, CardFooter, CardHeader, CardTitle } 
 import { IconTrendingUp } from '@tabler/icons-react';
 import { Badge } from 'lucide-react';
 import { EstadisticasService } from '@/services/estadisticas/estadisticas.service';
+import { toast } from 'react-toastify';
 export default function Dashboard() {
 
+
+    const [isLoading, setisLoading] = React.useState<boolean>(false);
+    const [totalActivos, setTotalActivos] = React.useState<number>(0);
+    const [totalPasivos, setTotalPasivos] = React.useState<number>(0);
+    const [totalCapitalContable, setTotalCapitalContable] = React.useState<number>(0);
+    const [totalIngresos, setTotalIngresos] = React.useState<number>(0);
+
+
+    const loadEstadisticas = async () => {
+        setisLoading(true);
+        try {
+            console.log("Cargando estadísticas...");
+            const activos = await EstadisticasService.totalActivos();
+            setTotalActivos((activos.total_activos) || 0);
+            const pasivos = await EstadisticasService.totalPasivos();
+            setTotalPasivos((pasivos.total_pasivos) || 0);
+            const capitalContable = await EstadisticasService.totalCapitalContable();
+            setTotalCapitalContable((capitalContable.total_capital_contable) || 0);
+            const ingresos = await EstadisticasService.totalIngresos();
+            setTotalIngresos((ingresos.total_ingresos) || 0);
+
+            console.log("Estadísticas cargadas:", { activos, pasivos, capitalContable, ingresos });
+            setisLoading(false);
+        } catch (error) {
+            console.log("error", error);
+            toast.error("Error al cargar las estadísticas. Por favor, intenta de nuevo.");
+            console.error("Error al cargar las estadísticas:", error);
+        }
+    }
+
+    useEffect(() => {
+        loadEstadisticas();
+    }, [])
     return (
 
         <SidebarProvider
@@ -39,7 +73,7 @@ export default function Dashboard() {
                                         <CardHeader>
                                             <CardDescription>Total de Activos</CardDescription>
                                             <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                                                $1,250.00
+                                                {"$ " + totalActivos}
                                             </CardTitle>
                                             <CardAction>
                                                 <Badge>
@@ -63,7 +97,7 @@ export default function Dashboard() {
                                         <CardHeader>
                                             <CardDescription>Total de Pasivos</CardDescription>
                                             <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                                                $800.00
+                                                {"$ " + totalPasivos}
                                             </CardTitle>
                                             <CardAction>
                                                 <Badge>
@@ -91,7 +125,7 @@ export default function Dashboard() {
                                         <CardHeader>
                                             <CardDescription>Total de Capital Contable</CardDescription>
                                             <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                                                $450.00
+                                                {"$ " + totalCapitalContable}
                                             </CardTitle>
                                             <CardAction>
                                                 <Badge>
@@ -115,7 +149,7 @@ export default function Dashboard() {
                                         <CardHeader>
                                             <CardDescription>Total de Ingresos</CardDescription>
                                             <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-                                                $2,000.00
+                                                {"$ " + totalIngresos}
                                             </CardTitle>
                                             <CardAction>
                                                 <Badge>

@@ -32,6 +32,7 @@ import {
 import { useEffect, useState } from "react"
 import { EstadisticasService } from "@/services/estadisticas/estadisticas.service"
 import { LoadingScreen } from "./LoadingScreen"
+import { toast } from "react-toastify"
 
 export const description = "An interactive area chart"
 
@@ -69,7 +70,8 @@ export function ChartAreaInteractive() {
       console.log("respuesta de asientos de los ultimos 3 meses", response);
       setAsientosUltimosTresMeses(response);
     } catch (error) {
-
+      toast.error("Error al obtener los asientos de los últimos tres meses. Por favor, intenta de nuevo.");
+      console.error("Error al obtener los asientos de los últimos tres meses:", error);
     }
     setIsLoading(false);
   }

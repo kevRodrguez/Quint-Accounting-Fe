@@ -25,4 +25,40 @@ export class EstadisticasService {
         }
     }
 
+    public static async totalActivos(
+    ): Promise<any> {
+
+        const response = await api.get('estadisticas/total-activos-mes')
+        console.log("respuesta del api directa", response.data);
+        return response.data;
+
+    }
+
+    public static async totalPasivos(
+    ): Promise<any> {
+
+        const response = await api.get('estadisticas/total-pasivos-mes')
+        console.log("respuesta del api directa", response.data);
+        return response.data;
+
+    }
+
+    public static async totalCapitalContable(
+    ): Promise<any> {
+
+        const response = await api.get('estadisticas/total-capital-contable-mes')
+        console.log("respuesta del api directa", response.data);
+        return response.data;
+
+    }
+
+    public static async totalIngresos(
+    ): Promise<any> {
+
+        const response = await api.get('estadisticas/total-ingresos-mes')
+        console.log("respuesta del api directa", response.data);
+        return response.data;
+
+    }
+
 }
