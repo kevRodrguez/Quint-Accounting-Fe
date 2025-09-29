@@ -11,6 +11,8 @@ import {
 import { mayorizacionServices } from "@/services/cuentas/mayorizacion.service";
 import type { MayorizacionItem } from "@/types/mayorizacion.interface";
 import { useEffect, useState } from "react";
+import { LoadingScreen } from "@/components/dashboard/LoadingScreen";
+import { ErrorScreen } from "@/components/dashboard/ErrorScreen";
 
 interface SectionCardsProps {
   onCardClick?: (codigoCuenta: string) => void;
@@ -29,27 +31,27 @@ export function SectionCards({
     MayorizacionItem[]
   >([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const obtenerMayorizaciones = async () => {
     if (!fechaInicio || !fechaFinal) {
       return;
     }
+
+    setLoading(true);
+    setError(null);
+
     try {
       const mayorizacion = await mayorizacionServices.obtenerMayorizacion(
         fechaInicio,
         fechaFinal
       );
       setMayorizacionArray(mayorizacion);
-    } catch (error) {
-      console.log(error);
-
-      // let errorMsg = ""
-      // if (typeof error === "object" && error !== null && "message" in error) {
-      //   errorMsg += ": " + String((error as { message?: string }).message);
-      // }
-      // setErrorMessage(errorMsg);
-      // setIsAlertVisible(true);
-      // setIsLoading(false);
+    } catch (error: any) {
+      console.error("Error al obtener mayorización:", error);
+      setError(error?.message || "Error al cargar la mayorización");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,8 +63,22 @@ export function SectionCards({
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center py-6">
-        <span className="text-muted-foreground">Cargando mayorización...</span>
+      <div className="flex justify-center items-center py-12">
+        <LoadingScreen
+          title="Cargando mayorización"
+          text="Obteniendo datos de las cuentas..."
+        />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center py-12">
+        <ErrorScreen
+          title="Error en mayorización"
+          error={error}
+        />
       </div>
     );
   }
