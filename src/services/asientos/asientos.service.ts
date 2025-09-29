@@ -3,12 +3,6 @@ import type { AsientoResponse } from "@/types/asientoResponse.interface";
 import api from "@/lib/axios";
 import type { AxiosResponse } from "axios";
 import axios from "axios";
-import { toast } from "react-toastify";
-import type {
-  AsientoEdit,
-  AsientosConTotale,
-  DetalleAsiento,
-} from "@/types/libroDiario.interface";
 import type { Movimiento } from "@/types/movimiento.interface";
 
 export class AsientosService {
