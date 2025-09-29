@@ -5,8 +5,6 @@ import type { actualizarCuentaResponse } from "@/types/actualizarCuentaResponse.
 import type { eliminarCuentaResponse } from "@/types/eliminarCuentaResponse.interface copy";
 import type { InsertarCuentaResponse } from "@/types/insertarCuentaResponse.interface";
 
-
-
 export class CuentasService {
   public static async obtenerLibroDiario(): Promise<LibroDiario[]> {
     try {
@@ -39,6 +37,20 @@ export class CuentasService {
 
   }
 
+  public static async obtenerCuentasGet(): Promise<Cuenta[]> {
+    try {
+      const { data } = await api.get<Cuenta[]>("catalogo-cuentas/get");
+      return data;
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message =
+          (error.status ? String(error.status) + " " : "") +
+          (error.response?.data?.message || error.message);
+        throw new Error(`Error al obtener el catálogo de cuentas: ${message}`);
+      }
+      throw new Error("Error al obtener el catálogo de cuentas");
+    }
+  }
 
   public static async insertarCuenta(codigo: string, nombre: string): Promise<InsertarCuentaResponse> {
     try {
@@ -72,6 +84,22 @@ export class CuentasService {
       throw new Error("Error desconocido al actualizar cuenta");
     }
 
+  }
+
+  public static async importarCuentas(base64File: string): Promise<void> {
+    try {
+      await api.post("catalogo-cuentas/importar", {
+        fileBase64: base64File,
+      });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        const message =
+          (error.status ? String(error.status) + " " : "") +
+          (error.response?.data?.message || error.message);
+        throw new Error(`Error al importar el catálogo: ${message}`);
+      }
+      throw new Error("Error al importar el catálogo");
+    }
   }
 
   public static async eliminarCuenta(id_cuenta: number): Promise<eliminarCuentaResponse> {
