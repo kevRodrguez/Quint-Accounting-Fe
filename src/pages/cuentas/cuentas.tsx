@@ -19,7 +19,6 @@ import type { Cuenta as CuentaType } from "@/types/libroDiario.interface";
 
 import { LoadingScreen } from "@/components/dashboard/LoadingScreen";
 import { ErrorScreen } from "@/components/dashboard/ErrorScreen";
-import { CuentasServices } from "@/services/cuentas/cuentas.services";
 
 
 //importar iconos de lucide-react
@@ -27,7 +26,6 @@ import { Pen, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CuentasService } from "@/services/cuentas/cuentas.service";
 import { EditarCuentaForm } from "@/components/dashboard/modals/editar-cuenta.modal";
-import { NuevoAsientoForm } from "@/components/dashboard/modals/nuevo-asiento.modal";
 import { NuevaCuentaForm } from "@/components/dashboard/modals/nueva-cuenta.modal";
 
 
@@ -56,7 +54,7 @@ export default function CatalogoCuentas() {
 
   const loadCuentas = async () => {
     try {
-      const data = await CuentasServices.obtenerCuentas();
+      const data = await CuentasService.obtenerCuentasGet();
       if (data) setCuentas(data);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -173,7 +171,7 @@ export default function CatalogoCuentas() {
         const base64String = data.split(",")[1];
 
         try {
-          await CuentasServices.importarCuentas(base64String);
+          await CuentasService.importarCuentas(base64String);
           setUploadStatus("success");
           await loadCuentas();
         } catch (err) {
