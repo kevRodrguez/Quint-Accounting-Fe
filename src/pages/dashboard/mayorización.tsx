@@ -2,27 +2,114 @@ import { AppSidebar } from "@/components/dashboard/sidebar/app-sidebar";
 import { SiteHeader } from "@/components/dashboard/site-header";
 import { CardTitle } from "@/components/ui/card";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@radix-ui/react-popover";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
-import { format } from "date-fns";
+import { Button } from "@/components/ui/button";
 import { SectionCards } from "@/components/dashboard/section-cards";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { DetalleMayorizacion } from "@/components/dashboard/modals/detalle-mayorizacion-modal";
+import { LoadingScreen } from "@/components/dashboard/LoadingScreen";
+import { ErrorScreen } from "@/components/dashboard/ErrorScreen";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
+import type { DateRange } from "react-day-picker";
+import { toast } from "react-toastify";
 
 export default function Mayorizacion() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedCuenta, setSelectedCuenta] = useState<string | null>(null);
 
-  const [fechaInicio, setFechaInicio] = useState<Date | undefined>(new Date());
-  const [fechaFinal, setFechaFinal] = useState<Date | undefined>(new Date());
+  // calcular rango por defecto: desde 1 de enero del año anterior hasta 31 de diciembre del año actual
+  const today = new Date();
+  // ahora: 1 de enero del año actual hasta 31 de diciembre del año actual
+  const defaultStart = new Date(today.getFullYear(), 0, 1); // 1 Jan current year
+  const defaultEnd = new Date(today.getFullYear(), 11, 31); // 31 Dec current year
+
+  const [dateRange, setDateRange] = useState<DateRange | undefined>({
+    from: defaultStart,
+    to: defaultEnd,
+  });
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [loadingFiltro, setLoadingFiltro] = useState(false);
+
+  // Estado para controlar las fechas filtradas que se pasan a los componentes
+  const [fechasFiltradas, setFechasFiltradas] = useState<{
+    fechaInicio: Date | undefined;
+    fechaFinal: Date | undefined;
+  }>({
+    fechaInicio: defaultStart,
+    fechaFinal: defaultEnd,
+  });
+
+  const initializePage = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Simular una pequeña carga inicial o realizar alguna validación
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // La página se inicializa correctamente, las fechas se validarán al filtrar
+
+    } catch (error: any) {
+      console.error("Error al inicializar mayorización:", error);
+      setError(error?.message || "Error al cargar la página de mayorización");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filtrarPorFechas = async (rango: DateRange | undefined) => {
+    if (!rango || !rango.from || !rango.to) {
+      toast.error("Debe seleccionar un rango de fechas válido");
+      return;
+    }
+
+    setLoadingFiltro(true);
+    setError(null);
+
+    try {
+      // Actualizar las fechas filtradas que se pasan a los componentes
+      setFechasFiltradas({
+        fechaInicio: rango.from,
+        fechaFinal: rango.to
+      });
+
+      toast.success(
+        `Filtros aplicados correctamente`
+      );
+    } catch (error: any) {
+      console.error("Error al filtrar por fechas:", error);
+      setError(error?.message || "No se pudo filtrar por el rango de fechas");
+      toast.error(error?.message || "Error al filtrar por fechas");
+    } finally {
+      setLoadingFiltro(false);
+    }
+  };
+
+  const limpiarFiltros = async () => {
+    setDateRange(undefined);
+    setFechasFiltradas({
+      fechaInicio: undefined,
+      fechaFinal: undefined
+    });
+    toast.info("Filtros limpiados");
+  };
+
+  useEffect(() => {
+    initializePage();
+  }, []);
+
+  // Mostrar pantalla de carga global
+  if (loading) {
+    return <LoadingScreen title="Mayorización de cuentas" text="Cargando página..." />;
+  }
+
+  // Mostrar pantalla de error global
+  if (error) {
+    return <ErrorScreen title="Error en mayorización" error={error} />;
+  }
 
   return (
     <SidebarProvider
@@ -41,60 +128,31 @@ export default function Mayorizacion() {
         </CardTitle>
 
         <div className="w-full max-w-[1400px] mx-auto px-6 overflow-x-auto">
-          {/* Filtros de fechas y combobox */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="flex flex-col">
-              <Label htmlFor="fecha">Fecha inicio</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    data-empty={!fechaInicio}
-                    className="w-full justify-start text-left mt-1 font-normal"
-                  >
-                    <CalendarIcon className="mr-2" />
-                    {fechaInicio ? (
-                      format(fechaInicio, "PPP")
-                    ) : (
-                      <span>Selecciona una fecha</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={fechaInicio}
-                    onSelect={setFechaInicio}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            <div className="flex flex-col">
-              <Label htmlFor="fecha">Fecha final</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    data-empty={!fechaFinal}
-                    className="w-full justify-start text-left mt-1 font-normal"
-                  >
-                    <CalendarIcon className="mr-2" />
-                    {fechaFinal ? (
-                      format(fechaFinal, "PPP")
-                    ) : (
-                      <span>Selecciona una fecha</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0">
-                  <Calendar
-                    mode="single"
-                    selected={fechaFinal}
-                    onSelect={setFechaFinal}
-                  />
-                </PopoverContent>
-              </Popover>
+          {/* Filtros de fecha */}
+          <div className="flex flex-col md:flex-row gap-4 mb-6 items-start md:items-center justify-start">
+            <DateRangePicker
+              dateRange={dateRange}
+              onDateRangeChange={setDateRange}
+            />
+            <div className="flex gap-2">
+              <Button
+                onClick={() => filtrarPorFechas(dateRange)}
+                disabled={
+                  loadingFiltro || !dateRange?.from || !dateRange?.to
+                }
+                variant="default"
+                size="sm"
+              >
+                {loadingFiltro ? "Filtrando..." : "Filtrar"}
+              </Button>
+              <Button
+                onClick={limpiarFiltros}
+                variant="outline"
+                size="sm"
+                disabled={loadingFiltro}
+              >
+                Limpiar
+              </Button>
             </div>
           </div>
           <Dialog open={modalOpen} onOpenChange={setModalOpen}>
@@ -102,8 +160,8 @@ export default function Mayorizacion() {
             <DialogContent className="max-w-4xl w-full h-[80vh] p-0 overflow-auto">
               <DetalleMayorizacion
                 codigo={selectedCuenta}
-                fechaInicio={fechaInicio}
-                fechaFinal={fechaFinal}
+                fechaInicio={fechasFiltradas.fechaInicio}
+                fechaFinal={fechasFiltradas.fechaFinal}
                 setOpen={setModalOpen}
               />
             </DialogContent>
@@ -113,8 +171,8 @@ export default function Mayorizacion() {
             <div className="flex flex-col">
               <Label className="mb-2">Debe</Label>
               <SectionCards
-                fechaInicio={fechaInicio}
-                fechaFinal={fechaFinal}
+                fechaInicio={fechasFiltradas.fechaInicio}
+                fechaFinal={fechasFiltradas.fechaFinal}
                 onCardClick={(codigoCuenta: string) => {
                   setSelectedCuenta(codigoCuenta);
                   setModalOpen(true);
@@ -125,8 +183,8 @@ export default function Mayorizacion() {
               <Label className="mb-2">Haber</Label>
               <SectionCards
                 haber
-                fechaInicio={fechaInicio}
-                fechaFinal={fechaFinal}
+                fechaInicio={fechasFiltradas.fechaInicio}
+                fechaFinal={fechasFiltradas.fechaFinal}
                 onCardClick={(codigoCuenta: string) => {
                   setSelectedCuenta(codigoCuenta);
                   console.log("Set selected cuenta", codigoCuenta);

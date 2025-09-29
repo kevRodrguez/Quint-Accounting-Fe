@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { mayorizacionServices } from "@/services/cuentas/mayorizacion.service";
+import { LoadingScreen } from "@/components/dashboard/LoadingScreen";
+import { ErrorScreen } from "@/components/dashboard/ErrorScreen";
 
 import type { DetalleAsientoBackend } from "@/types/mayorizacion.interface";
 
@@ -48,16 +50,23 @@ export function DetalleMayorizacion({
         setDetalles([]);
         return;
       }
+      if (!fechaInicio || !fechaFinal) {
+        setError("Las fechas de inicio y final son requeridas");
+        return;
+      }
+
       try {
         setIsLoading(true);
+        setError(null);
         const data = await mayorizacionServices.obtenerDetalleMayorizacion(
           codigo,
-          fechaInicio!,
-          fechaFinal!
+          fechaInicio,
+          fechaFinal
         );
         setDetalles(Array.isArray(data) ? data : [data]);
-      } catch (err) {
-        setError((err as Error).message);
+      } catch (err: any) {
+        console.error("Error al obtener detalle de mayorización:", err);
+        setError(err?.message || "Error al cargar el detalle de mayorización");
       } finally {
         setIsLoading(false);
       }
@@ -79,8 +88,22 @@ export function DetalleMayorizacion({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {isLoading && <p>Cargando...</p>}
-          {error && <p className="text-red-600">{error}</p>}
+          {isLoading && (
+            <div className="flex justify-center items-center py-12">
+              <LoadingScreen
+                title="Cargando detalle"
+                text="Obteniendo movimientos de la cuenta..."
+              />
+            </div>
+          )}
+          {error && (
+            <div className="flex justify-center items-center py-12">
+              <ErrorScreen
+                title="Error al cargar detalle"
+                error={error}
+              />
+            </div>
+          )}
           {!isLoading && !error && detalles.length > 0 && (
             <>
               <h1 className="text-lg font-bold mb-2">
@@ -138,6 +161,13 @@ export function DetalleMayorizacion({
                 </TableBody>
               </Table>
             </>
+          )}
+          {!isLoading && !error && detalles.length === 0 && (
+            <div className="flex justify-center items-center py-12">
+              <div className="text-center">
+                <p className="text-muted-foreground">No se encontraron movimientos para esta cuenta en el rango de fechas seleccionado.</p>
+              </div>
+            </div>
           )}
 
           <div className="mt-6">
