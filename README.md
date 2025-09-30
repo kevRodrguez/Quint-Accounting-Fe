@@ -6,6 +6,7 @@ guía para levantar el proyecto, entender el flujo de autenticación con Supabas
 - Node.js (>=16)
 - npm o pnpm/yarn
 - Cuenta y proyecto de Supabase (URL + anon key)
+- Tener backend corriendo localmente o en un servidor remoto (Quint-Accounting-be)
 
 ## Archivos relevantes
 - `src/lib/client.ts` - fábrica del cliente de Supabase (se recomienda singleton)
@@ -14,6 +15,9 @@ guía para levantar el proyecto, entender el flujo de autenticación con Supabas
 - `src/components/auth/ProtectedRoute.tsx` - envoltorio para rutas privadas
 - `src/components/auth/login-form.tsx` - formulario de login que usa `AuthContext`
 - `src/App.tsx` - punto de entrada donde **debe** envolver las rutas con `AuthProvider`
+
+
+## Pasos para levantar el proyecto:
 
 ## Variables de entorno
 Rellena las variables en un archivo `.env.local` (puedes copiar `.env.local.template`):
