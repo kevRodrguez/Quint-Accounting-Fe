@@ -36,7 +36,7 @@ export default function Home() {
 
                             <NavigationMenuLink style={{ fontSize: 'xx-large', fontWeight: 'bold', padding: '1rem' }} href='/home' className='hover:bg-[#282828] hover:text-white focus:hover:bg-[#282828]'>
 
-                                <img src={QuintLogoBlackBG} alt="Logo" width={180} height={180} style={{ borderRadius: '8px' }}/>
+                                <img src={QuintLogoBlackBG} alt="Logo" width={180} height={180} style={{ borderRadius: '8px' }} />
                             </NavigationMenuLink>
 
                         </NavigationMenuItem>
@@ -144,7 +144,30 @@ export default function Home() {
                         </CardContent>
                     </Card>
                 </div>
+
             </div>
+
+            {/* Nombres de los integrantes - Full width responsive card */}
+            <div className='col-span-4 w-full px-2 md:px-4 lg:px-6'>
+                <Card style={{ backgroundColor: '#1a1a1a' }} className='w-full'>
+                    <CardHeader className='text-center'>
+                        <CardTitle style={{ color: 'white' }} className='text-lg md:text-xl lg:text-2xl'>
+                            Nombres de los integrantes
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent style={{ color: 'white' }}>
+                        <div className='grid gap-2 md:gap-3 text-sm md:text-base lg:text-lg'>
+                            <p className='text-center md:text-center'>ESCOBAR PREZA, BRYAN STEVEN - 2023-EP-603</p>
+                            <p className='text-center md:text-center'>GALÁN GÓMEZ, JOSUÉ ANDRÉS - 2023-GG-605</p>
+                            <p className='text-center md:text-center'>RODRIGUEZ POSADA, KEVIN FERNANDO - 2023-RP-601</p>
+                            <p className='text-center md:text-center'>RETANA HERNÁNDEZ, GUSTAVO ADOLFO - 2023-RH-601</p>
+                            <p className='text-center md:text-center'>RAMOS CASTANEDA, JIMMY ERNESTO - 2023-RC-607</p>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+
         </div>
     )
 }
