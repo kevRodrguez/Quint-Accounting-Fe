@@ -2,7 +2,6 @@ import type {
   DetalleAsientoBackend,
   MayorizacionItem,
 } from "@/types/mayorizacion.interface";
-import axios from "axios";
 import api from "@/lib/axios";
 
 export class mayorizacionServices {
@@ -21,11 +20,10 @@ export class mayorizacionServices {
         }
       );
       return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
+    } catch (error: any) {
+      if (error.response) {
         const message =
-          (error.status ? String(error.status) + " " : "") +
-          (error.response?.data?.message || error.message);
+          (error.response?.status || 'Error') + " " + (error.response?.data?.message || error.message || 'Error desconocido');
         throw new Error(
           `Error al obtener la mayorización de cuentas: ${message}`
         );
@@ -51,11 +49,10 @@ export class mayorizacionServices {
         }
       );
       return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
+    } catch (error: any) {
+      if (error.response) {
         const message =
-          (error.status ? String(error.status) + " " : "") +
-          (error.response?.data?.message || error.message);
+          (error.response?.status || 'Error') + " " + (error.response?.data?.message || error.message || 'Error desconocido');
         throw new Error(
           `Error al obtener la mayorización de esta cuenta: ${message}`
         );

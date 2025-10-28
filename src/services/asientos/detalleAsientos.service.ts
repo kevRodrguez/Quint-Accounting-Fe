@@ -1,5 +1,4 @@
 import api from "@/lib/axios";
-import type { AxiosResponse } from "axios";
 
 export interface DetalleAsientoRequest {
   id_cuenta: number;
@@ -21,7 +20,7 @@ export class DetalleAsientosService {
     detalleAsiento: DetalleAsientoRequest
   ): Promise<DetalleAsientoResponse> {
     try {
-      const response: AxiosResponse<DetalleAsientoResponse> = await api.post(
+      const response = await api.post<DetalleAsientoResponse>(
         "detalle-asientos/",
         detalleAsiento
       );

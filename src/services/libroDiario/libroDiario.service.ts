@@ -1,5 +1,4 @@
 import api from "@/lib/axios";
-import axios from "axios";
 import type { LibroDiario } from "@/types/libroDiario.interface";
 
 export class LibroDiarioService {
@@ -7,11 +6,10 @@ export class LibroDiarioService {
     try {
       const { data } = await api.get<LibroDiario>("libro-diario/asientos/");
       return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
+    } catch (error: any) {
+      if (error.response) {
         const message =
-          (error.status ? String(error.status) + " " : "") +
-          (error.response?.data?.message || error.message);
+          (error.response?.status || 'Error') + " " + (error.response?.data?.message || error.message || 'Error desconocido');
         throw new Error(`Error al obtener libro diario: ${message}`);
       }
       throw new Error("Error desconocido al obtener libro diario");
@@ -27,11 +25,10 @@ export class LibroDiarioService {
         }
       });
       return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
+    } catch (error: any) {
+      if (error.response) {
         const message =
-          (error.status ? String(error.status) + " " : "") +
-          (error.response?.data?.message || error.message);
+          (error.response?.status || 'Error') + " " + (error.response?.data?.message || error.message || 'Error desconocido');
         throw new Error(`Error al obtener libro diario por rango de fechas: ${message}`);
       }
       throw new Error("Error desconocido al obtener libro diario por rango de fechas");
@@ -44,11 +41,10 @@ export class LibroDiarioService {
         params: { descripcion }
       });
       return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
+    } catch (error: any) {
+      if (error.response) {
         const message =
-          (error.status ? String(error.status) + " " : "") +
-          (error.response?.data?.message || error.message);
+          (error.response?.status || 'Error') + " " + (error.response?.data?.message || error.message || 'Error desconocido');
         throw new Error(`Error al buscar asientos por descripción: ${message}`);
       }
       throw new Error("Error desconocido al buscar asientos por descripción");

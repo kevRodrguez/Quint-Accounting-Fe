@@ -1,9 +1,4 @@
-import type { AsientoRequest } from "@/types/asientoRequest.interface";
-import type { AsientoResponse } from "@/types/asientoResponse.interface";
 import api from "@/lib/axios";
-import type { AxiosResponse } from "axios";
-import axios from "axios";
-import { toast } from "react-toastify";
 
 
 export class EstadisticasService {
@@ -15,10 +10,10 @@ export class EstadisticasService {
             const response = await api.get('estadisticas/tres-meses')
             console.log("respuesta del api directa", response.data);
             return response.data;
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
+        } catch (error: any) {
+            if (error.response) {
                 const message =
-                    error.status + " " + error.response?.data?.message || error.message;
+                    (error.response?.status || 'Error') + " " + (error.response?.data?.message || error.message || 'Error desconocido');
                 throw new Error(`Error al obtener asientos de los ultimos 3 meses: ${message}`);
             }
             throw new Error("Error desconocido al consultar estadisticas de asientos");

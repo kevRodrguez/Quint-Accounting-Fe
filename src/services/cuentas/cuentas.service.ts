@@ -1,5 +1,4 @@
 import api from "@/lib/axios";
-import axios from "axios";
 import type { Cuenta, LibroDiario } from "@/types/libroDiario.interface";
 import type { actualizarCuentaResponse } from "@/types/actualizarCuentaResponse.interface";
 import type { eliminarCuentaResponse } from "@/types/eliminarCuentaResponse.interface copy";
@@ -10,11 +9,10 @@ export class CuentasService {
     try {
       const { data } = await api.get<LibroDiario[]>("libro-diario/asientos/");
       return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
+    } catch (error: any) {
+      if (error.response) {
         const message =
-          (error.status ? String(error.status) + " " : "") +
-          (error.response?.data?.message || error.message);
+          (error.response?.status || 'Error') + " " + (error.response?.data?.message || error.message || 'Error desconocido');
         throw new Error(`Error al obtener libro diario: ${message}`);
       }
       throw new Error("Error desconocido al obtener libro diario");
@@ -25,11 +23,10 @@ export class CuentasService {
     try {
       const { data } = await api.get<Cuenta[]>("catalogo-cuentas/select");
       return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
+    } catch (error: any) {
+      if (error.response) {
         const message =
-          (error.status ? String(error.status) + " " : "") +
-          (error.response?.data?.message || error.message);
+          (error.response?.status || 'Error') + " " + (error.response?.data?.message || error.message || 'Error desconocido');
         throw new Error(`Error al obtener cuentas: ${message}`);
       }
       throw new Error("Error desconocido al obtener cuentas");
@@ -41,11 +38,10 @@ export class CuentasService {
     try {
       const { data } = await api.get<Cuenta[]>("catalogo-cuentas/get");
       return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
+    } catch (error: any) {
+      if (error.response) {
         const message =
-          (error.status ? String(error.status) + " " : "") +
-          (error.response?.data?.message || error.message);
+          (error.response?.status || 'Error') + " " + (error.response?.data?.message || error.message || 'Error desconocido');
         throw new Error(`Error al obtener el catálogo de cuentas: ${message}`);
       }
       throw new Error("Error al obtener el catálogo de cuentas");
@@ -57,11 +53,10 @@ export class CuentasService {
       const { data } = await api.post<InsertarCuentaResponse>("catalogo-cuentas", { codigo, nombre_cuenta: nombre });
       console.log("Cuenta insertada:", data);
       return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
+    } catch (error: any) {
+      if (error.response) {
         const message =
-          (error.status ? String(error.status) + " " : "") +
-          (error.response?.data?.message || error.message);
+          (error.response?.status || 'Error') + " " + (error.response?.data?.message || error.message || 'Error desconocido');
         throw new Error(`Error al actualizar cuenta: ${message}`);
       }
       throw new Error("Error desconocido al actualizar cuenta");
@@ -74,11 +69,10 @@ export class CuentasService {
         { codigo, nombre_cuenta: nombre }
       );
       return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
+    } catch (error: any) {
+      if (error.response) {
         const message =
-          (error.status ? String(error.status) + " " : "") +
-          (error.response?.data?.message || error.message);
+          (error.response?.status || 'Error') + " " + (error.response?.data?.message || error.message || 'Error desconocido');
         throw new Error(`Error al actualizar cuenta: ${message}`);
       }
       throw new Error("Error desconocido al actualizar cuenta");
@@ -91,11 +85,10 @@ export class CuentasService {
       await api.post("catalogo-cuentas/importar", {
         fileBase64: base64File,
       });
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
+    } catch (error: any) {
+      if (error.response) {
         const message =
-          (error.status ? String(error.status) + " " : "") +
-          (error.response?.data?.message || error.message);
+          (error.response?.status || 'Error') + " " + (error.response?.data?.message || error.message || 'Error desconocido');
         throw new Error(`Error al importar el catálogo: ${message}`);
       }
       throw new Error("Error al importar el catálogo");
@@ -106,11 +99,10 @@ export class CuentasService {
     try {
       const { data } = await api.delete<eliminarCuentaResponse>("catalogo-cuentas/" + id_cuenta);
       return data;
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
+    } catch (error: any) {
+      if (error.response) {
         const message =
-          (error.status ? String(error.status) + " " : "") +
-          (error.response?.data?.message || error.message);
+          (error.response?.status || 'Error') + " " + (error.response?.data?.message || error.message || 'Error desconocido');
         throw new Error(`Error al actualizar cuenta: ${message}`);
       }
       throw new Error("Error desconocido al actualizar cuenta");
