@@ -75,10 +75,7 @@ export function SectionCards({
   if (error) {
     return (
       <div className="flex justify-center items-center py-12">
-        <ErrorScreen
-          title="Error en mayorización"
-          error={error}
-        />
+        <ErrorScreen title="Error en mayorización" error={error} />
       </div>
     );
   }

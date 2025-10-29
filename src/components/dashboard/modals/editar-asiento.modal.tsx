@@ -56,7 +56,6 @@ export function EditarAsientoForm({
   className,
   setOpen,
   onCreated,
-  onUpdated,
   ...props
 }: React.ComponentPropsWithoutRef<"div"> & {
   asiento: AsientosConTotale | null;
@@ -71,10 +70,10 @@ export function EditarAsientoForm({
 
     // Si viene como string ISO, parsearlo correctamente
     const fechaStr = fechaString.toString();
-    if (fechaStr.includes('T')) {
+    if (fechaStr.includes("T")) {
       // Crear fecha usando solo la parte de fecha (YYYY-MM-DD)
-      const soloFecha = fechaStr.split('T')[0];
-      const [year, month, day] = soloFecha.split('-').map(Number);
+      const soloFecha = fechaStr.split("T")[0];
+      const [year, month, day] = soloFecha.split("-").map(Number);
       return new Date(year, month - 1, day); // month - 1 porque Date usa 0-indexado
     }
 
@@ -83,7 +82,9 @@ export function EditarAsientoForm({
 
   const [isLoading, setIsLoading] = useState(false);
   const [descripcion, setDescripcion] = useState(asiento?.descripcion || "");
-  const [fecha, setFecha] = useState<Date | undefined>(parsearFecha(asiento?.fecha));
+  const [fecha, setFecha] = useState<Date | undefined>(
+    parsearFecha(asiento?.fecha)
+  );
 
   // const [movimientos, setMovimientos] = useState<Movimiento[]>(
   //   asiento?.detalle_asiento?.map((d, index) => ({
@@ -175,7 +176,9 @@ export function EditarAsientoForm({
 
     try {
       // Agregar T00:00:00 a la fecha para evitar problemas de zona horaria
-      const fechaFormat = fecha ? new Date(fecha.toISOString().split('T')[0] + 'T00:00:00') : asiento.fecha;
+      const fechaFormat = fecha
+        ? new Date(fecha.toISOString().split("T")[0] + "T00:00:00")
+        : asiento.fecha;
 
       await AsientosService.actualizarAsiento(
         asiento.id_asiento,
@@ -188,7 +191,6 @@ export function EditarAsientoForm({
       if (setOpen) setOpen(false);
       toast.success("Asiento actualizado con éxito");
     } catch (error) {
-      console.error(error);
       toast.error("Error al actualizar el asiento", { autoClose: false });
     } finally {
       setIsLoading(false);
@@ -200,12 +202,12 @@ export function EditarAsientoForm({
       const cuentas = await CuentasService.obtenerCuentas();
       setCuentasSelect(cuentas);
     } catch (error) {
-      console.log(error);
-
       let errorMsg = "";
+
       if (typeof error === "object" && error !== null && "message" in error) {
         errorMsg += ": " + String((error as { message?: string }).message);
       }
+
       setErrorMessage(errorMsg);
       setIsAlertVisible(true);
       setIsLoading(false);
@@ -225,7 +227,6 @@ export function EditarAsientoForm({
   };
 
   useEffect(() => {
-    console.log("Movimientos actualizados:", movimientos);
     actualizarTotales();
 
     if (Number(nuevoMovimiento.debe) > 0) {
@@ -278,7 +279,7 @@ export function EditarAsientoForm({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={() => console.log("enviando")}>
+            <form onSubmit={() => console.log("Enviando")}>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
                   <Label htmlFor="descripcion">Descripcion</Label>
@@ -414,10 +415,6 @@ export function EditarAsientoForm({
                             nuevoMovimiento.debe == 0 &&
                             nuevoMovimiento.haber == 0
                           ) {
-                            console.log(
-                              "El monto del debe o haber debe ser mayor a 0"
-                            );
-
                             setErrorMessage(
                               "El monto del debe o haber debe ser mayor a 0"
                             );
@@ -521,7 +518,7 @@ export function EditarAsientoForm({
                               }}
                               placeholder="debe"
                               className="w-full"
-                            // disabled={!(movimiento.haber === 0)}
+                              // disabled={!(movimiento.haber === 0)}
                             />
                           </TableCell>
 
@@ -540,8 +537,8 @@ export function EditarAsientoForm({
                               }}
                               placeholder="Seleccionar cuenta"
                               className="w-full"
-                            //si el monto del debe es diferente a 0, el haber no se puede editar
-                            // disabled={!(movimiento.debe === 0)}
+                              //si el monto del debe es diferente a 0, el haber no se puede editar
+                              // disabled={!(movimiento.debe === 0)}
                             />
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
@@ -572,10 +569,10 @@ export function EditarAsientoForm({
                         style={
                           totalDebe !== totalHaber
                             ? {
-                              backgroundColor: "#DEDEDE",
-                              color: "red",
-                              border: "3px solid red",
-                            }
+                                backgroundColor: "#DEDEDE",
+                                color: "red",
+                                border: "3px solid red",
+                              }
                             : { backgroundColor: "#DEDEDE" }
                         }
                       >
@@ -606,8 +603,8 @@ export function EditarAsientoForm({
                   {isLoading
                     ? "Editando asiento..."
                     : totalDebe !== totalHaber
-                      ? "Advertencia:El total y el debe no coindicen!!!"
-                      : "Editar Asiento Contable"}
+                    ? "Advertencia:El total y el debe no coindicen!!!"
+                    : "Editar Asiento Contable"}
                 </Button>
               </div>
             </form>

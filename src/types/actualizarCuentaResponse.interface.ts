@@ -1,3 +1,3 @@
 export interface actualizarCuentaResponse {
-    message: string;
+  message: string;
 }

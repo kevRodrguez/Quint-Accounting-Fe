@@ -1,10 +1,14 @@
 import { AppSidebar } from "@/components/dashboard/sidebar/app-sidebar";
 import { SiteHeader } from "@/components/dashboard/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import React, { useEffect, useState, type JSX } from "react";
 import { DropzoneSimple } from "@/components/dropzone";
-
 import {
   Table,
   TableBody,
@@ -14,28 +18,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { CardTitle } from "@/components/ui/card";
-
 import type { Cuenta as CuentaType } from "@/types/libroDiario.interface";
-
 import { LoadingScreen } from "@/components/dashboard/LoadingScreen";
 import { ErrorScreen } from "@/components/dashboard/ErrorScreen";
-
-
-//importar iconos de lucide-react
-import { Pen, Trash2 } from "lucide-react";
+import { Pen, Trash2 } from "lucide-react"; //Importar iconos de lucide-react
 import { Button } from "@/components/ui/button";
 import { CuentasService } from "@/services/cuentas/cuentas.service";
 import { EditarCuentaForm } from "@/components/dashboard/modals/editar-cuenta.modal";
 import { NuevaCuentaForm } from "@/components/dashboard/modals/nueva-cuenta.modal";
 
-
 //sweet-alerts
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 const mySwal = withReactContent(Swal);
 
 export default function CatalogoCuentas() {
-
   //TODO: implementar alerts con toastify
   const [openImportar, setOpenImportar] = useState(false);
   const [openNuevaCuenta, setOpenNuevaCuenta] = useState(false);
@@ -45,19 +42,20 @@ export default function CatalogoCuentas() {
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-
   const [uploadStatus, setUploadStatus] = useState<
     "idle" | "ready" | "uploading" | "success" | "error"
   >("idle");
 
-  const [cuentaSeleccionada, setCuentaSeleccionada] = useState<(CuentaType & { children?: CuentaType[] }) | null>(null);
+  const [cuentaSeleccionada, setCuentaSeleccionada] = useState<
+    (CuentaType & { children?: CuentaType[] }) | null
+  >(null);
 
   const loadCuentas = async () => {
     try {
       const data = await CuentasService.obtenerCuentasGet();
       if (data) setCuentas(data);
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      //Eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       setError(e?.message || "No se pudo cargar el catálogo de cuentas");
     } finally {
@@ -71,8 +69,6 @@ export default function CatalogoCuentas() {
       [codigo]: !prev[codigo],
     }));
   }
-
-
 
   useEffect(() => {
     loadCuentas();
@@ -135,15 +131,16 @@ export default function CatalogoCuentas() {
           </TableCell>
           <TableCell>{cuenta.nombre_cuenta}</TableCell>
           {cuenta.codigo.length > 2 && (
-
             <TableCell>
-
-
               {/* Botón para editar cuenta */}
-              <Button style={{ marginRight: "10px" }} onClick={() => {
-                setCuentaSeleccionada(cuenta);
-              }}><Pen></Pen></Button>
-
+              <Button
+                style={{ marginRight: "10px" }}
+                onClick={() => {
+                  setCuentaSeleccionada(cuenta);
+                }}
+              >
+                <Pen></Pen>
+              </Button>
 
               {/* Botón para eliminar cuenta */}
               <Button onClick={() => eliminarCuenta(cuenta.id_cuenta)}>
@@ -175,7 +172,6 @@ export default function CatalogoCuentas() {
           setUploadStatus("success");
           await loadCuentas();
         } catch (err) {
-          console.error(err);
           setUploadStatus("error");
         }
       }
@@ -186,39 +182,41 @@ export default function CatalogoCuentas() {
   async function eliminarCuenta(id_cuenta: number) {
     if (!id_cuenta) return;
     const result = await mySwal.fire({
-      title: '¿Estás seguro que deseas eliminar esta cuenta?',
+      title: "¿Estás seguro que deseas eliminar esta cuenta?",
       text: "Esta acción no se puede deshacer.",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar',
-      cancelButtonColor: '#fe2e2e',
-      confirmButtonColor: '#0a0a0a',
-      iconColor: '#fe2e2e'
-    })
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      cancelButtonColor: "#fe2e2e",
+      confirmButtonColor: "#0a0a0a",
+      iconColor: "#fe2e2e",
+    });
     if (!result.isConfirmed) return;
     try {
       const response = CuentasService.eliminarCuenta(id_cuenta);
-      console.log("Cuenta eliminada:", response);
       loadCuentas();
-    } catch (error) {
-      console.error("Error al eliminar la cuenta:", error);
-    }
+    } catch (error) {}
   }
 
   return (
-
     <>
-
       {/* Dialog para editar cuenta */}
-      <Dialog open={!!cuentaSeleccionada} onOpenChange={open => { if (!open) setCuentaSeleccionada(null) }}>
+      <Dialog
+        open={!!cuentaSeleccionada}
+        onOpenChange={(open) => {
+          if (!open) setCuentaSeleccionada(null);
+        }}
+      >
         <DialogContent>
-
           {/* Cuando el modal se cierra, se llama al metodo seOpen, que limpia la cuentaSeleciconada */}
-          <EditarCuentaForm setOpen={() => setCuentaSeleccionada(null)} cuentaSeleccionada={cuentaSeleccionada || undefined} onCreated={loadCuentas}></EditarCuentaForm>
+          <EditarCuentaForm
+            setOpen={() => setCuentaSeleccionada(null)}
+            cuentaSeleccionada={cuentaSeleccionada || undefined}
+            onCreated={loadCuentas}
+          ></EditarCuentaForm>
         </DialogContent>
       </Dialog>
-
 
       <SidebarProvider
         style={
@@ -236,23 +234,34 @@ export default function CatalogoCuentas() {
             Catálogo de Cuentas
           </CardTitle>
 
-
-
           <div className="w-full max-w-[1400px] mx-auto px-4 overflow-x-auto">
             <div className="py-4">
-
-              <div style={{ display: "flex", gap: "10px", justifyContent: 'space-between' }}>
-
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  justifyContent: "space-between",
+                }}
+              >
                 {/* Botón para añadir nuevo asiento */}
-                <Dialog open={openNuevaCuenta} onOpenChange={setOpenNuevaCuenta}>
-                  <DialogTrigger className='bg-primary text-white w-32 rounded-full flex justify-center my-3 p-2' >Nueva Cuenta</DialogTrigger>
-                  <DialogContent className="max-w-4xl w-full h-[90vh] p-0 overflow-auto " style={{ scrollbarWidth: 'none', minWidth: '45%' }}>
-
+                <Dialog
+                  open={openNuevaCuenta}
+                  onOpenChange={setOpenNuevaCuenta}
+                >
+                  <DialogTrigger className="bg-primary text-white w-32 rounded-full flex justify-center my-3 p-2">
+                    Nueva Cuenta
+                  </DialogTrigger>
+                  <DialogContent
+                    className="max-w-4xl w-full h-[90vh] p-0 overflow-auto "
+                    style={{ scrollbarWidth: "none", minWidth: "45%" }}
+                  >
                     {/* le pasamos el metodo setOpen al fomrulario, para que se pueda cerrar desde dentro */}
-                    <NuevaCuentaForm setOpen={setOpenNuevaCuenta} onCreated={loadCuentas}></NuevaCuentaForm>
+                    <NuevaCuentaForm
+                      setOpen={setOpenNuevaCuenta}
+                      onCreated={loadCuentas}
+                    ></NuevaCuentaForm>
                   </DialogContent>
                 </Dialog>
-
 
                 {/* Dialog para importar catálogo */}
                 <Dialog open={openImportar} onOpenChange={setOpenImportar}>
@@ -277,7 +286,8 @@ export default function CatalogoCuentas() {
                     {selectedFile && (
                       <div className="mt-4 flex flex-col gap-2">
                         <p className="text-sm text-muted-foreground">
-                          Archivo seleccionado: <strong>{selectedFile.name}</strong>
+                          Archivo seleccionado:{" "}
+                          <strong>{selectedFile.name}</strong>
                         </p>
 
                         <button
@@ -305,7 +315,6 @@ export default function CatalogoCuentas() {
                   </DialogContent>
                 </Dialog>
               </div>
-
 
               <Table className="min-w-full">
                 <TableHeader>
@@ -335,8 +344,14 @@ export default function CatalogoCuentas() {
 
                   {!loading && error && (
                     <TableRow>
-                      <TableCell colSpan={2} className="text-center text-red-600 py-6">
-                        <ErrorScreen title="Error al cargar cuentas" error={error} />
+                      <TableCell
+                        colSpan={2}
+                        className="text-center text-red-600 py-6"
+                      >
+                        <ErrorScreen
+                          title="Error al cargar cuentas"
+                          error={error}
+                        />
                       </TableCell>
                     </TableRow>
                   )}

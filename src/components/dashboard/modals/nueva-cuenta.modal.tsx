@@ -9,42 +9,10 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CalendarIcon, MoreVertical, Trash2 } from "lucide-react";
-import { format, set } from "date-fns";
-import { Combobox } from "@/components/ui/combobox";
-import { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
-import CurrencyInput from "react-currency-input-field";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-import {
-  AsientosService
-} from "@/services/asientos/asientos.service";
-import type { Movimiento } from "@/types/movimiento.interface";
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useState } from "react";
 import { CuentasService } from "@/services/cuentas/cuentas.service";
 import type { Cuenta } from "@/types/libroDiario.interface";
 import { toast } from "react-toastify";
-
 
 export function NuevaCuentaForm({
   className,
@@ -53,23 +21,19 @@ export function NuevaCuentaForm({
   cuentaSeleccionada,
   ...props
 }: React.ComponentPropsWithoutRef<"div"> & {
-  setOpen?: (open: boolean) => void //se define el metodo setOpen en las props del modal
-  onCreated?: () => void //callback para recargar datos en el padre
-  cuentaSeleccionada?: Cuenta // agrega la propiedad cuentaSeleccionada a las props
+  setOpen?: (open: boolean) => void; //se define el metodo setOpen en las props del modal
+  onCreated?: () => void; //callback para recargar datos en el padre
+  cuentaSeleccionada?: Cuenta; // agrega la propiedad cuentaSeleccionada a las props
 }) {
-
-
   const [isLoading, setIsLoading] = useState(false);
-
   const [codigo, setCodigo] = useState(cuentaSeleccionada?.codigo || "");
   const [nombre, setNombre] = useState(cuentaSeleccionada?.nombre_cuenta || "");
 
   async function crearCuenta() {
     setIsLoading(true);
-    try {
 
+    try {
       const response = await CuentasService.insertarCuenta(codigo, nombre);
-      console.log("Creando cuenta:", { codigo, nombre });
 
       if (onCreated) onCreated(); //llama al callback para recargar datos en el padre
 
@@ -77,24 +41,20 @@ export function NuevaCuentaForm({
 
       toast.success("Cuenta creada con éxito");
     } catch (error) {
-      console.error("Error al crear la cuenta:", error);
       if (error instanceof Error) {
-
         toast.error(error?.message, { autoClose: false });
-      }
-      else {
-        toast.error("Error desconocido al crear la cuenta", { autoClose: false });
+      } else {
+        toast.error("Error desconocido al crear la cuenta", {
+          autoClose: false,
+        });
       }
     }
     setIsLoading(false);
   }
   return (
     <>
-
-
-
       {/* //Modal para editar cuenta */}
-      < div
+      <div
         className={cn("w-full h-full flex flex-col gap-6", className)}
         {...props}
       >
@@ -105,11 +65,11 @@ export function NuevaCuentaForm({
           <CardHeader>
             <CardTitle className="text-2xl">Nueva cuenta</CardTitle>
             <CardDescription>
-              Ingresa los  detalles de la nueva cuenta contable
+              Ingresa los detalles de la nueva cuenta contable
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={() => console.log("enviando")}>
+            <form onSubmit={() => console.log("Enviando")}>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
                   <Label htmlFor="codigo">código</Label>
@@ -139,26 +99,18 @@ export function NuevaCuentaForm({
                   className="w-full"
                   disabled={isLoading}
                   onClick={() => crearCuenta()}
-                  style={
-                    {
-                      fontWeight: "600",
-                      backgroundColor: "black"
-                    }
-
-                  }
-
+                  style={{
+                    fontWeight: "600",
+                    backgroundColor: "black",
+                  }}
                 >
-                  {isLoading ?
-                    "Creando cuenta..." :
-                    "Crear cuenta"}
-
+                  {isLoading ? "Creando cuenta..." : "Crear cuenta"}
                 </Button>
-
               </div>
             </form>
           </CardContent>
         </Card>
-      </div >
+      </div>
     </>
   );
 }

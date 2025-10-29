@@ -1,4 +1,4 @@
 export interface AsientoRequest {
-    descripcion: string;
-    fecha: Date | undefined;
+  descripcion: string;
+  fecha: Date | undefined;
 }

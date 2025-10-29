@@ -8,8 +8,7 @@ import { Input } from "@/components/ui/input";
 import React, { useCallback, useEffect, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import { format } from "date-fns";
-
-import { IconFilePencil, IconPencil, IconTrash } from "@tabler/icons-react";
+import { IconPencil, IconTrash } from "@tabler/icons-react";
 import {
   Table,
   TableBody,
@@ -41,40 +40,33 @@ import { EditarAsientoForm } from "@/components/dashboard/modals/editar-asiento.
 const mySwal = withReactContent(Swal);
 
 export default function LibroDiario() {
-  //valores para controler cierre de modal
+  //Valores para controlar cierre de modal
   const [open, setOpen] = useState(false);
 
   const [selectedAsiento, setSelectedAsiento] =
     useState<AsientosConTotale | null>(null);
-
   const [asientos, setAsientos] = useState<AsientosConTotale[]>([]);
   const [totalesMayores, setTotalesMayores] =
     useState<AsientosConTotalesMayores | null>(null);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
   const [eliminandoAsiento, setEliminandoAsiento] = useState<number | null>(
     null
   );
-
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [loadingFiltro, setLoadingFiltro] = useState(false);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [loadingBusqueda, setLoadingBusqueda] = useState(false);
-
   const [openEditar, setOpenEditar] = useState(false);
-
   const fmtCurrency = new Intl.NumberFormat("es-SV", {
     style: "currency",
     currency: "USD",
   });
   const fmtDate = (iso: string) => {
     // Evitar problemas de zona horaria parseando solo la fecha
-    if (iso.includes('T')) {
-      const soloFecha = iso.split('T')[0];
-      const [year, month, day] = soloFecha.split('-').map(Number);
+    if (iso.includes("T")) {
+      const soloFecha = iso.split("T")[0];
+      const [year, month, day] = soloFecha.split("-").map(Number);
       const fecha = new Date(year, month - 1, day); // month - 1 porque Date usa 0-indexado
       return new Intl.DateTimeFormat("es-SV").format(fecha);
     }
@@ -245,7 +237,7 @@ export default function LibroDiario() {
       console.error("Error al eliminar asiento:", error);
       toast.error(
         "Error al eliminar el asiento: " +
-        (error?.message || "Error desconocido")
+          (error?.message || "Error desconocido")
       );
       // No establecer setError aquí ya que recargarDatos ya lo maneja
     } finally {
@@ -422,16 +414,16 @@ export default function LibroDiario() {
                     const detalles = asiento.detalle_asiento?.length
                       ? asiento.detalle_asiento
                       : ([
-                        {
-                          debe: 0,
-                          haber: 0,
-                          cuenta: {
-                            id_cuenta: 0,
-                            nombre_cuenta: "",
-                            codigo: "",
+                          {
+                            debe: 0,
+                            haber: 0,
+                            cuenta: {
+                              id_cuenta: 0,
+                              nombre_cuenta: "",
+                              codigo: "",
+                            },
                           },
-                        },
-                      ] as DetalleAsiento[]);
+                        ] as DetalleAsiento[]);
 
                     return (
                       // React fragment es una especie de div invisible que no añade nodos extra al DOM
@@ -520,21 +512,21 @@ export default function LibroDiario() {
                           <TableCell className="text-right border-t-3 border-primary/30">
                             {fmtCurrency.format(
                               asiento.total_debe ??
-                              detalles.reduce(
-                                (s: number, d: DetalleAsiento) =>
-                                  s + (d.debe || 0),
-                                0
-                              )
+                                detalles.reduce(
+                                  (s: number, d: DetalleAsiento) =>
+                                    s + (d.debe || 0),
+                                  0
+                                )
                             )}
                           </TableCell>
                           <TableCell className="text-right border-t-3 border-primary/30">
                             {fmtCurrency.format(
                               asiento.total_haber ??
-                              detalles.reduce(
-                                (s: number, d: DetalleAsiento) =>
-                                  s + (d.haber || 0),
-                                0
-                              )
+                                detalles.reduce(
+                                  (s: number, d: DetalleAsiento) =>
+                                    s + (d.haber || 0),
+                                  0
+                                )
                             )}
                           </TableCell>
                           <TableCell className="text-right border-t-3 border-primary/30 text-white"></TableCell>

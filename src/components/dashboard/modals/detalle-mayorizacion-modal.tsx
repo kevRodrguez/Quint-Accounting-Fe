@@ -65,7 +65,6 @@ export function DetalleMayorizacion({
         );
         setDetalles(Array.isArray(data) ? data : [data]);
       } catch (err: any) {
-        console.error("Error al obtener detalle de mayorización:", err);
         setError(err?.message || "Error al cargar el detalle de mayorización");
       } finally {
         setIsLoading(false);
@@ -98,10 +97,7 @@ export function DetalleMayorizacion({
           )}
           {error && (
             <div className="flex justify-center items-center py-12">
-              <ErrorScreen
-                title="Error al cargar detalle"
-                error={error}
-              />
+              <ErrorScreen title="Error al cargar detalle" error={error} />
             </div>
           )}
           {!isLoading && !error && detalles.length > 0 && (
@@ -165,7 +161,10 @@ export function DetalleMayorizacion({
           {!isLoading && !error && detalles.length === 0 && (
             <div className="flex justify-center items-center py-12">
               <div className="text-center">
-                <p className="text-muted-foreground">No se encontraron movimientos para esta cuenta en el rango de fechas seleccionado.</p>
+                <p className="text-muted-foreground">
+                  No se encontraron movimientos para esta cuenta en el rango de
+                  fechas seleccionado.
+                </p>
               </div>
             </div>
           )}

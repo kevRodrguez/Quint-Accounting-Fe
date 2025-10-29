@@ -1,89 +1,110 @@
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { useContext, useState } from 'react'
-import { supabase } from '@/lib/client'
-import { useNavigate } from 'react-router-dom'
-import { AuthContext } from '@/context/AuthContext'
-import QuintIconRed from '@/assets/quint-icons/quint-icon-red.png';
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useContext, useState } from "react";
+import { supabase } from "@/lib/client";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "@/context/AuthContext";
+import QuintIconRed from "@/assets/quint-icons/quint-icon-red.png";
 
+export function SignUpForm({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"div">) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [repeatPassword, setRepeatPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { session } = useContext(AuthContext);
   // Si ya hay una sesión activa, redirigir al dashboard
   if (session) {
-    navigate('/dashboard');
+    navigate("/dashboard");
   }
 
   const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
+    e.preventDefault();
+    setError(null);
 
     if (password !== repeatPassword) {
-      setError('Passwords do not match')
-      return
+      setError("Passwords do not match");
+      return;
     }
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       const { error } = await supabase.auth.signUp({
         email,
         password,
-      })
-      if (error) throw error
-      setSuccess(true)
+      });
+      if (error) throw error;
+      setSuccess(true);
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : 'An error occurred')
+      setError(error instanceof Error ? error.message : "An error occurred");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
-
-    <div className='flex flex-col items-center justify-center bg-black min-h-screen'>
-      <div className='w-full text-center mb-6 ' style={{ color: '#fafafa' }}>
+    <div className="flex flex-col items-center justify-center bg-black min-h-screen">
+      <div className="w-full text-center mb-6 " style={{ color: "#fafafa" }}>
         {/* imagen logo */}
-              <div className='col-span-4 justify-center flex'>
-                <img src={QuintIconRed} alt="Logo" width={100} height={100} style={{ borderRadius: '8px' }} />
-              </div>
-        <h1 style={{ fontWeight: 'bold', fontSize: 'xxx-large' }}>Quint Accounting</h1>
+        <div className="col-span-4 justify-center flex">
+          <img
+            src={QuintIconRed}
+            alt="Logo"
+            width={100}
+            height={100}
+            style={{ borderRadius: "8px" }}
+          />
+        </div>
+        <h1 style={{ fontWeight: "bold", fontSize: "xxx-large" }}>
+          Quint Accounting
+        </h1>
         <p style={{ color: "#D9D9D9" }}>Tu mejor elección contable</p>
       </div>
 
-      <div className={cn('w-full max-w-[500px] min-w-[300px] flex flex-col gap-6 px-4', className)} {...props}>
+      <div
+        className={cn(
+          "w-full max-w-[500px] min-w-[300px] flex flex-col gap-6 px-4",
+          className
+        )}
+        {...props}
+      >
         {success ? (
-          <Card >
+          <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">Gracias por registrarte!!</CardTitle>
-              <CardDescription>Revisa tu correo para confirmación</CardDescription>
-              <Button onClick={() => navigate('/login')}>Volver a inicio</Button>
+              <CardTitle className="text-2xl">
+                Gracias por registrarte!!
+              </CardTitle>
+              <CardDescription>
+                Revisa tu correo para confirmación
+              </CardDescription>
+              <Button onClick={() => navigate("/login")}>
+                Volver a inicio
+              </Button>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Te has registrado con éxito. Por favor, revisa tu correo para confirmar tu cuenta antes de
-                iniciar sesión.
+                Te has registrado con éxito. Por favor, revisa tu correo para
+                confirmar tu cuenta antes de iniciar sesión.
               </p>
             </CardContent>
           </Card>
         ) : (
-          <Card style={{ backgroundColor: '#171717', color: '#fafafa' }}>
+          <Card style={{ backgroundColor: "#171717", color: "#fafafa" }}>
             <CardHeader>
               <CardTitle className="text-2xl">Registrarse</CardTitle>
               <CardDescription>Crear una nueva cuenta</CardDescription>
@@ -116,7 +137,9 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
                   </div>
                   <div className="grid gap-2">
                     <div className="flex items-center">
-                      <Label htmlFor="repeat-password">Repetir Contraseña</Label>
+                      <Label htmlFor="repeat-password">
+                        Repetir Contraseña
+                      </Label>
                     </div>
                     <Input
                       id="repeat-password"
@@ -127,13 +150,18 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
                     />
                   </div>
                   {error && <p className="text-sm text-red-500">{error}</p>}
-                  <Button type="submit" className="w-full" disabled={isLoading} style={{ backgroundColor: '#e5e5e5', color: 'black' }}>
-                    {isLoading ? 'Creando cuenta...' : 'Registrarse'}
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    disabled={isLoading}
+                    style={{ backgroundColor: "#e5e5e5", color: "black" }}
+                  >
+                    {isLoading ? "Creando cuenta..." : "Registrarse"}
                   </Button>
                 </div>
                 <div className="mt-4 text-center text-sm">
-                  Ya tienes una cuenta?{' '}
-                  <a href="/login" className="underline underline-offset-4" >
+                  Ya tienes una cuenta?{" "}
+                  <a href="/login" className="underline underline-offset-4">
                     Iniciar sesión
                   </a>
                 </div>
@@ -143,5 +171,5 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
         )}
       </div>
     </div>
-  )
+  );
 }

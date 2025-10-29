@@ -35,16 +35,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-import {
-  AsientosService
-} from "@/services/asientos/asientos.service";
+import { AsientosService } from "@/services/asientos/asientos.service";
 import type { Movimiento } from "@/types/movimiento.interface";
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { CuentasService } from "@/services/cuentas/cuentas.service";
 import type { Cuenta } from "@/types/libroDiario.interface";
 import { toast } from "react-toastify";
-
 
 export function NuevoAsientoForm({
   className,
@@ -52,34 +56,28 @@ export function NuevoAsientoForm({
   onCreated,
   ...props
 }: React.ComponentPropsWithoutRef<"div"> & {
-  setOpen?: (open: boolean) => void //se define el metodo setOpen en las props del modal
-  onCreated?: () => void //callback para recargar datos en el padre
+  setOpen?: (open: boolean) => void; //se define el metodo setOpen en las props del modal
+  onCreated?: () => void; //callback para recargar datos en el padre
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [descripcion, setDescripcion] = useState("");
   const [fecha, setFecha] = useState<Date | undefined>(new Date());
-
-
   const [idCounter, setIdCounter] = useState(3); // Estado para llevar el conteo de IDs
-
   const [movimientos, setMovimientos] = useState<Movimiento[]>([]);
-
   const [nuevoMovimiento, setNuevoMovimiento] = useState<
     Omit<Movimiento, "id">
   >({ cuentaId: "", debe: 0, haber: 0, descripcion: "" });
-
   const [totalDebe, setTotalDebe] = useState(0);
   const [totalHaber, setTotalHaber] = useState(0);
 
-  //para manejar estados de inputs de debe y haber
+  //Para manejar estados de inputs de debe y haber
   const [DebeIsDisabled, setDebeIsDisabled] = useState(false);
   const [HaberIsDisabled, setHaberIsDisabled] = useState(false);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
 
   //mensaje de error para dialog
   const [errorMessage, setErrorMessage] = useState("");
-
-  const [cuentasSelect, setCuentasSelect] = useState<Cuenta[]>([])
+  const [cuentasSelect, setCuentasSelect] = useState<Cuenta[]>([]);
 
   const actualizarMovimiento = (
     id: number,
@@ -107,7 +105,6 @@ export function NuevoAsientoForm({
     setMovimientos(movimientosRestantes);
   };
 
-
   //valida que ningun movimiento tenga ambos valores en 0
   //si lo tiene, muestra alerta y detiene la creacion del asiento
   const validarMovimientos = () => {
@@ -117,13 +114,15 @@ export function NuevoAsientoForm({
       }
     }
     return true;
-  }
+  };
 
   const crearAsiento = async () => {
     setIsLoading(true);
 
     if (!validarMovimientos()) {
-      setErrorMessage("Todos los movimientos deben tener un monto mayor a $0 en el debe o haber");
+      setErrorMessage(
+        "Todos los movimientos deben tener un monto mayor a $0 en el debe o haber"
+      );
       setIsAlertVisible(true);
       setIsLoading(false);
       return; // Detener la creación del asiento si la validación falla
@@ -141,7 +140,6 @@ export function NuevoAsientoForm({
 
       const asientoCreado = await AsientosService.crearAsiento(payload);
 
-      console.log("Asiento creado con detalles:", asientoCreado);
       setIsLoading(false);
 
       //llama al callback para recargar datos en el padre
@@ -152,17 +150,16 @@ export function NuevoAsientoForm({
       if (setOpen) {
         //cerramos modal al finalizar
         //al ser false, el DIalogo automaticamente se cierra (comportamiento embebido)
-        setOpen(false)
+        setOpen(false);
       }
       toast.success("Asiento creado con éxito:" + asientoCreado.descripcion);
-
     } catch (error) {
-      console.log(error);
-      console.log("mostrando modal de error");
-      let errorMsg = ""
+      let errorMsg = "";
+
       if (typeof error === "object" && error !== null && "message" in error) {
         errorMsg += ": " + String((error as { message?: string }).message);
       }
+
       setErrorMessage(errorMsg);
       setIsAlertVisible(true);
       setIsLoading(false);
@@ -171,20 +168,20 @@ export function NuevoAsientoForm({
   const obtenerCuentas = async () => {
     try {
       const cuentas = await CuentasService.obtenerCuentas();
-      console.log("Cuentas obtenidas:", cuentas);
-      setCuentasSelect(cuentas)
-    } catch (error) {
-      console.log(error);
 
-      let errorMsg = ""
+      setCuentasSelect(cuentas);
+    } catch (error) {
+      let errorMsg = "";
+
       if (typeof error === "object" && error !== null && "message" in error) {
         errorMsg += ": " + String((error as { message?: string }).message);
       }
+
       setErrorMessage(errorMsg);
       setIsAlertVisible(true);
       setIsLoading(false);
     }
-  }
+  };
 
   const actualizarTotales = () => {
     let debe = 0,
@@ -199,7 +196,6 @@ export function NuevoAsientoForm({
   };
 
   useEffect(() => {
-    console.log("Movimientos actualizados:", movimientos);
     actualizarTotales();
 
     if (Number(nuevoMovimiento.debe) > 0) {
@@ -213,28 +209,21 @@ export function NuevoAsientoForm({
     } else {
       setDebeIsDisabled(false);
     }
-
   }, [movimientos, nuevoMovimiento]);
-
-
 
   //el array vacio hace que se ejecute solo una vez al montar el componente
   useEffect(() => {
     obtenerCuentas();
-
-  }, [])
+  }, []);
 
   return (
     <>
       {isAlertVisible && (
         <AlertDialog open={isAlertVisible} onOpenChange={setIsAlertVisible}>
-
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Alerta</AlertDialogTitle>
-              <AlertDialogDescription>
-                {errorMessage}.
-              </AlertDialogDescription>
+              <AlertDialogDescription>{errorMessage}.</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogAction>Continuar</AlertDialogAction>
@@ -243,10 +232,8 @@ export function NuevoAsientoForm({
         </AlertDialog>
       )}
 
-
-
       {/* //Modal para nuevo asiento */}
-      < div
+      <div
         className={cn("w-full h-full flex flex-col gap-6", className)}
         {...props}
       >
@@ -261,7 +248,7 @@ export function NuevoAsientoForm({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={() => console.log("enviando")}>
+            <form onSubmit={() => console.log("Enviando")}>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
                   <Label htmlFor="descripcion">Descripcion</Label>
@@ -346,14 +333,14 @@ export function NuevoAsientoForm({
                         defaultValue={0}
                         decimalsLimit={2}
                         prefix="$"
-                        intlConfig={{ locale: 'en-US', currency: 'USD' }}
+                        intlConfig={{ locale: "en-US", currency: "USD" }}
                         allowDecimals
                         decimalSeparator="."
                         value={nuevoMovimiento.debe}
                         onValueChange={(value) =>
                           setNuevoMovimiento({
                             ...nuevoMovimiento,
-                            debe: (value) || 0,
+                            debe: value || 0,
                           })
                         }
                         style={{ border: "none", width: "100%" }}
@@ -372,14 +359,14 @@ export function NuevoAsientoForm({
                         defaultValue={0}
                         decimalsLimit={2}
                         prefix="$"
-                        intlConfig={{ locale: 'en-US', currency: 'USD' }}
+                        intlConfig={{ locale: "en-US", currency: "USD" }}
                         allowDecimals
                         decimalSeparator="."
                         value={nuevoMovimiento.haber}
                         onValueChange={(value) =>
                           setNuevoMovimiento({
                             ...nuevoMovimiento,
-                            haber: (value) || 0,
+                            haber: value || 0,
                           })
                         }
                         style={{ border: "none" }}
@@ -393,22 +380,22 @@ export function NuevoAsientoForm({
                       <Button
                         type="button"
                         onClick={() => {
-                          if (nuevoMovimiento.debe == 0 && nuevoMovimiento.haber == 0) {
-                            console.log("El monto del debe o haber debe ser mayor a 0");
-
-                            setErrorMessage("El monto del debe o haber debe ser mayor a 0");
+                          if (
+                            nuevoMovimiento.debe == 0 &&
+                            nuevoMovimiento.haber == 0
+                          ) {
+                            setErrorMessage(
+                              "El monto del debe o haber debe ser mayor a 0"
+                            );
                             setIsAlertVisible(true);
-
-                          }
-                          else {
-
+                          } else {
                             setMovimientos([
                               ...movimientos,
                               {
                                 id: idCounter,
                                 cuentaId: nuevoMovimiento.cuentaId,
                                 debe: nuevoMovimiento.debe,
-                                haber: (nuevoMovimiento.haber),
+                                haber: nuevoMovimiento.haber,
                               },
                             ]);
                             setIdCounter(idCounter + 1); // Incrementar el contador de IDs
@@ -421,7 +408,6 @@ export function NuevoAsientoForm({
                             //!! si se llama acá, la actutualizacion sufre delay, se reocmienda su uso en un useeffect
                             // actualizarTotales();
                           }
-
                         }}
                       >
                         +
@@ -495,13 +481,13 @@ export function NuevoAsientoForm({
                                 actualizarMovimiento(
                                   movimiento.id,
                                   movimiento.cuentaId,
-                                  (e.target.value),
-                                  (movimiento.haber)
+                                  e.target.value,
+                                  movimiento.haber
                                 );
                               }}
                               placeholder="debe"
                               className="w-full"
-                            // disabled={!(movimiento.haber === 0)}
+                              // disabled={!(movimiento.haber === 0)}
                             />
                           </TableCell>
 
@@ -520,8 +506,8 @@ export function NuevoAsientoForm({
                               }
                               placeholder="Seleccionar cuenta"
                               className="w-full"
-                            //si el monto del debe es diferente a 0, el haber no se puede editar
-                            // disabled={!(movimiento.debe === 0)}
+                              //si el monto del debe es diferente a 0, el haber no se puede editar
+                              // disabled={!(movimiento.debe === 0)}
                             />
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
@@ -548,7 +534,17 @@ export function NuevoAsientoForm({
                           </TableCell>
                         </TableRow>
                       ))}
-                      <TableRow style={totalDebe !== totalHaber ? { backgroundColor: '#DEDEDE', color: 'red', border: '3px solid red' } : { backgroundColor: '#DEDEDE' }}>
+                      <TableRow
+                        style={
+                          totalDebe !== totalHaber
+                            ? {
+                                backgroundColor: "#DEDEDE",
+                                color: "red",
+                                border: "3px solid red",
+                              }
+                            : { backgroundColor: "#DEDEDE" }
+                        }
+                      >
                         <TableCell>
                           <Label>Total:</Label>
                         </TableCell>
@@ -567,28 +563,23 @@ export function NuevoAsientoForm({
                   type="submit"
                   className="w-full"
                   disabled={isLoading || totalDebe !== totalHaber}
-                  style={
-                    {
-                      fontWeight: "600",
-                      backgroundColor: "black"
-                    }
-
-                  }
+                  style={{
+                    fontWeight: "600",
+                    backgroundColor: "black",
+                  }}
                   onClick={crearAsiento}
                 >
-                  {isLoading ?
-                    "Creando asiento..." :
-                    totalDebe !== totalHaber ?
-                      "Advertencia:El total y el debe no coindicen!!!"
-                      :
-                      "Crear Asiento Contable"}
+                  {isLoading
+                    ? "Creando asiento..."
+                    : totalDebe !== totalHaber
+                    ? "Advertencia:El total y el debe no coindicen!!!"
+                    : "Crear Asiento Contable"}
                 </Button>
-
               </div>
             </form>
           </CardContent>
         </Card>
-      </div >
+      </div>
     </>
   );
 }

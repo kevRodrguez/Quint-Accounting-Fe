@@ -9,42 +9,10 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { CalendarIcon, MoreVertical, Trash2 } from "lucide-react";
-import { format, set } from "date-fns";
-import { Combobox } from "@/components/ui/combobox";
-import { useEffect, useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
-import CurrencyInput from "react-currency-input-field";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-import {
-  AsientosService
-} from "@/services/asientos/asientos.service";
-import type { Movimiento } from "@/types/movimiento.interface";
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import React, { useState } from "react";
 import { CuentasService } from "@/services/cuentas/cuentas.service";
 import type { Cuenta } from "@/types/libroDiario.interface";
 import { toast } from "react-toastify";
-
 
 export function EditarCuentaForm({
   className,
@@ -53,12 +21,10 @@ export function EditarCuentaForm({
   cuentaSeleccionada,
   ...props
 }: React.ComponentPropsWithoutRef<"div"> & {
-  setOpen?: (open: boolean) => void //se define el metodo setOpen en las props del modal
-  onCreated?: () => void //callback para recargar datos en el padre
-  cuentaSeleccionada?: Cuenta // agrega la propiedad cuentaSeleccionada a las props
+  setOpen?: (open: boolean) => void; //se define el metodo setOpen en las props del modal
+  onCreated?: () => void; //callback para recargar datos en el padre
+  cuentaSeleccionada?: Cuenta; // agrega la propiedad cuentaSeleccionada a las props
 }) {
-
-
   const [isLoading, setIsLoading] = useState(false);
   const [id_cuenta, setIdCuenta] = useState(cuentaSeleccionada?.id_cuenta || 0);
   const [codigo, setCodigo] = useState(cuentaSeleccionada?.codigo || "");
@@ -66,28 +32,27 @@ export function EditarCuentaForm({
 
   async function actualizarCuenta() {
     setIsLoading(true);
-    console.log("Actualizando cuenta:", { id_cuenta, codigo, nombre });
-    try {
-      const response = await CuentasService.actualizarCuenta(id_cuenta, codigo, nombre);
 
-      console.log("Cuenta actualizada:", response);
+    try {
+      const response = await CuentasService.actualizarCuenta(
+        id_cuenta,
+        codigo,
+        nombre
+      );
+
       if (onCreated) onCreated(); //llama al callback para recargar datos en el padre
 
       if (setOpen) setOpen(false); //cierra el modal
       toast.success("Cuenta actualizada con éxito");
     } catch (error) {
-      console.error("Error al actualizar la cuenta:", error);
       toast.error("Error al actualizar la cuenta", { autoClose: false });
     }
     setIsLoading(false);
   }
   return (
     <>
-
-
-
       {/* //Modal para editar cuenta */}
-      < div
+      <div
         className={cn("w-full h-full flex flex-col gap-6", className)}
         {...props}
       >
@@ -102,7 +67,7 @@ export function EditarCuentaForm({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={() => console.log("enviando")}>
+            <form onSubmit={() => console.log("Enviando")}>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
                   <Label htmlFor="codigo">código</Label>
@@ -113,7 +78,7 @@ export function EditarCuentaForm({
                     required
                     value={codigo}
                     onChange={(e) => setCodigo(e.target.value)}
-                    disabled={true}  // El campo código está deshabilitado para edición
+                    disabled={true} // El campo código está deshabilitado para edición
                   />
                 </div>
                 <div className="grid gap-2">
@@ -133,26 +98,18 @@ export function EditarCuentaForm({
                   className="w-full"
                   disabled={isLoading}
                   onClick={() => actualizarCuenta()}
-                  style={
-                    {
-                      fontWeight: "600",
-                      backgroundColor: "black"
-                    }
-
-                  }
-
+                  style={{
+                    fontWeight: "600",
+                    backgroundColor: "black",
+                  }}
                 >
-                  {isLoading ?
-                    "Actualizando cuenta..." :
-                    "Actualizar cuenta"}
-
+                  {isLoading ? "Actualizando cuenta..." : "Actualizar cuenta"}
                 </Button>
-
               </div>
             </form>
           </CardContent>
         </Card>
-      </div >
+      </div>
     </>
   );
 }

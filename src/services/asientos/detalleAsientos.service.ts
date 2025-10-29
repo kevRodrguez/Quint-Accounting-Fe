@@ -27,7 +27,6 @@ export class DetalleAsientosService {
       );
       return response.data;
     } catch (error) {
-      console.error("Error creando detalle de asiento:", error);
       throw error;
     }
   }

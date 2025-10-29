@@ -14,7 +14,7 @@ export class AsientosService {
         "libro-diario/asientos/",
         asiento
       );
-      console.log("respuesta del api directa", response.data);
+
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -33,7 +33,6 @@ export class AsientosService {
       const response: AxiosResponse<AsientoResponse> = await api.delete(
         `libro-diario/asientos/${id_asiento}`
       );
-      console.log("asiento eliminado " + response.data);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -61,7 +60,6 @@ export class AsientosService {
         }
       );
 
-      console.log("Respuesta API:", response.data);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -74,6 +72,4 @@ export class AsientosService {
       throw new Error("Error desconocido al actualizar asiento");
     }
   }
-
-  
 }

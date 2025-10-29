@@ -48,10 +48,9 @@ export default function Mayorizacion() {
 
     try {
       // Simular una pequeña carga inicial o realizar alguna validación
-      await new Promise(resolve => setTimeout(resolve, 300));
+      await new Promise((resolve) => setTimeout(resolve, 300));
 
       // La página se inicializa correctamente, las fechas se validarán al filtrar
-
     } catch (error: any) {
       console.error("Error al inicializar mayorización:", error);
       setError(error?.message || "Error al cargar la página de mayorización");
@@ -73,12 +72,10 @@ export default function Mayorizacion() {
       // Actualizar las fechas filtradas que se pasan a los componentes
       setFechasFiltradas({
         fechaInicio: rango.from,
-        fechaFinal: rango.to
+        fechaFinal: rango.to,
       });
 
-      toast.success(
-        `Filtros aplicados correctamente`
-      );
+      toast.success(`Filtros aplicados correctamente`);
     } catch (error: any) {
       console.error("Error al filtrar por fechas:", error);
       setError(error?.message || "No se pudo filtrar por el rango de fechas");
@@ -92,7 +89,7 @@ export default function Mayorizacion() {
     setDateRange(undefined);
     setFechasFiltradas({
       fechaInicio: undefined,
-      fechaFinal: undefined
+      fechaFinal: undefined,
     });
     toast.info("Filtros limpiados");
   };
@@ -103,7 +100,12 @@ export default function Mayorizacion() {
 
   // Mostrar pantalla de carga global
   if (loading) {
-    return <LoadingScreen title="Mayorización de cuentas" text="Cargando página..." />;
+    return (
+      <LoadingScreen
+        title="Mayorización de cuentas"
+        text="Cargando página..."
+      />
+    );
   }
 
   // Mostrar pantalla de error global
@@ -137,9 +139,7 @@ export default function Mayorizacion() {
             <div className="flex gap-2">
               <Button
                 onClick={() => filtrarPorFechas(dateRange)}
-                disabled={
-                  loadingFiltro || !dateRange?.from || !dateRange?.to
-                }
+                disabled={loadingFiltro || !dateRange?.from || !dateRange?.to}
                 variant="default"
                 size="sm"
               >

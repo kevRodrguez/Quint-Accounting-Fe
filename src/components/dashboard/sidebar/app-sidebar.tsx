@@ -1,4 +1,4 @@
-import * as React from "react"
+import * as React from "react";
 import {
   IconCamera,
   IconDashboard,
@@ -7,10 +7,9 @@ import {
   IconBook,
   IconBook2,
   IconBooks,
-} from "@tabler/icons-react"
-
-import { NavMain } from "@/components/dashboard/sidebar/nav-main"
-import { NavUser } from "@/components/dashboard/sidebar/nav-user"
+} from "@tabler/icons-react";
+import { NavMain } from "@/components/dashboard/sidebar/nav-main";
+import { NavUser } from "@/components/dashboard/sidebar/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -19,12 +18,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { AuthContext } from "@/context/AuthContext"
-import avatarDefault from '@/assets/avatar.jpg'
+} from "@/components/ui/sidebar";
+import { AuthContext } from "@/context/AuthContext";
+import avatarDefault from "@/assets/avatar.jpg";
 
-import QuintLogoWhiteBG from '@/assets/quint-logos/quint-logo-whitebg.png'
-
+import QuintLogoWhiteBG from "@/assets/quint-logos/quint-logo-whitebg.png";
 
 const data = {
   navMain: [
@@ -131,18 +129,17 @@ const data = {
   //     icon: IconFileWord,
   //   },
   // ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-
   // Obtener datos del usuario desde el contexto de autenticación y pasarlos como objeto a la navbar
   const session = React.useContext(AuthContext).session;
   const userData = {
     // Default values
-    name: 'usuario',
-    email: 'email',
-    avatar: avatarDefault
-  }
+    name: "usuario",
+    email: "email",
+    avatar: avatarDefault,
+  };
 
   if (session?.user) {
     userData.email = session.user.email || userData.email;
@@ -154,8 +151,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     }
   }
 
-
-
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -166,7 +161,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!py-6"
             >
               <a href="/dashboard">
-                <img src={QuintLogoWhiteBG} alt="logo" width={130} style={{ borderRadius: '8px' }}/>
+                <img
+                  src={QuintLogoWhiteBG}
+                  alt="logo"
+                  width={130}
+                  style={{ borderRadius: "8px" }}
+                />
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -181,5 +181,5 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>
-  )
+  );
 }
