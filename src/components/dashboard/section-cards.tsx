@@ -46,6 +46,7 @@ export function SectionCards({
         fechaInicio,
         fechaFinal
       );
+
       setMayorizacionArray(mayorizacion);
     } catch (error: any) {
       console.error("Error al obtener mayorización:", error);
@@ -80,13 +81,14 @@ export function SectionCards({
     );
   }
 
+  // Filtrar y mapear los datos para las tarjetas - Negativo para Haber, Positivo para Debe - Innecesarios
   const cardsData = mayorizacionArray
-
     .filter((item) => item.Movimientos.length > 0)
     .filter((item) => {
       if (haber) {
         return item.Totales.Saldo < 0;
       }
+
       return item.Totales.Saldo >= 0;
     })
     .map((item) => ({

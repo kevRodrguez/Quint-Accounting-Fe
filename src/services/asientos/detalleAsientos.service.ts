@@ -1,5 +1,6 @@
 import api from "@/lib/axios";
 import type { AxiosResponse } from "axios";
+import axios from "axios";
 
 export interface DetalleAsientoRequest {
   id_cuenta: number;
@@ -25,9 +26,16 @@ export class DetalleAsientosService {
         "detalle-asientos/",
         detalleAsiento
       );
+
       return response.data;
     } catch (error) {
-      throw error;
+      if (axios.isAxiosError(error)) {
+        const message =
+          error.status + " " + error.response?.data?.message || error.message;
+        throw new Error(`Error al crear el detalle del asiento: ${message}`);
+      }
+
+      throw new Error("Error desconocido al crear el detalle del asiento");
     }
   }
 }

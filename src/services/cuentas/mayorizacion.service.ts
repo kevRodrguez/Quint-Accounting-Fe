@@ -20,16 +20,19 @@ export class mayorizacionServices {
           },
         }
       );
+
       return data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const message =
           (error.status ? String(error.status) + " " : "") +
           (error.response?.data?.message || error.message);
+
         throw new Error(
           `Error al obtener la mayorización de cuentas: ${message}`
         );
       }
+
       throw new Error("Error al obtener la mayorización de cuentas");
     }
   }
@@ -56,10 +59,12 @@ export class mayorizacionServices {
         const message =
           (error.status ? String(error.status) + " " : "") +
           (error.response?.data?.message || error.message);
+
         throw new Error(
           `Error al obtener la mayorización de esta cuenta: ${message}`
         );
       }
+
       throw new Error("Error al obtener la mayorización de esta cuenta");
     }
   }
