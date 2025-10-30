@@ -94,7 +94,10 @@ export function SectionCards({
     .map((item) => ({
       codigo: item.Codigo,
       desc: item.Cuenta,
-      value: `$${item.Totales.Saldo.toFixed(2)}`,
+      value:
+        item.Totales.Saldo > 0
+          ? `$${item.Totales.Saldo.toFixed(2)}`
+          : `$${Number(item.Totales.Saldo.toFixed(2)) * -1}`,
       trend: `Debe: $${item.Totales.Debe.toFixed(
         2
       )} | Haber: $${item.Totales.Haber.toFixed(2)}`,
